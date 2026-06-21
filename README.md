@@ -41,12 +41,14 @@ server-side, not just hidden in the UI).
 
 Defined in `backend/src/utils/seed.js`:
 
-| Field    | Value                       |
-|----------|------------------------------|
-| Name     | Abhishek Kumar Sharma        |
-| Email    | admin@digitalbank.com        |
-| Password | Admin@12715                  |
-| Role     | admin                        |
+## Demo Administrator Account
+
+| Field | Value |
+|---------|---------|
+| Name | Admin User |
+| Email | admin@example.com |
+| Password | Generated during seed process |
+| Role | admin |
 
 This is the **only** account that exists immediately after running `npm run seed`. To
 use different credentials, edit the `ADMIN_ACCOUNT` object at the top of
@@ -199,11 +201,9 @@ Expected output:
 MongoDB Connected: 127.0.0.1/bank_management_system
 Admin account created successfully.
 
---- Administrator Login Credentials ---
-Name:     Abhishek Kumar Sharma
-Email:    admin@digitalbank.com
-Password: Admin@12715
-----------------------------------------
+--- Administrator Account Created Successfully ---
+Credentials configured locally in seed.js
+-------------------------------------------------
 Password verified against database: OK
 
 Log in with these credentials, then use User Management to create
@@ -246,7 +246,7 @@ Open http://localhost:5173. Enter:
 
 ```
 Email:    admin@digitalbank.com
-Password: Admin@12715
+Password: ************
 ```
 
 You'll land on `/admin` — the admin dashboard.
