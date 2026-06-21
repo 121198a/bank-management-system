@@ -1,0 +1,140 @@
+import React, { useEffect, useState, useCallback } from 'react';
+import { Search, CheckCircle } from 'lucide-react';
+import { accountsAPI } from '../../api';
+import Badge from '../../components/ui/Badge';
+import Button from '../../components/ui/Button';
+import Modal from '../../components/ui/Modal';
+import Select from '../../components/ui/Select';
+import Pagination from '../../components/ui/Pagination';
+import { TableSkeleton } from '../../components/skeletons/Skeletons';
+import { formatCurrency, formatDate, getErrorMessage } from '../../utils/formatters';
+import toast from 'react-hot-toast';
+
+const EmployeeAccounts = () => {
+  const [accounts, setAccounts] = useState([]);
+  const [meta, setMeta] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('pending');
+  const [selectedAccount, setSelectedAccount] = useState(null);
+  const [actionLoading, setActionLoading] = useState(false);
+
+  const fetchAccounts = useCallback(() => {
+    setLoading(true);
+    const params = { page, limit: 10, ...(search && { search }), ...(statusFilter && { status: statusFilter }) };
+    accountsAPI.listAccounts(params)
+      .then((d) => { setAccounts(d.data.accounts); setMeta(d.meta || {}); })
+      .catch((err) => toast.error(getErrorMessage(err)))
+      .finally(() => setLoading(false));
+  }, [page, search, statusFilter]);
+
+  useEffect(() => { fetchAccounts(); }, [fetchAccounts]);
+
+  const handleApprove = async () => {
+    setActionLoading(true);
+    try {
+      await accountsAPI.approve(selectedAccount._id);
+      toast.success('Account approved and activated');
+      setSelectedAccount(null);
+      fetchAccounts();
+    } catch (err) {
+      toast.error(getErrorMessage(err));
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Account Approvals</h2>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Review and approve customer account applications</p>
+      </div>
+
+      <div className="card p-5">
+        <div className="flex flex-wrap gap-3 mb-5">
+          <div className="relative flex-1 min-w-[200px]">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <input className="input-field pl-10" placeholder="Search accounts..."
+              value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} />
+          </div>
+          <Select value={statusFilter} onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
+            options={[{ value: 'pending', label: 'Pending' }, { value: 'active', label: 'Active' }, { value: '', label: 'All' }]}
+            containerClass="w-36" />
+        </div>
+
+        {loading ? <TableSkeleton rows={8} cols={6} /> : (
+          <>
+            <div className="table-container">
+              <table className="table">
+                <thead>
+                  <tr>
+                    {['Account No.', 'Customer', 'KYC', 'Type', 'Balance', 'Status', 'Actions'].map(h => (
+                      <th key={h} className="table-th">{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100 dark:divide-banking-border bg-white dark:bg-banking-card">
+                  {accounts.length === 0 ? (
+                    <tr><td colSpan={7} className="table-td text-center py-10 text-gray-400">No accounts found</td></tr>
+                  ) : accounts.map((acc) => (
+                    <tr key={acc._id} className="table-row">
+                      <td className="table-td font-mono text-xs">{acc.accountNumber}</td>
+                      <td className="table-td">
+                        <p className="font-medium text-sm text-gray-800 dark:text-gray-200">{acc.user?.fullName}</p>
+                        <p className="text-xs text-gray-400">{acc.user?.email}</p>
+                      </td>
+                      <td className="table-td"><Badge value={acc.user?.kycStatus} /></td>
+                      <td className="table-td capitalize text-sm">{acc.accountType}</td>
+                      <td className="table-td font-semibold text-sm">{formatCurrency(acc.balance)}</td>
+                      <td className="table-td"><Badge value={acc.status} /></td>
+                      <td className="table-td">
+                        {acc.status === 'pending' && (
+                          <button onClick={() => setSelectedAccount(acc)}
+                            className="p-1.5 rounded-lg hover:bg-green-50 dark:hover:bg-green-900/20 text-green-600 transition-colors" title="Approve">
+                            <CheckCircle className="w-4 h-4" />
+                          </button>
+                        )}
+                        {acc.status !== 'pending' && (
+                          <span className="text-xs text-gray-400">
+                            {acc.approvedAt ? formatDate(acc.approvedAt, { month: 'short', day: '2-digit' }) : '—'}
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <Pagination page={page} totalPages={meta.totalPages || 1} onPageChange={setPage} />
+          </>
+        )}
+      </div>
+
+      <Modal isOpen={!!selectedAccount} onClose={() => setSelectedAccount(null)} title="Approve Account" size="sm">
+        {selectedAccount && (
+          <div className="space-y-4">
+            <div className="p-3 rounded-xl bg-gray-50 dark:bg-banking-darker space-y-1.5 text-sm">
+              <div className="flex justify-between"><span className="text-gray-500">Customer:</span><span className="font-medium text-gray-800 dark:text-gray-200">{selectedAccount.user?.fullName}</span></div>
+              <div className="flex justify-between"><span className="text-gray-500">Account No:</span><span className="font-mono text-gray-700 dark:text-gray-300">{selectedAccount.accountNumber}</span></div>
+              <div className="flex justify-between"><span className="text-gray-500">Type:</span><span className="capitalize text-gray-700 dark:text-gray-300">{selectedAccount.accountType}</span></div>
+              <div className="flex justify-between"><span className="text-gray-500">KYC Status:</span><Badge value={selectedAccount.user?.kycStatus} /></div>
+            </div>
+            {selectedAccount.user?.kycStatus !== 'verified' && (
+              <div className="p-3 rounded-xl bg-yellow-50 dark:bg-yellow-900/20 text-xs text-yellow-700 dark:text-yellow-400">
+                ⚠ Customer's KYC is not verified. Consider reviewing KYC before approving.
+              </div>
+            )}
+            <div className="flex gap-3">
+              <Button variant="secondary" className="flex-1" onClick={() => setSelectedAccount(null)}>Cancel</Button>
+              <Button className="flex-1" loading={actionLoading} onClick={handleApprove}>Approve Account</Button>
+            </div>
+          </div>
+        )}
+      </Modal>
+    </div>
+  );
+};
+
+export default EmployeeAccounts;
