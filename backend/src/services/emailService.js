@@ -25,11 +25,7 @@ const getTransporter = () => {
  */
 const sendEmail = async ({ to, subject, html, text }) => {
   if (!env.smtp.user || !env.smtp.pass) {
-    console.log('--- EMAIL (SMTP not configured, logging instead) ---');
-    console.log(`To: ${to}`);
-    console.log(`Subject: ${subject}`);
-    console.log(`Body: ${text || html}`);
-    console.log('-----------------------------------------------------');
+    console.log(`Email delivery skipped because SMTP is not configured [recipient redacted, subject: ${subject}]`);
     return { simulated: true };
   }
 

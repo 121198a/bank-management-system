@@ -2,6 +2,7 @@ const AuditLog = require('../models/AuditLog');
 const User = require('../models/User');
 const asyncHandler = require('../utils/asyncHandler');
 const ApiResponse = require('../utils/ApiResponse');
+const { escapeRegex } = require('../utils/sanitize');
 
 /**
  * GET /api/audit
@@ -13,7 +14,15 @@ const listAuditLogs = asyncHandler(async (req, res) => {
   const skip = (page - 1) * limit;
 
   const filter = {};
-  if (req.query.action) filter.action = new RegExp(req.query.action, 'i');
+
+  // Employees with audit.view.branch can inspect their own audit activity.
+  // Admins retain the existing global audit view. This keeps the employee
+  // audit surface useful without exposing the entire system audit trail.
+  if (req.user?.role === 'employee') {
+    filter.actor = req.user._id;
+  }
+
+  if (req.query.action) filter.action = new RegExp(escapeRegex(req.query.action), 'i');
   if (req.query.targetType) filter.targetType = req.query.targetType;
 
   if (req.query.from || req.query.to) {
@@ -23,7 +32,7 @@ const listAuditLogs = asyncHandler(async (req, res) => {
   }
 
   if (req.query.search) {
-    const searchRegex = new RegExp(req.query.search, 'i');
+    const searchRegex = new RegExp(escapeRegex(req.query.search), 'i');
     const matchingUsers = await User.find({
       $or: [{ fullName: searchRegex }, { email: searchRegex }]
     }).select('_id');

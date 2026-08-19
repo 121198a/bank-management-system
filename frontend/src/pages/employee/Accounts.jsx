@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { Search, CheckCircle } from 'lucide-react';
+import { CheckCircle } from 'lucide-react';
 import { accountsAPI } from '../../api';
 import Badge from '../../components/ui/Badge';
 import Button from '../../components/ui/Button';
 import Modal from '../../components/ui/Modal';
 import Select from '../../components/ui/Select';
 import Pagination from '../../components/ui/Pagination';
+import ManagementFilterBar from '../../components/ui/ManagementFilterBar';
 import { TableSkeleton } from '../../components/skeletons/Skeletons';
 import { formatCurrency, formatDate, getErrorMessage } from '../../utils/formatters';
 import toast from 'react-hot-toast';
@@ -16,18 +17,19 @@ const EmployeeAccounts = () => {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState('pending');
+  const [statusFilter, setStatusFilter] = useState('');
+  const [accountType, setAccountType] = useState('');
   const [selectedAccount, setSelectedAccount] = useState(null);
   const [actionLoading, setActionLoading] = useState(false);
 
   const fetchAccounts = useCallback(() => {
     setLoading(true);
-    const params = { page, limit: 10, ...(search && { search }), ...(statusFilter && { status: statusFilter }) };
+    const params = { page, limit: 10, ...(search && { search }), ...(statusFilter && { status: statusFilter }), ...(accountType && { accountType }) };
     accountsAPI.listAccounts(params)
       .then((d) => { setAccounts(d.data.accounts); setMeta(d.meta || {}); })
       .catch((err) => toast.error(getErrorMessage(err)))
       .finally(() => setLoading(false));
-  }, [page, search, statusFilter]);
+  }, [page, search, statusFilter, accountType]);
 
   useEffect(() => { fetchAccounts(); }, [fetchAccounts]);
 
@@ -48,22 +50,22 @@ const EmployeeAccounts = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Account Approvals</h2>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Account Management</h2>
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Review and approve customer account applications</p>
       </div>
 
-      <div className="card p-5">
-        <div className="flex flex-wrap gap-3 mb-5">
-          <div className="relative flex-1 min-w-[200px]">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <input className="input-field pl-10" placeholder="Search accounts..."
-              value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} />
-          </div>
-          <Select value={statusFilter} onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
-            options={[{ value: 'pending', label: 'Pending' }, { value: 'active', label: 'Active' }, { value: '', label: 'All' }]}
-            containerClass="w-36" />
-        </div>
+      <ManagementFilterBar
+        search={search}
+        onSearch={(e) => { setSearch(e.target.value); setPage(1); }}
+        placeholder="Search by account number or customer..."
+      >
+        <Select value={statusFilter} onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
+          options={[{ value: '', label: 'All Status' }, { value: 'pending', label: 'Pending' }, { value: 'active', label: 'Active' }, { value: 'rejected', label: 'Rejected' }, { value: 'frozen', label: 'Frozen' }, { value: 'suspended', label: 'Suspended' }, { value: 'closed', label: 'Closed' }]}
+          containerClass="w-full sm:w-40 lg:w-40" />
+        <Select value={accountType} onChange={(e) => { setAccountType(e.target.value); setPage(1); }} options={[{ value: '', label: 'All Types' }, { value: 'savings', label: 'Savings' }, { value: 'current', label: 'Current' }, { value: 'salary', label: 'Salary' }, { value: 'student', label: 'Student' }, { value: 'senior_citizen', label: 'Senior Citizen' }]} containerClass="w-full sm:w-40 lg:w-40" />
+      </ManagementFilterBar>
 
+      <div className="card p-5">
         {loading ? <TableSkeleton rows={8} cols={6} /> : (
           <>
             <div className="table-container">

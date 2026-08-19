@@ -31,6 +31,10 @@ const authenticate = asyncHandler(async (req, res, next) => {
     throw new ApiError(401, 'User belonging to this token no longer exists');
   }
 
+  if ((decoded.tokenVersion ?? 0) !== (user.tokenVersion || 0)) {
+    throw new ApiError(401, 'Session has been revoked. Please log in again.');
+  }
+
   if (!user.isActive) {
     throw new ApiError(403, 'Your account has been deactivated. Contact support.');
   }

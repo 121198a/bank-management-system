@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { Search, UserCog, CheckCircle, XCircle, UserPlus, Pencil, Copy } from 'lucide-react';
+import { UserCog, CheckCircle, XCircle, UserPlus, Pencil, Copy } from 'lucide-react';
 import { usersAPI } from '../../api';
 import Badge from '../../components/ui/Badge';
 import Button from '../../components/ui/Button';
@@ -7,6 +7,7 @@ import Modal from '../../components/ui/Modal';
 import Select from '../../components/ui/Select';
 import Input from '../../components/ui/Input';
 import Pagination from '../../components/ui/Pagination';
+import ManagementFilterBar from '../../components/ui/ManagementFilterBar';
 import { TableSkeleton } from '../../components/skeletons/Skeletons';
 import { formatDate, getErrorMessage } from '../../utils/formatters';
 import toast from 'react-hot-toast';
@@ -70,10 +71,11 @@ const AdminUsers = () => {
     const errs = {};
     if (!createForm.fullName || createForm.fullName.trim().length < 2) errs.fullName = 'Full name must be at least 2 characters';
     if (!createForm.email || !/\S+@\S+\.\S+/.test(createForm.email)) errs.email = 'Valid email is required';
-    if (!createForm.password || createForm.password.length < 8) errs.password = 'Password must be at least 8 characters';
+    if (!createForm.password || createForm.password.length < 12) errs.password = 'Password must be at least 12 characters';
     else if (!/[A-Z]/.test(createForm.password)) errs.password = 'Must contain an uppercase letter';
     else if (!/[a-z]/.test(createForm.password)) errs.password = 'Must contain a lowercase letter';
     else if (!/[0-9]/.test(createForm.password)) errs.password = 'Must contain a number';
+    else if (!/[^A-Za-z0-9]/.test(createForm.password)) errs.password = 'Must contain a special character';
     setCreateErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -152,21 +154,20 @@ const AdminUsers = () => {
         <Button icon={UserPlus} onClick={openCreate}>Create User</Button>
       </div>
 
-      <div className="card p-5">
-        <div className="flex flex-wrap gap-3 mb-5">
-          <div className="relative flex-1 min-w-[200px]">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <input className="input-field pl-10" placeholder="Search by name or email..."
-              value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} />
-          </div>
-          <Select value={filters.role} onChange={(e) => { setFilters(f => ({ ...f, role: e.target.value })); setPage(1); }}
-            options={[{ value: '', label: 'All Roles' }, { value: 'admin', label: 'Admin' }, { value: 'employee', label: 'Employee' }, { value: 'customer', label: 'Customer' }]}
-            containerClass="w-36" />
-          <Select value={filters.kycStatus} onChange={(e) => { setFilters(f => ({ ...f, kycStatus: e.target.value })); setPage(1); }}
-            options={[{ value: '', label: 'All KYC' }, { value: 'pending', label: 'Pending' }, { value: 'verified', label: 'Verified' }, { value: 'rejected', label: 'Rejected' }]}
-            containerClass="w-36" />
-        </div>
+      <ManagementFilterBar
+        search={search}
+        onSearch={(e) => { setSearch(e.target.value); setPage(1); }}
+        placeholder="Search by name or email..."
+      >
+        <Select value={filters.role} onChange={(e) => { setFilters(f => ({ ...f, role: e.target.value })); setPage(1); }}
+          options={[{ value: '', label: 'All Roles' }, { value: 'admin', label: 'Admin' }, { value: 'employee', label: 'Employee' }, { value: 'customer', label: 'Customer' }]}
+          containerClass="w-full sm:w-40 lg:w-40" />
+        <Select value={filters.kycStatus} onChange={(e) => { setFilters(f => ({ ...f, kycStatus: e.target.value })); setPage(1); }}
+          options={[{ value: '', label: 'All KYC' }, { value: 'pending', label: 'Pending' }, { value: 'verified', label: 'Verified' }, { value: 'rejected', label: 'Rejected' }]}
+          containerClass="w-full sm:w-40 lg:w-40" />
+      </ManagementFilterBar>
 
+      <div className="card p-5">
         {loading ? <TableSkeleton rows={8} cols={6} /> : (
           <>
             <div className="table-container">

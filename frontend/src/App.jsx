@@ -23,6 +23,7 @@ import CustomerTransactions from './pages/customer/Transactions';
 import CustomerKyc from './pages/customer/Kyc';
 import CustomerProfile from './pages/customer/Profile';
 import CustomerNotifications from './pages/customer/Notifications';
+import CustomerLoans from './pages/customer/Loans';
 
 // Admin pages
 import AdminDashboard from './pages/admin/Dashboard';
@@ -31,12 +32,15 @@ import AdminAccounts from './pages/admin/Accounts';
 import AdminTransactions from './pages/admin/Transactions';
 import AdminKyc from './pages/admin/Kyc';
 import AdminAuditLogs from './pages/admin/AuditLogs';
+import AdminLoans from './pages/admin/Loans';
 
 // Employee pages
 import EmployeeDashboard from './pages/employee/Dashboard';
 import EmployeeAccounts from './pages/employee/Accounts';
 import EmployeeKyc from './pages/employee/Kyc';
 import EmployeeTransactions from './pages/employee/Transactions';
+import EmployeeLoans from './pages/employee/Loans';
+import EmployeeAuditLogs from './pages/employee/AuditLogs';
 
 const RoleRedirect = () => {
   const { user } = useAuth();
@@ -82,6 +86,7 @@ const App = () => {
         <Route path="withdraw" element={<CustomerWithdraw />} />
         <Route path="transfer" element={<CustomerTransfer />} />
         <Route path="transactions" element={<CustomerTransactions />} />
+        <Route path="loans" element={<CustomerLoans />} />
         <Route path="kyc" element={<CustomerKyc />} />
         <Route path="profile" element={<CustomerProfile />} />
         <Route path="notifications" element={<CustomerNotifications />} />
@@ -100,6 +105,7 @@ const App = () => {
         <Route path="users" element={<AdminUsers />} />
         <Route path="accounts" element={<AdminAccounts />} />
         <Route path="transactions" element={<AdminTransactions />} />
+        <Route path="loans" element={<AdminLoans />} />
         <Route path="kyc" element={<AdminKyc />} />
         <Route path="audit" element={<AdminAuditLogs />} />
         <Route path="profile" element={<CustomerProfile />} />
@@ -119,6 +125,8 @@ const App = () => {
         <Route path="accounts" element={<EmployeeAccounts />} />
         <Route path="kyc" element={<EmployeeKyc />} />
         <Route path="transactions" element={<EmployeeTransactions />} />
+        <Route path="loans" element={<EmployeeLoans />} />
+        <Route path="audit" element={<EmployeeAuditLogs />} />
         <Route path="profile" element={<CustomerProfile />} />
         <Route path="notifications" element={<CustomerNotifications />} />
       </Route>

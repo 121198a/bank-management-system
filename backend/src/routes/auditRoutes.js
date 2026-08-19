@@ -6,7 +6,11 @@ const { query } = require('express-validator');
 const validate = require('../middleware/validate');
 
 const router = express.Router();
-router.use(authenticate, authorize('admin'));
+router.use(authenticate, authorize('admin', 'employee'));
+router.use((req, res, next) => {
+  if (req.user?.role === 'admin') return next();
+  return authorize.requirePermission('audit.view.branch')(req, res, next);
+});
 
 router.get('/', [
   query('page').optional().isInt({ min: 1 }),

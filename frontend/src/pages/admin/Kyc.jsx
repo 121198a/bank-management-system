@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { Search, CheckCircle, XCircle } from 'lucide-react';
+import { CheckCircle, XCircle } from 'lucide-react';
 import { kycAPI } from '../../api';
 import Badge from '../../components/ui/Badge';
 import Button from '../../components/ui/Button';
@@ -7,6 +7,7 @@ import Modal from '../../components/ui/Modal';
 import Select from '../../components/ui/Select';
 import Input from '../../components/ui/Input';
 import Pagination from '../../components/ui/Pagination';
+import ManagementFilterBar from '../../components/ui/ManagementFilterBar';
 import { TableSkeleton } from '../../components/skeletons/Skeletons';
 import { formatDate, getErrorMessage } from '../../utils/formatters';
 import toast from 'react-hot-toast';
@@ -17,7 +18,7 @@ const AdminKyc = () => {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState('pending');
+  const [statusFilter, setStatusFilter] = useState('');
   const [selectedKyc, setSelectedKyc] = useState(null);
   const [reviewForm, setReviewForm] = useState({ status: 'approved', remarks: '' });
   const [actionLoading, setActionLoading] = useState(false);
@@ -61,18 +62,17 @@ const AdminKyc = () => {
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Review and verify customer KYC submissions</p>
       </div>
 
-      <div className="card p-5">
-        <div className="flex flex-wrap gap-3 mb-5">
-          <div className="relative flex-1 min-w-[200px]">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <input className="input-field pl-10" placeholder="Search by name, email or document..."
-              value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} />
-          </div>
-          <Select value={statusFilter} onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
-            options={[{ value: '', label: 'All Status' }, { value: 'pending', label: 'Pending' }, { value: 'approved', label: 'Approved' }, { value: 'rejected', label: 'Rejected' }]}
-            containerClass="w-36" />
-        </div>
+      <ManagementFilterBar
+        search={search}
+        onSearch={(e) => { setSearch(e.target.value); setPage(1); }}
+        placeholder="Search by name, email or document..."
+      >
+        <Select value={statusFilter} onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
+          options={[{ value: '', label: 'All Status' }, { value: 'pending', label: 'Pending' }, { value: 'approved', label: 'Approved' }, { value: 'rejected', label: 'Rejected' }]}
+          containerClass="w-full sm:w-40 lg:w-40" />
+      </ManagementFilterBar>
 
+      <div className="card p-5">
         {loading ? <TableSkeleton rows={8} cols={6} /> : (
           <>
             <div className="table-container">

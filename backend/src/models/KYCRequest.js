@@ -42,5 +42,6 @@ const kycRequestSchema = new mongoose.Schema(
 
 kycRequestSchema.index({ user: 1 });
 kycRequestSchema.index({ status: 1 });
+kycRequestSchema.index({ user: 1, status: 1 }, { unique: true, partialFilterExpression: { status: 'pending' } });
 
 module.exports = mongoose.model('KYCRequest', kycRequestSchema);

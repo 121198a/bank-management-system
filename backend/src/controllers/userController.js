@@ -5,6 +5,7 @@ const asyncHandler = require('../utils/asyncHandler');
 const ApiError = require('../utils/ApiError');
 const ApiResponse = require('../utils/ApiResponse');
 const { writeAuditLog } = require('../middleware/auditLogger');
+const { escapeRegex } = require('../utils/sanitize');
 
 /**
  * GET /api/users/me
@@ -39,7 +40,8 @@ const updateMe = asyncHandler(async (req, res) => {
       throw new ApiError(401, 'Current password is incorrect');
     }
     user.passwordHash = await bcrypt.hash(newPassword, 12);
-    user.refreshTokenHash = null; // force re-login on other devices
+    user.refreshTokenHash = null;
+    user.tokenVersion += 1; // force re-login on other devices
   }
 
   await user.save();
@@ -74,7 +76,7 @@ const listUsers = asyncHandler(async (req, res) => {
   if (req.query.isActive !== undefined) filter.isActive = req.query.isActive === 'true';
 
   if (req.query.search) {
-    const searchRegex = new RegExp(req.query.search, 'i');
+    const searchRegex = new RegExp(escapeRegex(req.query.search), 'i');
     filter.$or = [{ fullName: searchRegex }, { email: searchRegex }];
   }
 
@@ -128,6 +130,8 @@ const updateUserRole = asyncHandler(async (req, res) => {
 
   const before = user.toSafeObject();
   user.role = role;
+  user.tokenVersion += 1;
+  user.refreshTokenHash = null;
   await user.save();
 
   await writeAuditLog({
@@ -164,6 +168,7 @@ const updateUserStatus = asyncHandler(async (req, res) => {
 
   if (!isActive) {
     user.refreshTokenHash = null; // force logout
+    user.tokenVersion += 1;
   }
 
   await user.save();

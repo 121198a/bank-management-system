@@ -4,7 +4,8 @@ const depositValidator = [
   body('accountId').isMongoId().withMessage('Invalid account ID'),
   body('amount')
     .notEmpty().withMessage('Amount is required')
-    .isFloat({ min: 0.01 }).withMessage('Amount must be greater than zero'),
+    .isDecimal({ decimal_digits: '0,2', force_decimal: false }).withMessage('Amount must be a valid decimal with at most 2 decimal places')
+    .custom((value) => Number(value) > 0).withMessage('Amount must be greater than zero'),
   body('description').optional().trim().isLength({ max: 250 })
 ];
 
@@ -12,7 +13,8 @@ const withdrawValidator = [
   body('accountId').isMongoId().withMessage('Invalid account ID'),
   body('amount')
     .notEmpty().withMessage('Amount is required')
-    .isFloat({ min: 0.01 }).withMessage('Amount must be greater than zero'),
+    .isDecimal({ decimal_digits: '0,2', force_decimal: false }).withMessage('Amount must be a valid decimal with at most 2 decimal places')
+    .custom((value) => Number(value) > 0).withMessage('Amount must be greater than zero'),
   body('description').optional().trim().isLength({ max: 250 })
 ];
 
@@ -24,7 +26,8 @@ const transferValidator = [
     .isLength({ min: 10, max: 10 }).withMessage('Account number must be 10 digits'),
   body('amount')
     .notEmpty().withMessage('Amount is required')
-    .isFloat({ min: 0.01 }).withMessage('Amount must be greater than zero'),
+    .isDecimal({ decimal_digits: '0,2', force_decimal: false }).withMessage('Amount must be a valid decimal with at most 2 decimal places')
+    .custom((value) => Number(value) > 0).withMessage('Amount must be greater than zero'),
   body('description').optional().trim().isLength({ max: 250 })
 ];
 
@@ -39,7 +42,7 @@ const listTransactionsValidator = [
     .optional()
     .isIn(['deposit', 'withdraw', 'transfer_in', 'transfer_out'])
     .withMessage('Invalid transaction type filter'),
-  query('status').optional().isIn(['success', 'failed']).withMessage('Invalid status filter'),
+  query('status').optional().isIn(['pending', 'success', 'failed', 'reversed']).withMessage('Invalid status filter'),
   query('from').optional().isISO8601().withMessage('From date must be a valid ISO8601 date'),
   query('to').optional().isISO8601().withMessage('To date must be a valid ISO8601 date'),
   query('search').optional().trim().isLength({ max: 100 })

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { Search, CheckCircle, XCircle, Lock } from 'lucide-react';
+import { CheckCircle, Lock } from 'lucide-react';
 import { accountsAPI } from '../../api';
 import Badge from '../../components/ui/Badge';
 import Button from '../../components/ui/Button';
@@ -7,6 +7,7 @@ import Modal from '../../components/ui/Modal';
 import Select from '../../components/ui/Select';
 import Input from '../../components/ui/Input';
 import Pagination from '../../components/ui/Pagination';
+import ManagementFilterBar from '../../components/ui/ManagementFilterBar';
 import { TableSkeleton } from '../../components/skeletons/Skeletons';
 import { formatCurrency, formatDate, getErrorMessage } from '../../utils/formatters';
 import toast from 'react-hot-toast';
@@ -34,7 +35,12 @@ const AdminAccounts = () => {
 
   useEffect(() => { fetchAccounts(); }, [fetchAccounts]);
 
-  const openModal = (type, acc) => { setSelectedAccount(acc); setModalType(type); setStatusForm({ status: 'closed', remarks: '' }); };
+  const openModal = (type, acc) => {
+    setSelectedAccount(acc);
+    setModalType(type);
+    const defaults = { pending: 'rejected', active: 'frozen', frozen: 'active', suspended: 'active' };
+    setStatusForm({ status: defaults[acc.status] || 'closed', remarks: '' });
+  };
   const closeModal = () => { setModalType(null); setSelectedAccount(null); };
 
   const handleApprove = async () => {
@@ -72,21 +78,20 @@ const AdminAccounts = () => {
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">View and manage all customer accounts</p>
       </div>
 
-      <div className="card p-5">
-        <div className="flex flex-wrap gap-3 mb-5">
-          <div className="relative flex-1 min-w-[200px]">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <input className="input-field pl-10" placeholder="Search by account number or customer..."
-              value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} />
-          </div>
-          <Select value={filters.status} onChange={(e) => { setFilters(f => ({ ...f, status: e.target.value })); setPage(1); }}
-            options={[{ value: '', label: 'All Status' }, { value: 'pending', label: 'Pending' }, { value: 'active', label: 'Active' }, { value: 'rejected', label: 'Rejected' }, { value: 'closed', label: 'Closed' }]}
-            containerClass="w-36" />
-          <Select value={filters.accountType} onChange={(e) => { setFilters(f => ({ ...f, accountType: e.target.value })); setPage(1); }}
-            options={[{ value: '', label: 'All Types' }, { value: 'savings', label: 'Savings' }, { value: 'current', label: 'Current' }]}
-            containerClass="w-36" />
-        </div>
+      <ManagementFilterBar
+        search={search}
+        onSearch={(e) => { setSearch(e.target.value); setPage(1); }}
+        placeholder="Search by account number or customer..."
+      >
+        <Select value={filters.status} onChange={(e) => { setFilters(f => ({ ...f, status: e.target.value })); setPage(1); }}
+          options={[{ value: '', label: 'All Status' }, { value: 'pending', label: 'Pending' }, { value: 'active', label: 'Active' }, { value: 'rejected', label: 'Rejected' }, { value: 'frozen', label: 'Frozen' }, { value: 'suspended', label: 'Suspended' }, { value: 'closed', label: 'Closed' }]}
+          containerClass="w-full sm:w-40 lg:w-40" />
+        <Select value={filters.accountType} onChange={(e) => { setFilters(f => ({ ...f, accountType: e.target.value })); setPage(1); }}
+          options={[{ value: '', label: 'All Types' }, { value: 'savings', label: 'Savings' }, { value: 'current', label: 'Current' }, { value: 'salary', label: 'Salary' }, { value: 'student', label: 'Student' }, { value: 'senior_citizen', label: 'Senior Citizen' }]}
+          containerClass="w-full sm:w-40 lg:w-40" />
+      </ManagementFilterBar>
 
+      <div className="card p-5">
         {loading ? <TableSkeleton rows={8} cols={7} /> : (
           <>
             <div className="table-container">
@@ -120,16 +125,10 @@ const AdminAccounts = () => {
                               <CheckCircle className="w-4 h-4" />
                             </button>
                           )}
-                          {acc.status !== 'closed' && (
+                          {acc.status !== 'closed' && acc.status !== 'rejected' && (
                             <button onClick={() => openModal('status', acc)}
                               className="p-1.5 rounded-lg hover:bg-orange-50 dark:hover:bg-orange-900/20 text-orange-500 transition-colors" title="Update Status">
                               <Lock className="w-4 h-4" />
-                            </button>
-                          )}
-                          {acc.status === 'active' && (
-                            <button onClick={() => { setSelectedAccount(acc); setModalType('reject'); }}
-                              className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-red-500 transition-colors" title="Reject">
-                              <XCircle className="w-4 h-4" />
                             </button>
                           )}
                         </div>
@@ -163,7 +162,12 @@ const AdminAccounts = () => {
           <div className="space-y-4">
             <Select label="New Status" value={statusForm.status}
               onChange={(e) => setStatusForm(f => ({ ...f, status: e.target.value }))}
-              options={[{ value: 'active', label: 'Active' }, { value: 'closed', label: 'Closed' }, { value: 'rejected', label: 'Rejected' }]} />
+              options={(selectedAccount.status === 'pending'
+                ? [{ value: 'rejected', label: 'Rejected' }]
+                : selectedAccount.status === 'active'
+                  ? [{ value: 'frozen', label: 'Frozen' }, { value: 'suspended', label: 'Suspended' }, { value: 'closed', label: 'Closed' }]
+                  : selectedAccount.status === 'rejected' ? []
+                  : [{ value: 'active', label: 'Active' }, { value: 'closed', label: 'Closed' }])} />
             <Input label="Remarks (optional)" placeholder="Reason for status change"
               value={statusForm.remarks} onChange={(e) => setStatusForm(f => ({ ...f, remarks: e.target.value }))} />
             <div className="flex gap-3">

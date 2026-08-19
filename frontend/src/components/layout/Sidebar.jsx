@@ -17,6 +17,7 @@ const navConfig = {
     { to: '/dashboard/withdraw', icon: ArrowUpFromLine, label: 'Withdraw' },
     { to: '/dashboard/transfer', icon: ArrowLeftRight, label: 'Transfer' },
     { to: '/dashboard/transactions', icon: History, label: 'Transactions' },
+    { to: '/dashboard/loans', icon: Banknote, label: 'Loans' },
     { to: '/dashboard/kyc', icon: ShieldCheck, label: 'KYC Verification' },
     { to: '/dashboard/notifications', icon: Bell, label: 'Notifications' },
     { to: '/dashboard/profile', icon: User, label: 'Profile' }
@@ -26,6 +27,7 @@ const navConfig = {
     { to: '/admin/users', icon: Users, label: 'User Management' },
     { to: '/admin/accounts', icon: CreditCard, label: 'Accounts' },
     { to: '/admin/transactions', icon: History, label: 'Transactions' },
+    { to: '/admin/loans', icon: Banknote, label: 'Loans' },
     { to: '/admin/kyc', icon: ShieldCheck, label: 'KYC Management' },
     { to: '/admin/audit', icon: ClipboardList, label: 'Audit Logs' },
     { to: '/admin/notifications', icon: Bell, label: 'Notifications' },
@@ -36,6 +38,8 @@ const navConfig = {
     { to: '/employee/accounts', icon: CreditCard, label: 'Account Approvals' },
     { to: '/employee/kyc', icon: ShieldCheck, label: 'KYC Review' },
     { to: '/employee/transactions', icon: History, label: 'Transactions' },
+    { to: '/employee/loans', icon: Banknote, label: 'Loan Review' },
+    { to: '/employee/audit', icon: ClipboardList, label: 'Audit Logs' },
     { to: '/employee/notifications', icon: Bell, label: 'Notifications' },
     { to: '/employee/profile', icon: User, label: 'Profile' }
   ]
@@ -54,32 +58,33 @@ const Sidebar = ({ role }) => {
 
   return (
     <aside
-      className={`flex flex-col h-screen bg-white dark:bg-banking-card border-r border-gray-100 dark:border-banking-border transition-all duration-300 flex-shrink-0 ${
+      className={`relative flex flex-col h-screen bg-white dark:bg-banking-card border-r border-gray-100 dark:border-banking-border transition-all duration-300 flex-shrink-0 ${
         collapsed ? 'w-16' : 'w-60'
       }`}
     >
       {/* Logo */}
-      <div className="flex items-center gap-3 px-4 py-5 border-b border-gray-100 dark:border-banking-border">
-        <div className="w-9 h-9 rounded-xl bg-primary-600 flex items-center justify-center flex-shrink-0">
+      <div className="flex items-center gap-3 px-4 py-5 border-b border-gray-100 dark:border-banking-border bg-gradient-to-b from-primary-50/70 to-transparent dark:from-primary-950/30">
+        <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary-500 to-emerald-700 flex items-center justify-center flex-shrink-0 shadow-lg shadow-primary-600/20">
           <Building2 className="w-5 h-5 text-white" />
         </div>
         {!collapsed && (
           <div className="overflow-hidden">
-            <p className="text-sm font-bold text-gray-900 dark:text-white leading-none">Bank Mgmt</p>
-            <p className="text-xs text-primary-600 font-semibold">System</p>
+            <p className="text-sm font-bold text-gray-900 dark:text-white leading-none">NexaBank</p>
+            <p className="text-[11px] text-primary-600 font-semibold mt-1">Bank Management</p>
           </div>
         )}
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto py-4 px-2 space-y-0.5">
+      <div className="px-3 pt-4 pb-2">{!collapsed && <p className="text-[10px] uppercase tracking-[0.16em] font-bold text-gray-400 dark:text-gray-500 px-2">Workspace</p>}</div>
+      <nav className="flex-1 overflow-y-auto px-2 pb-4 space-y-1">
         {links.map(({ to, icon: Icon, label }) => (
           <NavLink
             key={to}
             to={to}
             end={to === '/dashboard' || to === '/admin' || to === '/employee'}
             className={({ isActive }) =>
-              isActive ? 'sidebar-link-active' : 'sidebar-link-inactive'
+              isActive ? 'sidebar-link-active shadow-md shadow-primary-600/15' : 'sidebar-link-inactive'
             }
             title={collapsed ? label : undefined}
           >
@@ -90,7 +95,7 @@ const Sidebar = ({ role }) => {
       </nav>
 
       {/* User info + Logout */}
-      <div className="border-t border-gray-100 dark:border-banking-border p-2">
+      <div className="border-t border-gray-100 dark:border-banking-border p-2 bg-slate-50/70 dark:bg-banking-darker/40">
         {!collapsed && user && (
           <div className="flex items-center gap-2.5 px-3 py-2 mb-1 rounded-xl">
             <div
@@ -117,6 +122,7 @@ const Sidebar = ({ role }) => {
 
       {/* Collapse toggle */}
       <button
+        aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         onClick={() => setCollapsed((c) => !c)}
         className="absolute -right-3 top-20 w-6 h-6 rounded-full bg-white dark:bg-banking-card border border-gray-200 dark:border-banking-border flex items-center justify-center shadow-sm hover:bg-gray-50 dark:hover:bg-banking-border transition-colors"
         style={{ position: 'fixed', left: collapsed ? '52px' : '228px', top: '80px', zIndex: 50 }}

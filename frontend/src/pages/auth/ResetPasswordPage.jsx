@@ -17,9 +17,10 @@ const ResetPasswordPage = () => {
 
   const validate = () => {
     const errs = {};
-    if (!form.password || form.password.length < 8) errs.password = 'Password must be at least 8 characters';
+    if (!form.password || form.password.length < 12) errs.password = 'Password must be at least 12 characters';
     else if (!/[A-Z]/.test(form.password)) errs.password = 'Must contain an uppercase letter';
     else if (!/[0-9]/.test(form.password)) errs.password = 'Must contain a number';
+    else if (!/[^A-Za-z0-9]/.test(form.password)) errs.password = 'Must contain a special character';
     if (form.password !== form.confirmPassword) errs.confirmPassword = 'Passwords do not match';
     setErrors(errs);
     return Object.keys(errs).length === 0;

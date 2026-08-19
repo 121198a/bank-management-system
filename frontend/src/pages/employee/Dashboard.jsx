@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { CreditCard, ShieldCheck, Users, History } from 'lucide-react';
+import { CreditCard, ShieldCheck, Users, History, ArrowUpRight, BriefcaseBusiness } from 'lucide-react';
 import { dashboardAPI } from '../../api';
 import StatsCard from '../../components/ui/StatsCard';
 import TransactionTable from '../../components/charts/TransactionTable';
@@ -10,85 +10,14 @@ import { getErrorMessage } from '../../utils/formatters';
 import toast from 'react-hot-toast';
 
 const EmployeeDashboard = () => {
-  const { user } = useAuth();
-  const [stats, setStats] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    dashboardAPI.getStats()
-      .then((d) => setStats(d.data))
-      .catch((err) => toast.error(getErrorMessage(err)))
-      .finally(() => setLoading(false));
-  }, []);
-
-  const hour = new Date().getHours();
-  const greeting = hour < 12 ? 'Morning' : hour < 17 ? 'Afternoon' : 'Evening';
-
-  return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-          Good {greeting}, {user?.fullName?.split(' ')[0]} 👋
-        </h2>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Employee Portal — Pending tasks overview</p>
-      </div>
-
-      {loading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {[...Array(4)].map((_, i) => <CardSkeleton key={i} />)}
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <StatsCard title="Pending Accounts" value={stats?.pendingAccounts ?? 0}
-            subtitle="Awaiting your approval" icon={CreditCard}
-            iconBg="bg-orange-100 dark:bg-orange-900/30" iconColor="text-orange-600" />
-          <StatsCard title="Pending KYC" value={stats?.pendingKyc ?? 0}
-            subtitle="Documents to review" icon={ShieldCheck}
-            iconBg="bg-yellow-100 dark:bg-yellow-900/30" iconColor="text-yellow-600" />
-          <StatsCard title="Total Customers" value={stats?.totalCustomers ?? 0}
-            subtitle="Registered users" icon={Users}
-            iconBg="bg-blue-100 dark:bg-blue-900/30" iconColor="text-blue-600" />
-          <StatsCard title="Recent Transactions" value={stats?.recentTransactions?.length ?? 0}
-            subtitle="In last 10 transactions" icon={History}
-            iconBg="bg-purple-100 dark:bg-purple-900/30" iconColor="text-purple-600" />
-        </div>
-      )}
-
-      {/* Quick links for pending work */}
-      {!loading && (stats?.pendingAccounts > 0 || stats?.pendingKyc > 0) && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {stats?.pendingAccounts > 0 && (
-            <Link to="/employee/accounts"
-              className="card p-5 border-l-4 border-orange-400 hover:shadow-card-hover transition-shadow">
-              <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">
-                {stats.pendingAccounts} Account{stats.pendingAccounts > 1 ? 's' : ''} Awaiting Approval
-              </p>
-              <p className="text-xs text-primary-600 mt-1 font-medium">Review now →</p>
-            </Link>
-          )}
-          {stats?.pendingKyc > 0 && (
-            <Link to="/employee/kyc"
-              className="card p-5 border-l-4 border-yellow-400 hover:shadow-card-hover transition-shadow">
-              <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">
-                {stats.pendingKyc} KYC Request{stats.pendingKyc > 1 ? 's' : ''} Pending Review
-              </p>
-              <p className="text-xs text-primary-600 mt-1 font-medium">Review now →</p>
-            </Link>
-          )}
-        </div>
-      )}
-
-      <div className="card p-5">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-200">Recent Transactions</h3>
-          <Link to="/employee/transactions" className="text-xs text-primary-600 font-medium hover:underline">View all</Link>
-        </div>
-        {loading ? <TableSkeleton rows={5} cols={6} /> : (
-          <TransactionTable transactions={stats?.recentTransactions || []} showAccount />
-        )}
-      </div>
-    </div>
-  );
+  const { user } = useAuth(); const [stats, setStats] = useState(null); const [loading, setLoading] = useState(true);
+  useEffect(() => { dashboardAPI.getStats().then((d) => setStats(d.data)).catch((err) => toast.error(getErrorMessage(err))).finally(() => setLoading(false)); }, []);
+  const hour = new Date().getHours(); const greeting = hour < 12 ? 'Morning' : hour < 17 ? 'Afternoon' : 'Evening';
+  return <div className="space-y-6">
+    <section className="premium-card p-6 sm:p-7 bg-gradient-to-br from-slate-950 via-slate-900 to-violet-950 text-white border-0 shadow-xl"><div className="absolute -right-20 -top-24 w-72 h-72 bg-violet-500/15 rounded-full blur-3xl" /><div className="relative flex flex-col md:flex-row md:items-end md:justify-between gap-5"><div><div className="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/10 px-3 py-1.5 text-xs text-slate-300"><BriefcaseBusiness className="w-3.5 h-3.5 text-violet-300" /> Operations workspace</div><h2 className="text-3xl sm:text-4xl font-bold tracking-tight mt-4">Good {greeting}, {user?.fullName?.split(' ')[0]} 👋</h2><p className="text-slate-300 mt-2">Review pending requests and keep customer operations moving.</p></div></div></section>
+    {loading ? <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">{[...Array(4)].map((_, i) => <CardSkeleton key={i} />)}</div> : <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"><StatsCard title="Pending Accounts" value={stats?.pendingAccounts ?? 0} subtitle="Awaiting approval" icon={CreditCard} iconBg="bg-orange-100 dark:bg-orange-900/30" iconColor="text-orange-600" /><StatsCard title="Pending KYC" value={stats?.pendingKyc ?? 0} subtitle="Documents to review" icon={ShieldCheck} iconBg="bg-yellow-100 dark:bg-yellow-900/30" iconColor="text-yellow-600" /><StatsCard title="Total Customers" value={stats?.totalCustomers ?? 0} subtitle="Registered users" icon={Users} iconBg="bg-blue-100 dark:bg-blue-900/30" iconColor="text-blue-600" /><StatsCard title="Recent Transactions" value={stats?.recentTransactions?.length ?? 0} subtitle="Latest activity" icon={History} iconBg="bg-purple-100 dark:bg-purple-900/30" iconColor="text-purple-600" /></div>}
+    {!loading && (stats?.pendingAccounts > 0 || stats?.pendingKyc > 0) && <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">{stats?.pendingAccounts > 0 && <Link to="/employee/accounts" className="card p-5 group border-l-4 border-orange-400 hover:-translate-y-0.5 hover:shadow-lg transition-all"><div className="flex items-center justify-between"><div><p className="text-sm font-bold text-gray-800 dark:text-gray-200">{stats.pendingAccounts} account{stats.pendingAccounts > 1 ? 's' : ''} awaiting approval</p><p className="text-xs text-gray-400 mt-1">Review customer requests</p></div><ArrowUpRight className="w-5 h-5 text-orange-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" /></div></Link>}{stats?.pendingKyc > 0 && <Link to="/employee/kyc" className="card p-5 group border-l-4 border-yellow-400 hover:-translate-y-0.5 hover:shadow-lg transition-all"><div className="flex items-center justify-between"><div><p className="text-sm font-bold text-gray-800 dark:text-gray-200">{stats.pendingKyc} KYC request{stats.pendingKyc > 1 ? 's' : ''} pending</p><p className="text-xs text-gray-400 mt-1">Review submitted documents</p></div><ArrowUpRight className="w-5 h-5 text-yellow-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" /></div></Link>}</div>}
+    <div className="card p-5"><div className="flex items-center justify-between mb-4"><div><h3 className="font-bold text-gray-800 dark:text-white">Recent transactions</h3><p className="text-xs text-gray-400 mt-1">Latest operational activity</p></div><Link to="/employee/transactions" className="text-xs text-primary-600 font-bold">View all</Link></div>{loading ? <TableSkeleton rows={5} cols={6} /> : <TransactionTable transactions={stats?.recentTransactions || []} showAccount />}</div>
+  </div>;
 };
-
 export default EmployeeDashboard;

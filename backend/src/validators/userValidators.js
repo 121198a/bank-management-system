@@ -18,10 +18,11 @@ const updateProfileValidator = [
     .notEmpty().withMessage('Current password is required to change password'),
   body('newPassword')
     .optional()
-    .isLength({ min: 8 }).withMessage('New password must be at least 8 characters')
+    .isLength({ min: 12 }).withMessage('New password must be at least 12 characters')
     .matches(/[A-Z]/).withMessage('New password must contain at least one uppercase letter')
     .matches(/[a-z]/).withMessage('New password must contain at least one lowercase letter')
     .matches(/[0-9]/).withMessage('New password must contain at least one number')
+    .matches(/[^A-Za-z0-9]/).withMessage('New password must contain at least one special character')
 ];
 
 const userIdParamValidator = [
@@ -40,10 +41,11 @@ const createUserValidator = [
     .customSanitizer((v) => v.trim().toLowerCase()),
   body('password')
     .notEmpty().withMessage('Password is required')
-    .isLength({ min: 8 }).withMessage('Password must be at least 8 characters')
+    .isLength({ min: 12 }).withMessage('Password must be at least 12 characters')
     .matches(/[A-Z]/).withMessage('Password must contain at least one uppercase letter')
     .matches(/[a-z]/).withMessage('Password must contain at least one lowercase letter')
-    .matches(/[0-9]/).withMessage('Password must contain at least one number'),
+    .matches(/[0-9]/).withMessage('Password must contain at least one number')
+    .matches(/[^A-Za-z0-9]/).withMessage('Password must contain at least one special character'),
   body('role')
     .notEmpty().withMessage('Role is required')
     .isIn(['admin', 'employee', 'customer']).withMessage('Role must be admin, employee, or customer'),

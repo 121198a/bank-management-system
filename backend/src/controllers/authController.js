@@ -1,4 +1,3 @@
-const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 const Notification = require('../models/Notification');
@@ -23,7 +22,7 @@ const REFRESH_COOKIE_NAME = 'refreshToken';
 const refreshCookieOptions = {
   httpOnly: true,
   secure: env.nodeEnv === 'production',
-  sameSite: env.nodeEnv === 'production' ? 'none' : 'lax',
+  sameSite: 'strict',
   maxAge: env.jwt.refreshExpiresMs,
   path: '/api/auth'
 };
@@ -81,24 +80,14 @@ const login = asyncHandler(async (req, res) => {
 
   const user = await User.findOne({ email }).select('+passwordHash +refreshTokenHash');
 
-  if (!user) {
-    if (env.nodeEnv !== 'production') {
-      console.warn(`[login] No user found for email: "${email}"`);
-    }
-    throw new ApiError(401, 'Invalid email or password');
-  }
+  if (!user) throw new ApiError(401, 'Invalid email or password');
 
   if (!user.isActive) {
-    throw new ApiError(403, 'Your account has been deactivated. Contact support.');
+    throw new ApiError(401, 'Invalid email or password');
   }
 
   const isMatch = await user.comparePassword(password);
-  if (!isMatch) {
-    if (env.nodeEnv !== 'production') {
-      console.warn(`[login] Password mismatch for email: "${email}"`);
-    }
-    throw new ApiError(401, 'Invalid email or password');
-  }
+  if (!isMatch) throw new ApiError(401, 'Invalid email or password');
 
   const accessToken = generateAccessToken(user);
   const refreshToken = generateRefreshToken(user);
@@ -263,6 +252,7 @@ const resetPassword = asyncHandler(async (req, res) => {
   user.resetPasswordToken = null;
   user.resetPasswordExpires = null;
   user.refreshTokenHash = null; // invalidate existing sessions
+  user.tokenVersion += 1; // invalidate all existing access tokens
   await user.save();
 
   await Notification.create({

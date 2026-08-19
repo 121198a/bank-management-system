@@ -32,7 +32,7 @@ const CustomerAccounts = () => {
     e.preventDefault();
     setCreating(true);
     try {
-      await accountsAPI.create({ accountType: form.accountType, initialDeposit: Number(form.initialDeposit) || 0 });
+      await accountsAPI.create({ accountType: form.accountType, initialDeposit: form.initialDeposit || '0.00' });
       toast.success('Account application submitted! Awaiting approval.');
       setShowCreate(false);
       setForm({ accountType: 'savings', initialDeposit: '' });

@@ -34,9 +34,10 @@ const Profile = () => {
     e.preventDefault();
     const errs = {};
     if (!password.currentPassword) errs.currentPassword = 'Current password required';
-    if (!password.newPassword || password.newPassword.length < 8) errs.newPassword = 'Min 8 characters';
+    if (!password.newPassword || password.newPassword.length < 12) errs.newPassword = 'Min 12 characters';
     else if (!/[A-Z]/.test(password.newPassword)) errs.newPassword = 'Must contain uppercase letter';
     else if (!/[0-9]/.test(password.newPassword)) errs.newPassword = 'Must contain a number';
+    else if (!/[^A-Za-z0-9]/.test(password.newPassword)) errs.newPassword = 'Must contain a special character';
     if (password.newPassword !== password.confirmPassword) errs.confirmPassword = 'Passwords do not match';
     setPwErrors(errs);
     if (Object.keys(errs).length > 0) return;

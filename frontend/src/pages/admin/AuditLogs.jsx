@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { Search, ClipboardList } from 'lucide-react';
+import { ClipboardList } from 'lucide-react';
 import { auditAPI } from '../../api';
 import Input from '../../components/ui/Input';
 import Select from '../../components/ui/Select';
 import Pagination from '../../components/ui/Pagination';
+import ManagementFilterBar from '../../components/ui/ManagementFilterBar';
 import { TableSkeleton } from '../../components/skeletons/Skeletons';
 import { formatDate, getErrorMessage } from '../../utils/formatters';
 import toast from 'react-hot-toast';
@@ -29,7 +30,7 @@ const actionColors = {
   STATEMENT_DOWNLOADED: 'badge-gray'
 };
 
-const AuditLogs = () => {
+const AuditLogs = ({ role = 'admin' }) => {
   const [logs, setLogs] = useState([]);
   const [meta, setMeta] = useState({});
   const [loading, setLoading] = useState(true);
@@ -58,22 +59,21 @@ const AuditLogs = () => {
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Audit Logs</h2>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Complete record of all system actions</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{role === 'employee' ? 'Review your recorded audit activity' : 'Complete record of all system actions'}</p>
       </div>
 
+      <ManagementFilterBar
+        search={search}
+        onSearch={(e) => { setSearch(e.target.value); setPage(1); }}
+        placeholder="Search by action or actor..."
+      >
+        <Select value={filters.targetType} onChange={(e) => { setFilters(f => ({ ...f, targetType: e.target.value })); setPage(1); }}
+          options={[{ value: '', label: 'All Targets' }, { value: 'User', label: 'User' }, { value: 'Account', label: 'Account' }, { value: 'Transaction', label: 'Transaction' }, { value: 'KYCRequest', label: 'KYC' }, { value: 'LoanApplication', label: 'Loan' }]}
+          containerClass="w-full sm:w-40 lg:w-40" />
+        <Input type="date" value={filters.from} onChange={(e) => { setFilters(f => ({ ...f, from: e.target.value })); setPage(1); }} containerClass="w-full sm:w-40 lg:w-40" label="From" />
+        <Input type="date" value={filters.to} onChange={(e) => { setFilters(f => ({ ...f, to: e.target.value })); setPage(1); }} containerClass="w-full sm:w-40 lg:w-40" label="To" />
+      </ManagementFilterBar>
       <div className="card p-5">
-        <div className="flex flex-wrap gap-3 mb-5">
-          <div className="relative flex-1 min-w-[200px]">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <input className="input-field pl-10" placeholder="Search by action or actor..."
-              value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} />
-          </div>
-          <Select value={filters.targetType} onChange={(e) => { setFilters(f => ({ ...f, targetType: e.target.value })); setPage(1); }}
-            options={[{ value: '', label: 'All Targets' }, { value: 'User', label: 'User' }, { value: 'Account', label: 'Account' }, { value: 'Transaction', label: 'Transaction' }, { value: 'KYCRequest', label: 'KYC' }]}
-            containerClass="w-40" />
-          <Input type="date" value={filters.from} onChange={(e) => { setFilters(f => ({ ...f, from: e.target.value })); setPage(1); }} containerClass="w-40" label="" />
-          <Input type="date" value={filters.to} onChange={(e) => { setFilters(f => ({ ...f, to: e.target.value })); setPage(1); }} containerClass="w-40" label="" />
-        </div>
 
         {loading ? <TableSkeleton rows={12} cols={5} /> : (
           <>

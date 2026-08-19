@@ -12,7 +12,7 @@ const submitKycValidator = [
   body('documentUrl')
     .optional({ checkFalsy: true })
     .trim()
-    .isURL().withMessage('Document URL must be a valid URL')
+    .isURL({ protocols: ['https'], require_protocol: true }).withMessage('Document URL must be a valid HTTPS URL')
 ];
 
 const reviewKycValidator = [

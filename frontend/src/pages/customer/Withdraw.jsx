@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { ArrowUpFromLine, CheckCircle, AlertTriangle } from 'lucide-react';
-import { accountsAPI, transactionsAPI } from '../../api';
+import { accountsAPI, transactionsAPI, createIdempotencyKey } from '../../api';
 import Input from '../../components/ui/Input';
 import Button from '../../components/ui/Button';
 import Select from '../../components/ui/Select';
@@ -13,6 +13,7 @@ const Withdraw = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(null);
   const [errors, setErrors] = useState({});
+  const idempotencyKeyRef = useRef(null);
 
   useEffect(() => {
     accountsAPI.getMyAccounts().then((d) => {
@@ -39,12 +40,15 @@ const Withdraw = () => {
     if (!validate()) return;
     setLoading(true);
     try {
-      const res = await transactionsAPI.withdraw({ accountId: form.accountId, amount: Number(form.amount), description: form.description });
+      if (!idempotencyKeyRef.current) idempotencyKeyRef.current = createIdempotencyKey();
+      const res = await transactionsAPI.withdraw({ accountId: form.accountId, amount: form.amount, description: form.description }, idempotencyKeyRef.current);
       setSuccess(res.data);
       toast.success('Withdrawal successful!');
       setForm(f => ({ ...f, amount: '', description: '' }));
+      idempotencyKeyRef.current = null;
       accountsAPI.getMyAccounts().then(d => setAccounts(d.data.accounts.filter(a => a.status === 'active')));
     } catch (err) {
+      if (err.response) idempotencyKeyRef.current = null;
       toast.error(getErrorMessage(err));
     } finally {
       setLoading(false);

@@ -4,75 +4,29 @@ const Transaction = require('../models/Transaction');
 const KYCRequest = require('../models/KYCRequest');
 const asyncHandler = require('../utils/asyncHandler');
 const ApiResponse = require('../utils/ApiResponse');
+const { decimalToString, addMoney } = require('../utils/money');
 
-/**
- * GET /api/dashboard/stats
- * Role-aware dashboard stats:
- *  - admin: system-wide totals, transaction volume chart, recent transactions
- *  - employee: pending KYC/accounts counts, recent transactions
- *  - customer: own account summary, recent transactions
- */
+const serializeTransactions = (items) => items.map((item) => item.toJSON());
+
 const getDashboardStats = asyncHandler(async (req, res) => {
   const { role, _id: userId } = req.user;
 
   if (role === 'admin') {
-    const [
-      totalUsers,
-      totalCustomers,
-      totalEmployees,
-      totalAccounts,
-      pendingAccounts,
-      activeAccounts,
-      pendingKyc,
-      totalTransactions,
-      recentTransactions,
-      transactionVolume
-    ] = await Promise.all([
-      User.countDocuments(),
-      User.countDocuments({ role: 'customer' }),
-      User.countDocuments({ role: 'employee' }),
-      Account.countDocuments(),
-      Account.countDocuments({ status: 'pending' }),
-      Account.countDocuments({ status: 'active' }),
-      KYCRequest.countDocuments({ status: 'pending' }),
-      Transaction.countDocuments(),
-      Transaction.find()
-        .populate('account', 'accountNumber accountType')
-        .populate('performedBy', 'fullName')
-        .sort({ createdAt: -1 })
-        .limit(10),
-      // Last 7 days daily deposit/withdrawal volumes
+    const [totalUsers, totalCustomers, totalEmployees, totalAccounts, pendingAccounts, activeAccounts, pendingKyc, totalTransactions, recentTransactions, transactionVolume, totalVolumeAgg] = await Promise.all([
+      User.countDocuments(), User.countDocuments({ role: 'customer' }), User.countDocuments({ role: 'employee' }),
+      Account.countDocuments(), Account.countDocuments({ status: 'pending' }), Account.countDocuments({ status: 'active' }),
+      KYCRequest.countDocuments({ status: 'pending' }), Transaction.countDocuments(),
+      Transaction.find().populate('account', 'accountNumber accountType').populate('performedBy', 'fullName').sort({ createdAt: -1 }).limit(10),
       Transaction.aggregate([
-        {
-          $match: {
-            createdAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
-            status: 'success'
-          }
-        },
-        {
-          $group: {
-            _id: {
-              date: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
-              type: '$type'
-            },
-            totalAmount: { $sum: '$amount' },
-            count: { $sum: 1 }
-          }
-        },
+        { $match: { createdAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) }, status: 'success' } },
+        { $group: { _id: { date: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } }, type: '$type' }, totalAmount: { $sum: '$amount' }, count: { $sum: 1 } } },
         { $sort: { '_id.date': 1 } }
-      ])
+      ]),
+      Transaction.aggregate([{ $match: { status: 'success' } }, { $group: { _id: '$type', total: { $sum: '$amount' } } }])
     ]);
 
-    // Aggregate total deposits and withdrawals
-    const totalVolumeAgg = await Transaction.aggregate([
-      { $match: { status: 'success' } },
-      { $group: { _id: '$type', total: { $sum: '$amount' } } }
-    ]);
-
-    const volumeMap = totalVolumeAgg.reduce((acc, item) => {
-      acc[item._id] = item.total;
-      return acc;
-    }, {});
+    const volumeMap = totalVolumeAgg.reduce((acc, item) => { acc[item._id] = decimalToString(item.total); return acc; }, {});
+    const transactionVolumeSerialized = transactionVolume.map((item) => ({ ...item, totalAmount: decimalToString(item.totalAmount) }));
 
     return new ApiResponse(200, 'Admin dashboard stats fetched successfully', {
       users: { total: totalUsers, customers: totalCustomers, employees: totalEmployees },
@@ -80,64 +34,36 @@ const getDashboardStats = asyncHandler(async (req, res) => {
       kyc: { pending: pendingKyc },
       transactions: {
         total: totalTransactions,
-        totalDeposits: volumeMap['deposit'] || 0,
-        totalWithdrawals: volumeMap['withdraw'] || 0,
-        totalTransferOut: volumeMap['transfer_out'] || 0
+        totalDeposits: volumeMap.deposit || '0.00',
+        totalWithdrawals: volumeMap.withdraw || '0.00',
+        totalTransferOut: volumeMap.transfer_out || '0.00'
       },
-      recentTransactions,
-      transactionVolume
+      recentTransactions: serializeTransactions(recentTransactions),
+      transactionVolume: transactionVolumeSerialized
     }).send(res);
   }
 
   if (role === 'employee') {
     const [pendingAccounts, pendingKyc, recentTransactions, totalCustomers] = await Promise.all([
-      Account.countDocuments({ status: 'pending' }),
-      KYCRequest.countDocuments({ status: 'pending' }),
-      Transaction.find()
-        .populate('account', 'accountNumber accountType')
-        .populate('performedBy', 'fullName')
-        .sort({ createdAt: -1 })
-        .limit(10),
+      Account.countDocuments({ status: 'pending' }), KYCRequest.countDocuments({ status: 'pending' }),
+      Transaction.find().populate('account', 'accountNumber accountType').populate('performedBy', 'fullName').sort({ createdAt: -1 }).limit(10),
       User.countDocuments({ role: 'customer' })
     ]);
-
-    return new ApiResponse(200, 'Employee dashboard stats fetched successfully', {
-      pendingAccounts,
-      pendingKyc,
-      totalCustomers,
-      recentTransactions
-    }).send(res);
+    return new ApiResponse(200, 'Employee dashboard stats fetched successfully', { pendingAccounts, pendingKyc, totalCustomers, recentTransactions: serializeTransactions(recentTransactions) }).send(res);
   }
 
-  // Customer dashboard
   const accounts = await Account.find({ user: userId });
   const accountIds = accounts.map((a) => a._id);
-
-  const totalBalance = accounts
-    .filter((a) => a.status === 'active')
-    .reduce((sum, a) => sum + a.balance, 0);
+  let totalBalance = '0.00';
+  for (const account of accounts) {
+    if (account.status === 'active') totalBalance = decimalToString(addMoney(totalBalance, account.balance));
+  }
 
   const [recentTransactions, monthlyVolume, totalTransactions] = await Promise.all([
-    Transaction.find({ account: { $in: accountIds } })
-      .sort({ createdAt: -1 })
-      .limit(10),
+    Transaction.find({ account: { $in: accountIds } }).sort({ createdAt: -1 }).limit(10),
     Transaction.aggregate([
-      {
-        $match: {
-          account: { $in: accountIds },
-          createdAt: { $gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) },
-          status: 'success'
-        }
-      },
-      {
-        $group: {
-          _id: {
-            date: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
-            type: '$type'
-          },
-          totalAmount: { $sum: '$amount' }
-        }
-      },
+      { $match: { account: { $in: accountIds }, createdAt: { $gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) }, status: 'success' } },
+      { $group: { _id: { date: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } }, type: '$type' }, totalAmount: { $sum: '$amount' } } },
       { $sort: { '_id.date': 1 } }
     ]),
     Transaction.countDocuments({ account: { $in: accountIds } })
@@ -147,8 +73,8 @@ const getDashboardStats = asyncHandler(async (req, res) => {
     accounts,
     totalBalance,
     totalTransactions,
-    recentTransactions,
-    monthlyVolume
+    recentTransactions: serializeTransactions(recentTransactions),
+    monthlyVolume: monthlyVolume.map((item) => ({ ...item, totalAmount: decimalToString(item.totalAmount) }))
   }).send(res);
 });
 
