@@ -34,18 +34,15 @@ const router = express.Router();
 
 router.use(authenticate);
 
-// Products — admin-configured catalog
 router.post('/products', authorize('admin'), createProductValidator, validate, createProduct);
 router.get('/products', listProducts);
 router.put('/products/:id/status', authorize('admin'), updateProductStatusValidator, validate, updateProductStatus);
 
-// Policy application (customer)
 router.post('/policies', authorize('customer'), applyPolicyValidator, validate, applyForPolicy);
 router.get('/policies/my', authorize('customer'), listPoliciesValidator, validate, getMyPolicies);
 router.post('/policies/:id/documents/upload', authorize('customer'), policyIdValidator, express.raw({ type: ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'], limit: '5mb' }), uploadPolicyDocument);
 router.get('/policies/:id/documents/:documentId/file', policyIdValidator, documentIdValidator, validate, downloadPolicyDocument);
 
-// Policy review/issuance (employee/admin)
 router.get('/policies', authorize('admin', 'employee'), requirePermission('insurance.review'), listPoliciesValidator, validate, listPolicies);
 router.get('/policies/:id', policyIdValidator, validate, getPolicyById);
 router.put('/policies/:id/review', authorize('employee'), requirePermission('insurance.review'), policyIdValidator, validate, startPolicyReview);
@@ -57,7 +54,6 @@ router.put('/policies/:id/manager-review', authorize('admin', 'employee'), requi
 router.put('/policies/:id/approve', authorize('admin', 'employee'), requirePermission('insurance.approve'), policyIdValidator, validate, approvePolicy);
 router.put('/policies/:id/reject', authorize('admin', 'employee'), requirePermission('insurance.review'), policyIdValidator, rejectValidator, validate, rejectPolicy);
 
-// Claims
 router.post('/claims', authorize('customer'), fileClaimValidator, validate, fileClaim);
 router.get('/claims/my', authorize('customer'), listClaimsValidator, validate, getMyClaims);
 router.get('/claims', authorize('admin', 'employee'), requirePermission('insurance.claim.review'), listClaimsValidator, validate, listClaims);

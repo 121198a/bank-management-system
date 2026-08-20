@@ -1,8 +1,3 @@
-/**
- * Creates or resets the initial administrator from environment variables.
- * Required: ADMIN_SEED_EMAIL and ADMIN_SEED_PASSWORD.
- * No credentials are stored in source control.
- */
 const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 const User = require('../models/User');

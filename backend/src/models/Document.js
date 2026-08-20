@@ -6,9 +6,7 @@ const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
 const documentSchema = new mongoose.Schema(
   {
     owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, immutable: true },
-    // Polymorphic link to whatever this document supports (loan, service
-    // request, card application, ...) — kept generic instead of one
-    // document model per application type.
+
     applicationType: {
       type: String,
       enum: ['loan_application', 'service_request', 'credit_card', 'debit_card', 'kyc_request'],
@@ -24,8 +22,6 @@ const documentSchema = new mongoose.Schema(
     fileName: { type: String, required: true, trim: true },
     mimeType: { type: String, enum: ALLOWED_MIME_TYPES, required: true },
     size: { type: Number, required: true, max: MAX_FILE_SIZE_BYTES },
-    // Opaque storage key/reference (e.g. S3 object key) — never a public
-    // filesystem path, never returned directly to unauthenticated clients.
     storageReference: { type: String, required: true, select: false },
     status: { type: String, enum: ['uploaded', 'verified', 'rejected'], default: 'uploaded' },
     verifiedAt: { type: Date, default: null },

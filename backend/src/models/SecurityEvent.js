@@ -14,7 +14,6 @@ const securityEventSchema = new mongoose.Schema(
       required: true,
       immutable: true
     },
-    // Nullable: a failed login with an unrecognized email has no user to link.
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null, immutable: true },
     email: { type: String, trim: true, lowercase: true, default: '' },
     ip: { type: String, trim: true, default: '' },

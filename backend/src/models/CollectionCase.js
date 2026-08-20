@@ -46,6 +46,7 @@ const collectionCaseSchema = new mongoose.Schema(
       recordedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
       recordedAt: { type: Date, default: null }
     },
+    
     recoveredAmount: { type: mongoose.Schema.Types.Decimal128, default: '0.00' },
 
     escalatedTo: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },

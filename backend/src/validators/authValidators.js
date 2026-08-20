@@ -1,13 +1,6 @@
 const { body, param } = require('express-validator');
 
-// NOTE: We intentionally do NOT use express-validator's normalizeEmail().
-// normalizeEmail() silently rewrites addresses (e.g. stripping dots/plus-tags
-// on Gmail-style domains, lowercasing inconsistently with the Mongoose schema's
-// `lowercase: true` option). That mismatch between what gets validated and what
-// gets saved/queried is a common hidden cause of "correct credentials but login
-// fails" bugs. Instead we do a simple, predictable lowercase+trim that exactly
-// matches the User schema's own normalization, so the same string is always
-// used for both storage and lookup.
+
 const normalizeEmailSimple = (value) => value.trim().toLowerCase();
 
 const registerValidator = [

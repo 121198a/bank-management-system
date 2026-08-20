@@ -14,12 +14,6 @@ const MIME_EXTENSIONS = {
 
 const storageDirFor = (applicationType) => path.join(STORAGE_ROOT, applicationType.replace(/_/g, '-'));
 
-/**
- * Validates and persists an uploaded document to local disk, then records
- * its metadata. Storage path is never derived from client input beyond the
- * applicationType enum + a server-generated random key — no path traversal
- * surface.
- */
 const saveDocument = async ({ ownerId, applicationType, applicationId, documentType, mimeType, fileName, buffer }) => {
   if (!MIME_EXTENSIONS[mimeType]) throw new ApiError(415, 'Unsupported document type');
   if (!Document.schema.path('type').enumValues.includes(documentType)) throw new ApiError(400, 'Invalid document type');
@@ -53,7 +47,6 @@ const saveDocument = async ({ ownerId, applicationType, applicationId, documentT
   }
 };
 
-/** Reads a previously saved document's bytes back off disk. */
 const readDocumentFile = async (document) => {
   const key = String(document.storageReference || '').split('/').pop();
   const dir = storageDirFor(document.applicationType);

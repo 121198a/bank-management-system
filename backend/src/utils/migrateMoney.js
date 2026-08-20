@@ -1,8 +1,4 @@
-/**
- * One-time migration for databases created by the pre-production schema.
- * Run against a backup first. It converts historical numeric money fields to Decimal128
- * and adds immutable transaction metadata required by the hardened schema.
- */
+
 const crypto = require('crypto');
 const mongoose = require('mongoose');
 const connectDB = require('../config/db');

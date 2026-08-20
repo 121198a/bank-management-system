@@ -11,7 +11,7 @@ const remarkSchema = new mongoose.Schema(
 
 const insuranceClaimSchema = new mongoose.Schema(
   {
-    // e.g. CLM-2026-000001
+
     claimNumber: { type: String, required: true, unique: true, immutable: true },
     policy: { type: mongoose.Schema.Types.ObjectId, ref: 'InsurancePolicy', required: true, immutable: true },
     customer: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, immutable: true },

@@ -4,10 +4,7 @@ const asyncHandler = require('../utils/asyncHandler');
 const ApiResponse = require('../utils/ApiResponse');
 const { escapeRegex } = require('../utils/sanitize');
 
-/**
- * GET /api/audit
- * Admin only - paginated, filterable audit log with actor population.
- */
+
 const listAuditLogs = asyncHandler(async (req, res) => {
   const page = parseInt(req.query.page, 10) || 1;
   const limit = parseInt(req.query.limit, 10) || 20;
@@ -15,9 +12,7 @@ const listAuditLogs = asyncHandler(async (req, res) => {
 
   const filter = {};
 
-  // Employees with audit.view.branch can inspect their own audit activity.
-  // Admins retain the existing global audit view. This keeps the employee
-  // audit surface useful without exposing the entire system audit trail.
+ 
   if (req.user?.role === 'employee') {
     filter.actor = req.user._id;
   }

@@ -101,6 +101,9 @@ const createLoanApplication = asyncHandler(async (req, res) => {
 
   const customerProfile = await CustomerProfile.findOne({ user: req.user._id }).select('homeBranch preferredBranch');
   const applicationBranch = account.branch || customerProfile?.homeBranch || customerProfile?.preferredBranch || null;
+  // Resolved server-side against the fixed Department catalog — a missing
+  // LOAN department record (e.g. not yet seeded) degrades to null rather
+  // than blocking loan creation.
   const loanDepartment = await Department.findOne({ code: 'LOAN' }).select('_id');
   const applicationId = await generateYearScopedId('LN');
   const loan = await LoanApplication.create({
@@ -618,9 +621,6 @@ const managerReviewLoan = asyncHandler(async (req, res) => {
       throw new ApiError(400, "Manager recommendation cannot exceed the employee's recommended amount");
     }
     loan.managerRecommendedAmount = amount;
-    // Status stays 'manager_review' — approveLoanApplication is the gate
-    // that requires managerRecommendedAmount to be set, mirroring how
-    // employee recommendation already works without a separate status.
   }
   await loan.save();
 
@@ -764,8 +764,7 @@ const disburseLoan = asyncHandler(async (req, res) => {
         accountBalance: decimalToString(account.balance)
       };
 
-      // The approved -> disbursed state check is inside the MongoDB
-      // transaction, so concurrent disbursement attempts cannot both commit.
+    
       account.balance = require('../utils/money').addMoney(account.balance, loan.approvedAmount);
       await account.save({ session });
 

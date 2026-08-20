@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 
 const creditCardSchema = new mongoose.Schema(
   {
-    // e.g. CC-2026-000001
     applicationId: { type: String, required: true, unique: true, immutable: true },
     customer: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, immutable: true },
     account: { type: mongoose.Schema.Types.ObjectId, ref: 'Account', required: true, immutable: true },
@@ -11,8 +10,7 @@ const creditCardSchema = new mongoose.Schema(
     monthlyIncome: { type: mongoose.Schema.Types.Decimal128, required: true },
     employmentType: { type: String, enum: ['salaried', 'self_employed', 'business_owner', 'other'], required: true },
     address: { type: String, required: true, trim: true },
-    // References the customer's verified KYC record — the app must not
-    // trust a client-supplied PAN/KYC value as fact without server lookup.
+    
     kycReference: { type: mongoose.Schema.Types.ObjectId, ref: 'KYCRequest', default: null },
     requestedLimit: { type: mongoose.Schema.Types.Decimal128, required: true },
     approvedLimit: { type: mongoose.Schema.Types.Decimal128, default: null },

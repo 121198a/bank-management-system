@@ -3,9 +3,7 @@ const ApiError = require('../utils/ApiError');
 const { verifyAccessToken } = require('../services/tokenService');
 const User = require('../models/User');
 
-/**
- * Verifies the Bearer access token, attaches the authenticated user to req.user.
- */
+
 const authenticate = asyncHandler(async (req, res, next) => {
   const authHeader = req.headers.authorization;
 

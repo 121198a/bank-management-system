@@ -51,6 +51,6 @@ module.exports = {
   adminSeed: {
     email: process.env.ADMIN_SEED_EMAIL || '',
     password: process.env.ADMIN_SEED_PASSWORD || '',
-    fullName: process.env.ADMIN_SEED_FULL_NAME || 'System Administrator'
+    fullName: process.env.ADMIN_SEED_FULL_NAME || 'Abhishek Kumar Sharma' 
   }
 };

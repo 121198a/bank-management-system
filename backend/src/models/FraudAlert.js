@@ -2,11 +2,10 @@ const mongoose = require('mongoose');
 
 const fraudAlertSchema = new mongoose.Schema(
   {
-    alertId: { type: String, required: true, unique: true, immutable: true }, // FRD-2026-000001
+    alertId: { type: String, required: true, unique: true, immutable: true },
     severity: { type: String, enum: ['low', 'medium', 'high', 'critical'], default: 'medium' },
     status: { type: String, enum: ['open', 'under_review', 'confirmed', 'false_positive', 'resolved'], default: 'open' },
-    // Plain-English explanation of which rule fired — this is rule-based
-    // detection, not ML, so every alert must be human-explainable.
+    
     reason: { type: String, required: true, trim: true },
     rule: { type: String, enum: ['rapid_transactions', 'unusual_amount', 'repeated_failed_logins', 'multiple_locations', 'manual'], required: true },
     relatedUser: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },

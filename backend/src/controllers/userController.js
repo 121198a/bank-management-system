@@ -7,19 +7,14 @@ const ApiResponse = require('../utils/ApiResponse');
 const { writeAuditLog } = require('../middleware/auditLogger');
 const { escapeRegex } = require('../utils/sanitize');
 
-/**
- * GET /api/users/me
- */
+
 const getMe = asyncHandler(async (req, res) => {
   return new ApiResponse(200, 'Profile fetched successfully', {
     user: req.user.toSafeObject()
   }).send(res);
 });
 
-/**
- * PUT /api/users/me
- * Allows updating profile fields and optionally changing password.
- */
+
 const updateMe = asyncHandler(async (req, res) => {
   const { fullName, phone, address, currentPassword, newPassword } = req.body;
 
@@ -61,10 +56,7 @@ const updateMe = asyncHandler(async (req, res) => {
   }).send(res);
 });
 
-/**
- * GET /api/users
- * Admin only - paginated, filterable, searchable list of users.
- */
+
 const listUsers = asyncHandler(async (req, res) => {
   const page = parseInt(req.query.page, 10) || 1;
   const limit = parseInt(req.query.limit, 10) || 10;
@@ -98,10 +90,7 @@ const listUsers = asyncHandler(async (req, res) => {
   ).send(res);
 });
 
-/**
- * GET /api/users/:id
- * Admin/Employee - fetch a single user's details.
- */
+
 const getUserById = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id);
 
@@ -112,10 +101,7 @@ const getUserById = asyncHandler(async (req, res) => {
   return new ApiResponse(200, 'User fetched successfully', { user: user.toSafeObject() }).send(res);
 });
 
-/**
- * PUT /api/users/:id/role
- * Admin only - change a user's role.
- */
+
 const updateUserRole = asyncHandler(async (req, res) => {
   const { role } = req.body;
 
@@ -147,10 +133,7 @@ const updateUserRole = asyncHandler(async (req, res) => {
   return new ApiResponse(200, 'User role updated successfully', { user: user.toSafeObject() }).send(res);
 });
 
-/**
- * PUT /api/users/:id/status
- * Admin only - activate/deactivate a user account.
- */
+
 const updateUserStatus = asyncHandler(async (req, res) => {
   const { isActive } = req.body;
 
@@ -167,7 +150,7 @@ const updateUserStatus = asyncHandler(async (req, res) => {
   user.isActive = isActive;
 
   if (!isActive) {
-    user.refreshTokenHash = null; // force logout
+    user.refreshTokenHash = null;
     user.tokenVersion += 1;
   }
 
@@ -186,12 +169,7 @@ const updateUserStatus = asyncHandler(async (req, res) => {
   return new ApiResponse(200, 'User status updated successfully', { user: user.toSafeObject() }).send(res);
 });
 
-/**
- * POST /api/users
- * Admin only — manually create an employee or customer account from the
- * dashboard. This is the ONLY way employee/customer accounts get created
- * besides public self-registration (which only ever creates customers).
- */
+
 const createUser = asyncHandler(async (req, res) => {
   const { fullName, email, password, phone, address, role } = req.body;
 
@@ -240,11 +218,7 @@ const createUser = asyncHandler(async (req, res) => {
   }).send(res);
 });
 
-/**
- * PUT /api/users/:id
- * Admin only — edit a user's basic details (name, phone, address, email).
- * Does not touch password or role (those have their own dedicated endpoints).
- */
+
 const editUserDetails = asyncHandler(async (req, res) => {
   const { fullName, email, phone, address } = req.body;
 

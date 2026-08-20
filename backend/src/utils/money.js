@@ -53,12 +53,6 @@ const compareMoney = (a, b) => {
   return left === right ? 0 : left > right ? 1 : -1;
 };
 
-/**
- * Computes `percent`% of a money amount without ever touching floating
- * point. `percent` may have up to 2 decimal places (e.g. 2.5, 12.75).
- * Truncates (rounds down) to the nearest paisa/cent, matching how banks
- * typically compute premiums/interest conservatively.
- */
 const percentageOf = (amount, percent) => {
   const amountMinor = decimalToMinor(amount);
   const percentBasis = BigInt(Math.round(Number(percent) * 100)); // 2.5% -> 250

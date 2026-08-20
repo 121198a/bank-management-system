@@ -8,8 +8,6 @@ const insuranceProductSchema = new mongoose.Schema(
     description: { type: String, trim: true, default: '' },
     minSumInsured: { type: mongoose.Schema.Types.Decimal128, required: true },
     maxSumInsured: { type: mongoose.Schema.Types.Decimal128, required: true },
-    // Annual premium as a percentage of sum insured, e.g. 2.5 => 2.5%/year.
-    // Actual premium is calculated at application time, never client-supplied.
     annualPremiumRatePercent: { type: Number, required: true, min: 0.01, max: 100 },
     minTermMonths: { type: Number, required: true, min: 1 },
     maxTermMonths: { type: Number, required: true, min: 1 },

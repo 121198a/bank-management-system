@@ -58,7 +58,3 @@ test('allDepartmentAccess bypasses department scoping even for a plain employee 
   const superEmp = { orgRole: 'employee', department: deptA, allDepartmentAccess: true };
   assert.deepEqual(await buildScopeFilter(superEmp, LOAN_FIELDS), {});
 });
-
-// NOTE: the 'manager' orgRole path (getTeamUserIds) queries EmployeeProfile
-// via Mongoose and needs a live MongoDB connection — not covered here.
-// Run against a real/in-memory Mongo instance to exercise it.

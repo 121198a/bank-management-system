@@ -19,10 +19,6 @@ const getTransporter = () => {
   return transporter;
 };
 
-/**
- * Sends an email. If SMTP credentials are not configured (e.g. local dev without
- * a mail account), logs the email content to console instead of throwing.
- */
 const sendEmail = async ({ to, subject, html, text }) => {
   if (!env.smtp.user || !env.smtp.pass) {
     console.log(`Email delivery skipped because SMTP is not configured [recipient redacted, subject: ${subject}]`);

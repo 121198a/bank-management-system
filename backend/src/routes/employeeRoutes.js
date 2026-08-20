@@ -1,6 +1,7 @@
 const express = require('express');
 
 const {
+  getMyEmployeeProfile,
   createEmployee,
   listEmployees,
   getEmployee,
@@ -22,6 +23,10 @@ const {
 const router = express.Router();
 
 router.use(authenticate);
+
+// Self-service — must come before the admin-only gate below.
+router.get('/me', authorize('employee', 'admin'), getMyEmployeeProfile);
+
 router.use(authorize('admin'));
 
 router.post(

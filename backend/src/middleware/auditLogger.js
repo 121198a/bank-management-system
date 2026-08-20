@@ -18,7 +18,6 @@ const writeAuditLog = async ({ actor, action, targetType, targetId, before, afte
     if (session) await AuditLog.create([payload], { session });
     else await AuditLog.create(payload);
   } catch (err) {
-    // Audit failure is surfaced to monitoring in production; it never exposes request data.
     console.error(`Audit log write failed [${req?.requestId || 'no-request-id'}]: ${err.message}`);
   }
 };

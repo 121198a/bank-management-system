@@ -23,6 +23,7 @@ const branchRoutes = require('./routes/branchRoutes');
 const loanRoutes = require('./routes/loanRoutes');
 const insuranceRoutes = require('./routes/insuranceRoutes');
 const collectionRoutes = require('./routes/collectionRoutes');
+const departmentRoutes = require('./routes/departmentRoutes');
 const salesRoutes = require('./routes/salesRoutes');
 const securityRoutes = require('./routes/securityRoutes');
 
@@ -81,6 +82,7 @@ app.use('/api/branches', branchRoutes);
 app.use('/api/loans', loanRoutes);
 app.use('/api/insurance', insuranceRoutes);
 app.use('/api/collections', collectionRoutes);
+app.use('/api/departments', departmentRoutes);
 app.use('/api/sales', salesRoutes);
 app.use('/api/security', securityRoutes);
 

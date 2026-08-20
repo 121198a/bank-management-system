@@ -20,7 +20,6 @@ const nomineeSchema = new mongoose.Schema(
 
 const insurancePolicySchema = new mongoose.Schema(
   {
-    // e.g. INS-2026-000001
     policyNumber: { type: String, required: true, unique: true, immutable: true },
     customer: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, immutable: true },
     product: { type: mongoose.Schema.Types.ObjectId, ref: 'InsuranceProduct', required: true, immutable: true },
@@ -29,8 +28,6 @@ const insurancePolicySchema = new mongoose.Schema(
     department: { type: mongoose.Schema.Types.ObjectId, ref: 'Department', default: null },
 
     sumInsured: { type: mongoose.Schema.Types.Decimal128, required: true, immutable: true },
-    // Server-calculated at application time from product.annualPremiumRatePercent
-    // — never trust a client-supplied premium figure.
     annualPremium: { type: mongoose.Schema.Types.Decimal128, required: true, immutable: true },
     premiumFrequency: { type: String, enum: ['monthly', 'quarterly', 'annually'], default: 'annually' },
     termMonths: { type: Number, required: true, immutable: true },

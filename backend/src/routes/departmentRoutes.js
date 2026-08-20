@@ -1,32 +1,15 @@
 const express = require('express');
-
 const authenticate = require('../middleware/auth');
 const authorize = require('../middleware/rbac');
-
-const Department = require('../models/Department');
+const validate = require('../middleware/validate');
+const { idValidator, listValidator, updateValidator } = require('../validators/departmentValidators');
+const { listDepartments, getDepartmentById, updateDepartment } = require('../controllers/departmentController');
 
 const router = express.Router();
-
 router.use(authenticate);
 
-/*
- * Department listing is intentionally permission-based.
- * The existing RBAC middleware remains the source of truth.
- */
-router.get('/', authorize('admin'), async (_req, res, next) => {
-  try {
-    const departments = await Department.find({ status: 'active' })
-      .populate('head', 'fullName email')
-      .sort({ name: 1 })
-      .lean();
-
-    return res.status(200).json({
-      success: true,
-      departments
-    });
-  } catch (error) {
-    return next(error);
-  }
-});
+router.get('/', listValidator, validate, listDepartments);
+router.get('/:id', idValidator, validate, getDepartmentById);
+router.put('/:id', authorize('admin'), idValidator, updateValidator, validate, updateDepartment);
 
 module.exports = router;

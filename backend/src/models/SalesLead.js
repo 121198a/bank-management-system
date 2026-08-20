@@ -7,9 +7,7 @@ const remarkSchema = new mongoose.Schema(
 
 const salesLeadSchema = new mongoose.Schema(
   {
-    leadId: { type: String, required: true, unique: true, immutable: true }, // LEAD-2026-000001
-    // A lead may not yet correspond to a registered User (cold lead) — name/
-    // contact captured directly; `customer` is linked once/if they convert.
+    leadId: { type: String, required: true, unique: true, immutable: true }, 
     fullName: { type: String, required: true, trim: true },
     email: { type: String, trim: true, lowercase: true, default: '' },
     phone: { type: String, trim: true, required: true },

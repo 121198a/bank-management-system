@@ -45,7 +45,6 @@ const getEmployeeScope = async (userId, permission = 'insurance.review') => {
   return employee;
 };
 
-// ==================== PRODUCTS (admin catalog) ====================
 
 const createProduct = asyncHandler(async (req, res) => {
   if (toDecimal128 && compareMoney(toDecimal128(String(req.body.minSumInsured)), toDecimal128(String(req.body.maxSumInsured))) > 0) {
@@ -90,7 +89,6 @@ const updateProductStatus = asyncHandler(async (req, res) => {
   return new ApiResponse(200, 'Insurance product updated', { product: serializeMoneyFields(product, ['minSumInsured', 'maxSumInsured']) }).send(res);
 });
 
-// ==================== POLICY APPLICATION ====================
 
 const applyForPolicy = asyncHandler(async (req, res) => {
   const product = await InsuranceProduct.findOne({ _id: req.body.productId, status: 'active' });
@@ -107,7 +105,6 @@ const applyForPolicy = asyncHandler(async (req, res) => {
     throw new ApiError(400, `Term must be between ${product.minTermMonths} and ${product.maxTermMonths} months for this product`);
   }
 
-  // Server-calculated — never trust a client-supplied premium.
   const annualPremium = percentageOf(sumInsured, product.annualPremiumRatePercent);
   const insuranceDept = await Department.findOne({ code: 'INSURANCE' }).select('_id');
   const policyNumber = await generateYearScopedId('INS');
@@ -299,7 +296,6 @@ const rejectPolicy = asyncHandler(async (req, res) => {
   return new ApiResponse(200, 'Policy rejected', { policy: serializePolicy(policy) }).send(res);
 });
 
-// ==================== POLICY DOCUMENTS ====================
 
 const uploadPolicyDocument = asyncHandler(async (req, res) => {
   const policy = await InsurancePolicy.findById(req.params.id);
@@ -374,7 +370,6 @@ const verifyPolicyDocument = asyncHandler(async (req, res) => {
   return new ApiResponse(200, 'Document verified', { policy: serializePolicy(policy) }).send(res);
 });
 
-// ==================== CLAIMS ====================
 
 const fileClaim = asyncHandler(async (req, res) => {
   const policy = await InsurancePolicy.findOne({ _id: req.body.policyId, customer: req.user._id, status: 'active' });

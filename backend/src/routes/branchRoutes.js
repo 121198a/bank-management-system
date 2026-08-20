@@ -23,10 +23,7 @@ const router = express.Router();
 
 router.use(authenticate);
 
-/*
- * Branch listing/details:
- * Customer, employee and admin can read branch information.
- */
+
 router.get(
   '/',
   listBranchesValidator,
@@ -41,10 +38,7 @@ router.get(
   getBranch
 );
 
-/*
- * Branch administration:
- * Only admin can create/update/deactivate branches.
- */
+
 router.post(
   '/',
   authorize('admin'),

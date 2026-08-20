@@ -59,14 +59,8 @@ router.put('/:id/recommend', authorize('employee'), requirePermission('loan.revi
 router.put('/:id/documents/:documentId/verify', authorize('employee'), requirePermission('loan.review'), loanIdValidator, documentIdValidator, validate, verifyLoanDocument);
 router.put('/:id/forward-to-manager', authorize('employee'), requirePermission('loan.review'), loanIdValidator, validate, forwardLoanToManager);
 
-// Manager-review stage: requirePermission('loan.review') already lets admins
-// through; the controller additionally checks orgRole is manager-or-above
-// so a plain reviewing employee can't approve their own forward.
 router.put('/:id/manager-review', authorize('admin', 'employee'), requirePermission('loan.review'), loanIdValidator, managerDecisionValidator, validate, managerReviewLoan);
 
-// Final approval authority is now permission-based (loan.approve) rather
-// than hardcoded to the system 'admin' role, so a department_head employee
-// profile can approve without needing full system-admin access.
 router.put('/:id/approve', authorize('admin', 'employee'), requirePermission('loan.approve'), loanIdValidator, approveValidator, validate, approveLoanApplication);
 router.put('/:id/reject', authorize('admin', 'employee'), requirePermission('loan.review'), loanIdValidator, rejectValidator, validate, rejectLoanApplication);
 router.put('/:id/disburse', authorize('admin'), loanIdValidator, validate, disburseLoan);

@@ -19,14 +19,10 @@ const CustomTooltip = ({ active, payload, label }) => {
   );
 };
 
-/**
- * Accepts raw transactionVolume array from dashboard API and transforms it
- * into recharts-friendly daily grouped data.
- */
+
 const VolumeChart = ({ data = [], title = 'Transaction Volume' }) => {
   const { isDark } = useTheme();
 
-  // Group by date
   const grouped = {};
   data.forEach(({ _id, totalAmount }) => {
     const date = _id?.date || 'Unknown';

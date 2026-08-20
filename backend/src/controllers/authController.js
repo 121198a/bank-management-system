@@ -21,12 +21,7 @@ const env = require('../config/env');
 
 const REFRESH_COOKIE_NAME = 'refreshToken';
 
-/**
- * Logs a failed login attempt and, if this email has failed repeatedly in a
- * short window, escalates to a suspicious-login event + fraud alert.
- * Explainable rule (Section 17), not ML. Never throws — a failure here must
- * not mask the original "Invalid email or password" response.
- */
+
 const handleFailedLogin = async (email, req, userId = null) => {
   await logSecurityEvent({ type: 'LOGIN_FAILED', user: userId, email, req, severity: 'low' });
   try {
@@ -56,9 +51,7 @@ const refreshCookieOptions = {
   path: '/api/auth'
 };
 
-/**
- * POST /api/auth/register
- */
+
 const register = asyncHandler(async (req, res) => {
   const { fullName, email, password, phone, address } = req.body;
 
@@ -97,13 +90,8 @@ const register = asyncHandler(async (req, res) => {
   return new ApiResponse(201, 'Registration successful', { user: user.toSafeObject() }).send(res);
 });
 
-/**
- * POST /api/auth/login
- */
 const login = asyncHandler(async (req, res) => {
-  // Defensive normalization: even though the validator already lowercases/trims,
-  // we repeat it here so this function is correct in isolation (e.g. if called
-  // from a script or test that bypasses the validator middleware).
+
   const email = String(req.body.email || '').trim().toLowerCase();
   const { password } = req.body;
 
@@ -149,11 +137,7 @@ const login = asyncHandler(async (req, res) => {
   }).send(res);
 });
 
-/**
- * POST /api/auth/refresh
- * Rotates the refresh token: validates the incoming token, issues new access + refresh tokens,
- * and invalidates the old refresh token.
- */
+
 const refresh = asyncHandler(async (req, res) => {
   const incomingToken = req.cookies?.[REFRESH_COOKIE_NAME];
 
@@ -190,7 +174,7 @@ const refresh = asyncHandler(async (req, res) => {
     throw new ApiError(403, 'Your account has been deactivated. Contact support.');
   }
 
-  // Rotate tokens
+
   const newAccessToken = generateAccessToken(user);
   const newRefreshToken = generateRefreshToken(user);
 
@@ -205,9 +189,7 @@ const refresh = asyncHandler(async (req, res) => {
   }).send(res);
 });
 
-/**
- * POST /api/auth/logout
- */
+
 const logout = asyncHandler(async (req, res) => {
   const incomingToken = req.cookies?.[REFRESH_COOKIE_NAME];
 
@@ -220,7 +202,6 @@ const logout = asyncHandler(async (req, res) => {
         await user.save();
       }
     } catch (err) {
-      // Token already invalid - nothing to clean up
     }
   }
 
@@ -229,15 +210,12 @@ const logout = asyncHandler(async (req, res) => {
   return new ApiResponse(200, 'Logged out successfully').send(res);
 });
 
-/**
- * POST /api/auth/forgot-password
- */
+
 const forgotPassword = asyncHandler(async (req, res) => {
   const { email } = req.body;
 
   const user = await User.findOne({ email });
 
-  // Always respond with success to avoid leaking which emails are registered
   const genericResponse = new ApiResponse(
     200,
     'If an account with that email exists, a password reset link has been sent.'
@@ -268,9 +246,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
   return genericResponse.send(res);
 });
 
-/**
- * POST /api/auth/reset-password/:token
- */
+
 const resetPassword = asyncHandler(async (req, res) => {
   const { token } = req.params;
   const { password } = req.body;

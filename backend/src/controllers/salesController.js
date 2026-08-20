@@ -125,9 +125,6 @@ const addLeadRemark = asyncHandler(async (req, res) => {
   return new ApiResponse(200, 'Remark added', { lead }).send(res);
 });
 
-// Marks the lead converted and links to the resulting resource
-// (account/loan/insurance/card/FD) created via the respective module —
-// this endpoint does not itself create that resource, just records the link.
 const convertLead = asyncHandler(async (req, res) => {
   const lead = await SalesLead.findById(req.params.id);
   if (!lead) throw new ApiError(404, 'Lead not found');
@@ -150,9 +147,6 @@ const getPerformance = asyncHandler(async (req, res) => {
   const employee = await getEmployeeScope(req.user._id, 'sales.performance.view');
   const scopeFilter = await buildScopeFilter(employee, LEAD_SCOPE_FIELDS);
 
-  // Aggregate per-employee conversion stats within this employee's scope
-  // (their team if manager, their department if department_head, everyone
-  // if bank_head — buildScopeFilter already encodes that).
   const rows = await SalesLead.aggregate([
     { $match: scopeFilter },
     { $group: {

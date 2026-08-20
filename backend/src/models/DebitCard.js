@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const debitCardSchema = new mongoose.Schema(
   {
-    // e.g. DC-2026-000001
+
     applicationId: { type: String, required: true, unique: true, immutable: true },
     customer: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, immutable: true },
     account: { type: mongoose.Schema.Types.ObjectId, ref: 'Account', required: true, immutable: true },
@@ -16,7 +16,7 @@ const debitCardSchema = new mongoose.Schema(
       enum: ['requested', 'under_review', 'approved', 'issued', 'dispatched', 'delivered', 'rejected', 'blocked', 'expired', 'cancelled'],
       default: 'requested'
     },
-    // Display-only fields. Never store CVV, PIN, or the full PAN.
+    
     lastFourDigits: { type: String, match: [/^\d{4}$/, 'Must be exactly 4 digits'], default: null },
     expiryMonth: { type: Number, min: 1, max: 12, default: null },
     expiryYear: { type: Number, default: null },

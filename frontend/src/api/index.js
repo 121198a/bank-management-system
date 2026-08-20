@@ -5,7 +5,6 @@ export const createIdempotencyKey = () => {
   return `${Date.now()}-${Math.random().toString(36).slice(2)}-${Math.random().toString(36).slice(2)}`;
 };
 
-// ─── Users ───────────────────────────────────────────────────────────────────
 export const usersAPI = {
   getMe: () => api.get('/users/me').then((r) => r.data),
   updateMe: (data) => api.put('/users/me', data).then((r) => r.data),
@@ -17,7 +16,6 @@ export const usersAPI = {
   updateStatus: (id, isActive) => api.put(`/users/${id}/status`, { isActive }).then((r) => r.data)
 };
 
-// ─── Accounts ────────────────────────────────────────────────────────────────
 export const accountsAPI = {
   create: (data) => api.post('/accounts', data).then((r) => r.data),
   getMyAccounts: () => api.get('/accounts/my').then((r) => r.data),
@@ -27,8 +25,6 @@ export const accountsAPI = {
   updateStatus: (id, status, remarks) =>
     api.put(`/accounts/${id}/status`, { status, remarks }).then((r) => r.data)
 };
-
-// ─── Transactions ─────────────────────────────────────────────────────────────
 export const transactionsAPI = {
   deposit: (data, idempotencyKey) => api.post('/transactions/deposit', data, { headers: { 'Idempotency-Key': idempotencyKey } }).then((r) => r.data),
   withdraw: (data, idempotencyKey) => api.post('/transactions/withdraw', data, { headers: { 'Idempotency-Key': idempotencyKey } }).then((r) => r.data),
@@ -43,7 +39,6 @@ export const transactionsAPI = {
     }).then((r) => r.data)
 };
 
-// ─── KYC ─────────────────────────────────────────────────────────────────────
 export const kycAPI = {
   submit: (data) => api.post('/kyc/submit', data).then((r) => r.data),
   getMy: () => api.get('/kyc/my').then((r) => r.data),
@@ -52,7 +47,6 @@ export const kycAPI = {
     api.put(`/kyc/${id}/review`, { status, remarks }).then((r) => r.data)
 };
 
-// ─── Notifications ────────────────────────────────────────────────────────────
 export const notificationsAPI = {
   getAll: (params) => api.get('/notifications', { params }).then((r) => r.data),
   markAsRead: (id) => api.put(`/notifications/${id}/read`).then((r) => r.data),
@@ -60,18 +54,15 @@ export const notificationsAPI = {
   delete: (id) => api.delete(`/notifications/${id}`).then((r) => r.data)
 };
 
-// ─── Audit Logs ───────────────────────────────────────────────────────────────
 export const auditAPI = {
   listLogs: (params) => api.get('/audit', { params }).then((r) => r.data)
 };
 
-// ─── Dashboard ────────────────────────────────────────────────────────────────
 export const dashboardAPI = {
   getStats: () => api.get('/dashboard/stats').then((r) => r.data)
 };
 
 
-// ─── Loans ───────────────────────────────────────────────────────────────────
 export const loansAPI = {
   create: (data) => api.post('/loans', data).then((r) => r.data),
   getMy: (params) => api.get('/loans/my', { params }).then((r) => r.data),

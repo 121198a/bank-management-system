@@ -125,7 +125,7 @@ const EmployeeAccounts = () => {
             </div>
             {selectedAccount.user?.kycStatus !== 'verified' && (
               <div className="p-3 rounded-xl bg-yellow-50 dark:bg-yellow-900/20 text-xs text-yellow-700 dark:text-yellow-400">
-                ⚠ Customer's KYC is not verified. Consider reviewing KYC before approving.
+                ⚠ Customer&apos;s KYC is not verified. Consider reviewing KYC before approving.
               </div>
             )}
             <div className="flex gap-3">

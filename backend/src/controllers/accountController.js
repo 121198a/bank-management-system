@@ -17,7 +17,6 @@ const createAccount = asyncHandler(async (req, res) => {
   const initialDeposit = toDecimal128(req.body.initialDeposit || '0', { allowZero: true });
   let accountNumber;
   while (await Account.exists({ accountNumber: accountNumber = generateAccountNumber() })) {
-    // retry on the extremely unlikely collision
   }
 
   const account = await Account.create({

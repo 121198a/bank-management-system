@@ -28,7 +28,7 @@ const customerProfileSchema = new mongoose.Schema(
       unique: true,
       immutable: true
     },
-    // e.g. CUS-2026-000001 — system-generated, never client-supplied.
+
     customerId: { type: String, required: true, unique: true, immutable: true },
     dob: { type: Date, default: null },
     gender: { type: String, enum: ['male', 'female', 'other', 'prefer_not_to_say'], default: 'prefer_not_to_say' },
@@ -36,8 +36,7 @@ const customerProfileSchema = new mongoose.Schema(
     city: { type: String, trim: true, default: '' },
     state: { type: String, trim: true, default: '' },
     pincode: { type: String, trim: true, default: '' },
-    // Sensitive identifiers: excluded from default queries, must be
-    // explicitly `.select('+pan +aadhaarRef')`'d by an authorized controller.
+
     pan: { type: String, trim: true, uppercase: true, select: false, default: '' },
     aadhaarRef: { type: String, trim: true, select: false, default: '' },
     homeBranch: { type: mongoose.Schema.Types.ObjectId, ref: 'Branch', default: null },

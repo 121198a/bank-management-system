@@ -11,7 +11,6 @@ const remarkSchema = new mongoose.Schema(
 
 const serviceRequestSchema = new mongoose.Schema(
   {
-    // e.g. SR-2026-000001
     requestId: { type: String, required: true, unique: true, immutable: true },
     customer: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, immutable: true },
     account: { type: mongoose.Schema.Types.ObjectId, ref: 'Account', default: null },
@@ -32,9 +31,6 @@ const serviceRequestSchema = new mongoose.Schema(
     },
     priority: { type: String, enum: ['low', 'medium', 'high'], default: 'medium' },
     assignedEmployee: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
-    // Type-specific payload (e.g. { leaves: 25, deliveryAddress } for
-    // cheque_book, { preferredUsername } for internet_banking) — keeps this
-    // one schema generic instead of forking a model per request type.
     metadata: { type: mongoose.Schema.Types.Mixed, default: {} },
     remarks: { type: [remarkSchema], default: [] },
     documents: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Document' }],
