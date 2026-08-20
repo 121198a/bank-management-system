@@ -8,7 +8,8 @@ const {
   subtractMoney,
   compareMoney,
   decimalToMinor,
-  minorToString
+  minorToString,
+  percentageOf
 } = require('../src/utils/money');
 
 test('money parsing preserves two-decimal precision', () => {
@@ -23,4 +24,10 @@ test('money rejects malformed and negative values', () => {
   assert.throws(() => normalizeMoneyString('1.001'), /valid positive decimal/);
   assert.throws(() => normalizeMoneyString('-1.00'), /valid positive decimal/);
   assert.throws(() => normalizeMoneyString('0.00'), /greater than zero/);
+});
+
+test('percentageOf computes without float drift', () => {
+  assert.equal(decimalToString(percentageOf(toDecimal128('500000.00'), 2.5)), '12500.00');
+  assert.equal(decimalToString(percentageOf(toDecimal128('333.33'), 12.75)), '42.49');
+  assert.equal(decimalToString(percentageOf(toDecimal128('999999.99'), 0.1)), '999.99');
 });

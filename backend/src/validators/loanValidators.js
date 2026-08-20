@@ -7,7 +7,7 @@ const rejectUnknownBodyFields = (allowed) => body().custom((value, { req }) => {
 });
 
 const LOAN_TYPES = ['personal', 'home', 'education', 'vehicle', 'business'];
-const LOAN_STATUSES = ['draft', 'submitted', 'under_review', 'documents_required', 'approved', 'rejected', 'disbursed', 'cancelled'];
+const LOAN_STATUSES = ['draft', 'submitted', 'under_review', 'documents_required', 'manager_review', 'approved', 'rejected', 'disbursed', 'cancelled'];
 const DOCUMENT_TYPES = ['identity_proof', 'address_proof', 'pan', 'income_proof', 'salary_slip', 'bank_statement', 'employment_proof', 'other'];
 
 const decimalMoney = (field, label, { allowZero = false } = {}) => {
@@ -67,6 +67,19 @@ const recommendValidator = [
   decimalMoney('amount', 'Recommended amount')
 ];
 
+const managerDecisionValidator = [
+  rejectUnknownBodyFields(['decision', 'amount', 'reason']),
+  body('decision').isIn(['forward', 'reject']).withMessage("decision must be 'forward' or 'reject'"),
+  body('amount')
+    .if(body('decision').equals('forward'))
+    .notEmpty().withMessage('Recommended amount is required to forward')
+    .isDecimal({ decimal_digits: '0,2', force_decimal: false }).withMessage('Recommended amount must be a valid decimal')
+    .custom((value) => Number(value) > 0).withMessage('Recommended amount must be greater than zero'),
+  body('reason')
+    .if(body('decision').equals('reject'))
+    .trim().notEmpty().isLength({ min: 3, max: 1000 }).withMessage('Rejection reason is required')
+];
+
 const approveValidator = [
   rejectUnknownBodyFields(['approvedAmount']),
   body('approvedAmount')
@@ -94,6 +107,7 @@ module.exports = {
   requestDocumentsValidator,
   remarkValidator,
   recommendValidator,
+  managerDecisionValidator,
   approveValidator,
   rejectValidator,
   attachDocumentsValidator

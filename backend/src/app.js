@@ -21,6 +21,10 @@ const dashboardRoutes = require('./routes/dashboardRoutes');
 const employeeRoutes = require('./routes/employeeRoutes');
 const branchRoutes = require('./routes/branchRoutes');
 const loanRoutes = require('./routes/loanRoutes');
+const insuranceRoutes = require('./routes/insuranceRoutes');
+const collectionRoutes = require('./routes/collectionRoutes');
+const salesRoutes = require('./routes/salesRoutes');
+const securityRoutes = require('./routes/securityRoutes');
 
 const app = express();
 app.disable('x-powered-by');
@@ -75,6 +79,10 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/employees', employeeRoutes);  
 app.use('/api/branches', branchRoutes);
 app.use('/api/loans', loanRoutes);
+app.use('/api/insurance', insuranceRoutes);
+app.use('/api/collections', collectionRoutes);
+app.use('/api/sales', salesRoutes);
+app.use('/api/security', securityRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

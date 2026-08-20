@@ -10,6 +10,7 @@ const models = [
   require('../models/IdempotencyKey'),
   require('../models/Counter'),
   require('../models/Branch'),
+  require('../models/Department'),
   require('../models/CustomerProfile'),
   require('../models/EmployeeProfile'),
   require('../models/ServiceRequest'),
@@ -17,6 +18,14 @@ const models = [
   require('../models/CreditCard'),
   require('../models/FixedDeposit'),
   require('../models/LoanApplication'),
+  require('../models/InsuranceProduct'),
+  require('../models/InsurancePolicy'),
+  require('../models/InsuranceClaim'),
+  require('../models/CollectionCase'),
+  require('../models/SalesLead'),
+  require('../models/SecurityEvent'),
+  require('../models/SecurityIncident'),
+  require('../models/FraudAlert'),
   require('../models/Document')
 ];
 

@@ -19,7 +19,76 @@ Mongoose / MongoDB
 Financial records / audit / KYC / notifications
 ```
 
-## Roles
+## Enterprise organization layer (Phases 1-9)
+
+On top of the base bank described above, the system supports a department-based
+organizational hierarchy:
+
+```text
+Bank Head (orgRole: bank_head — org-wide access)
+   │
+   ├── RETAIL_BANKING   (branch tellers — original account/KYC/deposit staff)
+   ├── LOAN             (loan applications, review, approval, disbursement)
+   ├── INSURANCE        (policies + claims)
+   ├── COLLECTION       (overdue loan casework)
+   ├── SALES            (leads + conversion)
+   └── IT_SECURITY      (security events, incidents, fraud alerts)
+        each with: department_head → manager → employee
+```
+
+**Key design decision:** this hierarchy does **not** add new `User.role` values.
+`User.role` stays exactly `admin | employee | customer`, unchanged from the
+original system. Position within a department (`employee`, `manager`,
+`department_head`, `bank_head`) lives on `EmployeeProfile.orgRole` instead —
+this avoids role-enum explosion as departments get added and keeps the
+original auth gate (`authorize('admin'|'employee'|'customer')`) fully intact.
+
+**Authorization pipeline** (`services/orgScope.js`), reused by every
+department module instead of each one inventing its own scoping logic:
+
+```text
+authenticate → role check (authorize) → permission check (requirePermission)
+   → department/branch/manager-team scope (orgScope) → resource ownership → allow/deny
+```
+
+Precedence: `bank_head`/`allDepartmentAccess` sees everything → `department_head`
+sees their whole department → `manager` sees their direct-report team's
+resources → `employee` sees their branch and/or resources assigned to them.
+
+**Before any of this works, departments must be seeded** — run
+`npm run seed` (see below); it now also upserts the 6 fixed `Department`
+records shown above, in addition to the admin account it always created.
+Nothing else in this section is reachable without that.
+
+### New modules and their status
+
+| Module | Model(s) | Status |
+|---|---|---|
+| Loans | `LoanApplication` | Full hierarchy: employee review → manager review → department-head/admin approval → disburse. Post-disbursement lifecycle (active/overdue/closed) **not implemented** — needs a repayment-schedule engine that doesn't exist yet. |
+| Insurance | `InsuranceProduct`, `InsurancePolicy`, `InsuranceClaim` | Full application→issuance and claim→settlement flow. Claim settlement posts a real `Transaction` and credits the account atomically. Premium always server-calculated, never client-supplied. |
+| Collection | `CollectionCase` | Full casework (assign/contact/promise-to-pay/escalate/close). `overdueAmount` is recorded manually at case creation — no automated overdue-loan detection exists (same repayment-schedule gap as Loans). `recordPayment` is **tracking-only**, does not move real money. |
+| Sales | `SalesLead` | Full lead lifecycle with enforced status transitions, conversion linking, per-employee performance aggregation. |
+| IT/Security | `SecurityEvent`, `SecurityIncident`, `FraudAlert` | Login success/failure logged automatically; 5+ failed logins in 15 min auto-escalates to a fraud alert. Incident/alert review is manual (employee-driven), **not** wired into transaction creation — `transactionController.js` (Phase 4-adjacent, already tested) was deliberately left untouched. |
+
+### New permissions
+
+All granular permissions live in `EmployeeProfile.PERMISSIONS`
+(`models/EmployeeProfile.js`) — see that file for the current list (29 as of
+Phase 8). Assign them to an `EmployeeProfile.permissions` array; `admin`
+bypasses all permission checks as before.
+
+### New API routes
+
+```text
+/api/loans/*         (extended — manager-review + department-head approval added)
+/api/insurance/*      products, policies, claims
+/api/collections/*    cases (internal only, no customer-facing routes)
+/api/sales/*          leads, performance (internal only)
+/api/security/*       events, incidents, fraud-alerts (internal only)
+/api/dashboard/stats  (extended — now department-aware per employee)
+```
+
+
 
 - **Admin:** system/user/account/KYC/audit administration.
 - **Employee:** customer-support/account approval/KYC/transaction monitoring according to backend route permissions.
@@ -168,6 +237,12 @@ npm run build
 
 For end-to-end financial testing, run against a dedicated test MongoDB replica set and exercise authentication, RBAC, IDOR protection, account lifecycle, idempotency, concurrent transfers, insufficient funds, KYC workflow, and audit logging.
 
+`test/orgScope.test.js` covers the department/branch/manager/ownership
+scoping precedence rules with plain-object unit tests (no DB required). The
+`manager` orgRole path (`getTeamUserIds`) queries MongoDB directly and is
+**not** covered by these unit tests — verify it against a real/in-memory
+Mongo instance before relying on manager-level team scoping in production.
+
 ## Production deployment checklist
 
 - [ ] Production secrets configured outside source control.
@@ -186,3 +261,23 @@ For end-to-end financial testing, run against a dedicated test MongoDB replica s
 ## Known limitations
 
 This repository is an engineering project, not a production banking platform certification. Payment-rail integration, AML transaction monitoring, sanctions screening, regulatory reporting, maker-checker controls, secure KYC document storage, HSM/key-management integration, reconciliation operations, and organization-specific compliance controls require additional design and validation before real financial use.
+
+Enterprise layer (Phases 1-9) specific gaps, tracked deliberately rather than silently:
+
+- **No repayment-schedule engine.** Loans have no EMI/repayment tracking, so
+  `active`/`overdue` loan statuses and automatic overdue detection for
+  Collection cases don't exist. Overdue amounts are recorded manually.
+- **Collection `recordPayment` is tracking-only** — updates the case record
+  for reporting, does not touch any `Account` balance or create a real
+  `Transaction`.
+- **Fraud detection is not wired into `transactionController.js`.** The
+  `FraudAlert` model and review workflow are fully functional; only the
+  login-failure rule is currently auto-triggered. Rapid-transaction and
+  unusual-amount rules would need to be added to the tested Phase 4-adjacent
+  money-movement code deliberately, not as a rushed addition.
+- **Demo/seed data covers only the admin account and the 6 department
+  records** — no seeded department heads, managers, branch employees, or
+  demo customers/transactions/applications exist yet (spec Sections 26/34/35,
+  not implemented).
+- **Insurance `lapsed`/`expired` statuses are scaffolded but never set** —
+  no scheduled job checks premium due-dates yet.

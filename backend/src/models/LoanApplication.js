@@ -34,6 +34,7 @@ const loanApplicationSchema = new mongoose.Schema(
     // BANKING
     account: { type: mongoose.Schema.Types.ObjectId, ref: 'Account', required: true, immutable: true },
     branch: { type: mongoose.Schema.Types.ObjectId, ref: 'Branch', default: null },
+    department: { type: mongoose.Schema.Types.ObjectId, ref: 'Department', default: null },
 
     // DOCUMENTS — actual files live in the Document collection, this just
     // tracks which document types are still outstanding.
@@ -42,13 +43,18 @@ const loanApplicationSchema = new mongoose.Schema(
 
     status: {
       type: String,
-      enum: ['draft', 'submitted', 'under_review', 'documents_required', 'approved', 'rejected', 'disbursed', 'cancelled'],
+      enum: ['draft', 'submitted', 'under_review', 'documents_required', 'manager_review', 'approved', 'rejected', 'disbursed', 'cancelled'],
       default: 'draft'
     },
     remarks: { type: [remarkSchema], default: [] },
     reviewedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
-    // Employee's recommendation forwarded to admin — admin retains final say.
+    // Employee's recommendation forwarded to their manager.
     employeeRecommendedAmount: { type: mongoose.Schema.Types.Decimal128, default: null },
+    // Manager's recommendation forwarded to the department head / final
+    // approval authority — distinct from the employee's, so both stages of
+    // the review chain remain independently auditable.
+    managerRecommendedAmount: { type: mongoose.Schema.Types.Decimal128, default: null },
+    managerReviewedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
     finalApprovedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
     disbursedAt: { type: Date, default: null },
     submittedAt: { type: Date, default: null }
@@ -69,5 +75,6 @@ loanApplicationSchema.set('toJSON', {
 });
 loanApplicationSchema.index({ status: 1 });
 loanApplicationSchema.index({ branch: 1, status: 1 });
+loanApplicationSchema.index({ department: 1, status: 1 });
 
 module.exports = mongoose.model('LoanApplication', loanApplicationSchema);

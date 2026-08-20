@@ -53,6 +53,18 @@ const compareMoney = (a, b) => {
   return left === right ? 0 : left > right ? 1 : -1;
 };
 
+/**
+ * Computes `percent`% of a money amount without ever touching floating
+ * point. `percent` may have up to 2 decimal places (e.g. 2.5, 12.75).
+ * Truncates (rounds down) to the nearest paisa/cent, matching how banks
+ * typically compute premiums/interest conservatively.
+ */
+const percentageOf = (amount, percent) => {
+  const amountMinor = decimalToMinor(amount);
+  const percentBasis = BigInt(Math.round(Number(percent) * 100)); // 2.5% -> 250
+  return minorToDecimal((amountMinor * percentBasis) / 10000n);
+};
+
 const minorToString = (minor) => {
   if (typeof minor !== 'bigint' || minor < 0n) throw new Error('Invalid minor-unit value');
   return `${minor / 100n}.${String(minor % 100n).padStart(2, '0')}`;
@@ -70,6 +82,7 @@ module.exports = {
   addMoney,
   subtractMoney,
   compareMoney,
+  percentageOf,
   minorToString,
   moneyToJSON
 };

@@ -5,7 +5,6 @@ const mongoose = require('mongoose');
 const LoanApplication = require('../models/LoanApplication');
 const Account = require('../models/Account');
 const User = require('../models/User');
-const EmployeeProfile = require('../models/EmployeeProfile');
 const CustomerProfile = require('../models/CustomerProfile');
 const Document = require('../models/Document');
 const Transaction = require('../models/Transaction');
@@ -33,6 +32,8 @@ const LOAN_ACTIONS = {
   documentsRequested: 'LOAN_DOCUMENTS_REQUESTED',
   remarkAdded: 'LOAN_REMARK_ADDED',
   recommended: 'LOAN_AMOUNT_RECOMMENDED',
+  forwardedToManager: 'LOAN_FORWARDED_TO_MANAGER',
+  managerRecommended: 'LOAN_MANAGER_AMOUNT_RECOMMENDED',
   approved: 'LOAN_APPROVED',
   rejected: 'LOAN_REJECTED',
   disbursed: 'LOAN_DISBURSED',
@@ -43,7 +44,7 @@ const LOAN_ACTIONS = {
 const serializeLoan = (loan) => {
   const value = loan?.toJSON ? loan.toJSON() : loan;
   if (!value) return value;
-  for (const key of ['monthlyIncome', 'requestedAmount', 'approvedAmount', 'existingEmi', 'employeeRecommendedAmount']) {
+  for (const key of ['monthlyIncome', 'requestedAmount', 'approvedAmount', 'existingEmi', 'employeeRecommendedAmount', 'managerRecommendedAmount']) {
     if (value[key] !== undefined && value[key] !== null && typeof value[key] === 'object' && value[key].$numberDecimal) {
       value[key] = value[key].$numberDecimal;
     }
@@ -59,17 +60,22 @@ const populateLoan = (query) => query
   .populate('reviewedBy', 'fullName email')
   .populate('finalApprovedBy', 'fullName email');
 
+const { loadEmployeeContext, requirePermissions, buildScopeFilter, canAccessResource } = require('../services/orgScope');
+const Department = require('../models/Department');
+
+const LOAN_SCOPE_FIELDS = { branchField: 'branch', departmentField: 'department' };
+
 const getEmployeeScope = async (userId) => {
-  const employee = await EmployeeProfile.findOne({ user: userId, status: 'active' }).select('branch allBranchAccess permissions');
-  if (!employee) throw new ApiError(403, 'Employee profile not found or inactive');
-  if (!employee.permissions.includes('loan.review')) throw new ApiError(403, 'Permission denied. Required permission: loan.review');
+  const employee = await loadEmployeeContext(userId);
+  requirePermissions(employee, 'loan.review');
   return employee;
 };
 
 const assertEmployeeCanAccessLoan = async (loan, userId) => {
   const employee = await getEmployeeScope(userId);
-  if (!employee.allBranchAccess && (!loan.branch || !loan.branch.equals(employee.branch))) {
-    throw new ApiError(403, 'You do not have permission to access loans outside your branch');
+  const allowed = await canAccessResource(employee, loan, LOAN_SCOPE_FIELDS);
+  if (!allowed) {
+    throw new ApiError(403, 'You do not have permission to access loans outside your branch/department');
   }
   return employee;
 };
@@ -95,6 +101,7 @@ const createLoanApplication = asyncHandler(async (req, res) => {
 
   const customerProfile = await CustomerProfile.findOne({ user: req.user._id }).select('homeBranch preferredBranch');
   const applicationBranch = account.branch || customerProfile?.homeBranch || customerProfile?.preferredBranch || null;
+  const loanDepartment = await Department.findOne({ code: 'LOAN' }).select('_id');
   const applicationId = await generateYearScopedId('LN');
   const loan = await LoanApplication.create({
     applicationId,
@@ -112,6 +119,7 @@ const createLoanApplication = asyncHandler(async (req, res) => {
     hasExistingLoans: Boolean(req.body.hasExistingLoans),
     account: account._id,
     branch: applicationBranch,
+    department: loanDepartment?._id || null,
     status: 'submitted',
     submittedAt: new Date()
   });
@@ -192,7 +200,7 @@ const listLoanApplications = asyncHandler(async (req, res) => {
 
   if (req.user.role === 'employee') {
     const employee = await getEmployeeScope(req.user._id);
-    if (!employee.allBranchAccess) filter.branch = employee.branch;
+    Object.assign(filter, await buildScopeFilter(employee, LOAN_SCOPE_FIELDS));
   }
 
   const skip = (page - 1) * limit;
@@ -547,15 +555,101 @@ const verifyLoanDocument = asyncHandler(async (req, res) => {
   }
 });
 
+const forwardLoanToManager = asyncHandler(async (req, res) => {
+  const loan = await LoanApplication.findById(req.params.id);
+  if (!loan) throw new ApiError(404, 'Loan application not found');
+  const employee = await assertEmployeeCanAccessLoan(loan, req.user._id);
+
+  if (loan.status !== 'under_review') {
+    throw new ApiError(400, `Cannot forward to manager while loan is ${loan.status}`);
+  }
+  if (!loan.employeeRecommendedAmount) {
+    throw new ApiError(400, 'An amount recommendation is required before forwarding to a manager');
+  }
+  if (loan.documentsRequested.length > 0) {
+    throw new ApiError(400, 'All requested documents must be submitted and verified before forwarding to a manager');
+  }
+  if (!employee.manager) {
+    throw new ApiError(400, 'No manager is assigned to your employee profile — ask an admin to set one before forwarding loans');
+  }
+
+  const before = serializeLoan(loan);
+  loan.status = 'manager_review';
+  await loan.save();
+
+  await writeAuditLog({
+    actor: req.user,
+    action: LOAN_ACTIONS.forwardedToManager,
+    targetType: 'LoanApplication',
+    targetId: loan._id,
+    before,
+    after: serializeLoan(loan),
+    req
+  });
+
+  return new ApiResponse(200, 'Loan forwarded to manager for review', { loan: serializeLoan(loan) }).send(res);
+});
+
+const managerReviewLoan = asyncHandler(async (req, res) => {
+  const loan = await LoanApplication.findById(req.params.id);
+  if (!loan) throw new ApiError(404, 'Loan application not found');
+
+  const manager = await loadEmployeeContext(req.user._id);
+  requirePermissions(manager, 'loan.review');
+  if (!['manager', 'department_head', 'bank_head'].includes(manager.orgRole)) {
+    throw new ApiError(403, 'Only a manager or above can perform manager-level loan review');
+  }
+  const allowed = await canAccessResource(manager, loan, LOAN_SCOPE_FIELDS);
+  if (!allowed) throw new ApiError(403, 'You do not have permission to review this loan');
+
+  if (loan.status !== 'manager_review') {
+    throw new ApiError(400, `Cannot record a manager decision while loan is ${loan.status}`);
+  }
+
+  const before = serializeLoan(loan);
+  loan.managerReviewedBy = req.user._id;
+
+  if (req.body.decision === 'reject') {
+    loan.status = 'rejected';
+    loan.remarks.push({ text: `Rejected at manager review: ${req.body.reason}`, by: req.user._id, at: new Date() });
+  } else {
+    const amount = toDecimal128(req.body.amount || decimalToString(loan.employeeRecommendedAmount));
+    if (compareMoney(amount, loan.employeeRecommendedAmount) > 0) {
+      throw new ApiError(400, "Manager recommendation cannot exceed the employee's recommended amount");
+    }
+    loan.managerRecommendedAmount = amount;
+    // Status stays 'manager_review' — approveLoanApplication is the gate
+    // that requires managerRecommendedAmount to be set, mirroring how
+    // employee recommendation already works without a separate status.
+  }
+  await loan.save();
+
+  await writeAuditLog({
+    actor: req.user,
+    action: req.body.decision === 'reject' ? LOAN_ACTIONS.rejected : LOAN_ACTIONS.managerRecommended,
+    targetType: 'LoanApplication',
+    targetId: loan._id,
+    before,
+    after: serializeLoan(loan),
+    req
+  });
+
+  if (req.body.decision === 'reject') {
+    await notifyCustomer(loan.customer, 'Loan Application Rejected', `Your loan application ${loan.applicationId} was rejected. Reason: ${req.body.reason}`, 'error');
+  }
+
+  return new ApiResponse(200, 'Manager review recorded', { loan: serializeLoan(loan) }).send(res);
+});
+
 const approveLoanApplication = asyncHandler(async (req, res) => {
   const loan = await LoanApplication.findById(req.params.id);
   if (!loan) throw new ApiError(404, 'Loan application not found');
 
-  if (loan.status !== 'under_review') {
+  if (loan.status !== 'manager_review') {
     throw new ApiError(400, `Cannot approve a loan while it is ${loan.status}`);
   }
   if (!loan.reviewedBy) throw new ApiError(400, 'Employee review is required before final approval');
-  if (!loan.employeeRecommendedAmount) throw new ApiError(400, 'Employee recommendation is required before final approval');
+  if (!loan.managerRecommendedAmount) throw new ApiError(400, 'Manager review is required before final approval');
 
   const documents = await Document.find({
     _id: { $in: loan.documents },
@@ -574,7 +668,10 @@ const approveLoanApplication = asyncHandler(async (req, res) => {
     throw new ApiError(400, 'All requested loan documents must be submitted and verified before approval');
   }
 
-  const approvedAmount = toDecimal128(req.body.approvedAmount || decimalToString(loan.employeeRecommendedAmount));
+  const approvedAmount = toDecimal128(req.body.approvedAmount || decimalToString(loan.managerRecommendedAmount));
+  if (compareMoney(approvedAmount, loan.managerRecommendedAmount) > 0) {
+    throw new ApiError(400, "Approved amount cannot exceed the manager's recommended amount");
+  }
   if (compareMoney(approvedAmount, loan.requestedAmount) > 0) {
     throw new ApiError(400, 'Approved amount cannot exceed the requested amount');
   }
@@ -737,6 +834,8 @@ module.exports = {
   requestLoanDocuments,
   addLoanRemark,
   recommendLoanAmount,
+  forwardLoanToManager,
+  managerReviewLoan,
   attachLoanDocuments,
   uploadLoanDocument,
   downloadLoanDocument,

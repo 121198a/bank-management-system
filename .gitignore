@@ -38,3 +38,6 @@ Thumbs.db
 
 # Local files
 *.local
+
+# Temporary development backups
+*.phase2-backup

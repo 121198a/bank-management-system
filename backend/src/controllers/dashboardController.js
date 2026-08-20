@@ -8,6 +8,40 @@ const { decimalToString, addMoney } = require('../utils/money');
 
 const serializeTransactions = (items) => items.map((item) => item.toJSON());
 
+const getBankHeadDashboard = async (res) => {
+  const LoanApplication = require('../models/LoanApplication');
+  const InsurancePolicy = require('../models/InsurancePolicy');
+  const InsuranceClaim = require('../models/InsuranceClaim');
+  const CollectionCase = require('../models/CollectionCase');
+  const SalesLead = require('../models/SalesLead');
+  const SecurityIncident = require('../models/SecurityIncident');
+  const FraudAlert = require('../models/FraudAlert');
+
+  const [
+    totalCustomers, totalAccounts, activeAccounts,
+    totalLoans, activeLoans, overdueCollectionCases,
+    activePolicies, pendingClaims,
+    convertedLeads, openIncidents, openFraudAlerts
+  ] = await Promise.all([
+    User.countDocuments({ role: 'customer' }), Account.countDocuments(), Account.countDocuments({ status: 'active' }),
+    LoanApplication.countDocuments(), LoanApplication.countDocuments({ status: 'disbursed' }),
+    CollectionCase.countDocuments({ status: { $nin: ['recovered', 'closed'] } }),
+    InsurancePolicy.countDocuments({ status: 'active' }), InsuranceClaim.countDocuments({ status: { $in: ['submitted', 'under_review', 'manager_review'] } }),
+    SalesLead.countDocuments({ status: 'converted' }), SecurityIncident.countDocuments({ status: { $in: ['open', 'investigating'] } }),
+    FraudAlert.countDocuments({ status: { $in: ['open', 'under_review'] } })
+  ]);
+
+  return new ApiResponse(200, 'Bank Head dashboard fetched', {
+    customers: totalCustomers,
+    accounts: { total: totalAccounts, active: activeAccounts },
+    loans: { total: totalLoans, disbursed: activeLoans },
+    collection: { openCases: overdueCollectionCases },
+    insurance: { activePolicies, pendingClaims },
+    sales: { convertedLeads },
+    security: { openIncidents, openFraudAlerts }
+  }).send(res);
+};
+
 const getDashboardStats = asyncHandler(async (req, res) => {
   const { role, _id: userId } = req.user;
 
@@ -44,6 +78,82 @@ const getDashboardStats = asyncHandler(async (req, res) => {
   }
 
   if (role === 'employee') {
+    const EmployeeProfile = require('../models/EmployeeProfile');
+    const profile = await EmployeeProfile.findOne({ user: userId, status: 'active' }).populate('department', 'code name');
+    const deptCode = profile?.department?.code;
+
+    if (profile?.orgRole === 'bank_head') {
+      return getBankHeadDashboard(res);
+    }
+
+    if (deptCode === 'LOAN') {
+      const { buildScopeFilter } = require('../services/orgScope');
+      const LoanApplication = require('../models/LoanApplication');
+      const scope = await buildScopeFilter(profile, { branchField: 'branch', departmentField: 'department' });
+      const [byStatus, pendingReview, disbursedAgg] = await Promise.all([
+        LoanApplication.aggregate([{ $match: scope }, { $group: { _id: '$status', count: { $sum: 1 } } }]),
+        LoanApplication.countDocuments({ ...scope, status: { $in: ['under_review', 'manager_review', 'documents_required'] } }),
+        LoanApplication.aggregate([{ $match: { ...scope, status: 'disbursed' } }, { $group: { _id: null, total: { $sum: '$approvedAmount' }, count: { $sum: 1 } } }])
+      ]);
+      return new ApiResponse(200, 'Loan department dashboard fetched', {
+        department: 'LOAN', byStatus, pendingReview,
+        disbursedPortfolio: { count: disbursedAgg[0]?.count || 0, totalAmount: decimalToString(disbursedAgg[0]?.total || '0.00') }
+      }).send(res);
+    }
+
+    if (deptCode === 'INSURANCE') {
+      const { buildScopeFilter } = require('../services/orgScope');
+      const InsurancePolicy = require('../models/InsurancePolicy');
+      const InsuranceClaim = require('../models/InsuranceClaim');
+      const scope = await buildScopeFilter(profile, { branchField: 'branch', departmentField: 'department' });
+      const [policiesByStatus, claimsByStatus, activePolicies] = await Promise.all([
+        InsurancePolicy.aggregate([{ $match: scope }, { $group: { _id: '$status', count: { $sum: 1 } } }]),
+        InsuranceClaim.aggregate([{ $match: scope }, { $group: { _id: '$status', count: { $sum: 1 } } }]),
+        InsurancePolicy.countDocuments({ ...scope, status: 'active' })
+      ]);
+      return new ApiResponse(200, 'Insurance department dashboard fetched', { department: 'INSURANCE', policiesByStatus, claimsByStatus, activePolicies }).send(res);
+    }
+
+    if (deptCode === 'COLLECTION') {
+      const { buildScopeFilter } = require('../services/orgScope');
+      const CollectionCase = require('../models/CollectionCase');
+      const scope = await buildScopeFilter(profile, { branchField: 'branch', departmentField: 'department', assigneeField: 'assignedEmployee' });
+      const [byStatus, recoveredAgg, myOpenCases] = await Promise.all([
+        CollectionCase.aggregate([{ $match: scope }, { $group: { _id: '$status', count: { $sum: 1 } } }]),
+        CollectionCase.aggregate([{ $match: scope }, { $group: { _id: null, total: { $sum: '$recoveredAmount' } } }]),
+        CollectionCase.countDocuments({ assignedEmployee: userId, status: { $nin: ['recovered', 'closed'] } })
+      ]);
+      return new ApiResponse(200, 'Collection department dashboard fetched', {
+        department: 'COLLECTION', byStatus, myOpenCases, totalRecovered: decimalToString(recoveredAgg[0]?.total || '0.00')
+      }).send(res);
+    }
+
+    if (deptCode === 'SALES') {
+      const { buildScopeFilter } = require('../services/orgScope');
+      const SalesLead = require('../models/SalesLead');
+      const scope = await buildScopeFilter(profile, { branchField: 'branch', departmentField: 'department', assigneeField: 'assignedEmployee' });
+      const [byStatus, myLeads, converted] = await Promise.all([
+        SalesLead.aggregate([{ $match: scope }, { $group: { _id: '$status', count: { $sum: 1 } } }]),
+        SalesLead.countDocuments({ assignedEmployee: userId, status: { $nin: ['converted', 'lost', 'closed'] } }),
+        SalesLead.countDocuments({ ...scope, status: 'converted' })
+      ]);
+      return new ApiResponse(200, 'Sales department dashboard fetched', { department: 'SALES', byStatus, myLeads, converted }).send(res);
+    }
+
+    if (deptCode === 'IT_SECURITY') {
+      const SecurityEvent = require('../models/SecurityEvent');
+      const SecurityIncident = require('../models/SecurityIncident');
+      const FraudAlert = require('../models/FraudAlert');
+      const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000);
+      const [failedLogins24h, openIncidents, openFraudAlerts, recentEvents] = await Promise.all([
+        SecurityEvent.countDocuments({ type: 'LOGIN_FAILED', createdAt: { $gte: since24h } }),
+        SecurityIncident.countDocuments({ status: { $in: ['open', 'investigating'] } }),
+        FraudAlert.countDocuments({ status: { $in: ['open', 'under_review'] } }),
+        SecurityEvent.find().sort({ createdAt: -1 }).limit(10)
+      ]);
+      return new ApiResponse(200, 'IT/Security dashboard fetched', { department: 'IT_SECURITY', failedLogins24h, openIncidents, openFraudAlerts, recentEvents }).send(res);
+    }
+
     const [pendingAccounts, pendingKyc, recentTransactions, totalCustomers] = await Promise.all([
       Account.countDocuments({ status: 'pending' }), KYCRequest.countDocuments({ status: 'pending' }),
       Transaction.find().populate('account', 'accountNumber accountType').populate('performedBy', 'fullName').sort({ createdAt: -1 }).limit(10),

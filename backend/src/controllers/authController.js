@@ -15,9 +15,38 @@ const {
 } = require('../services/tokenService');
 const { sendPasswordResetEmail } = require('../services/emailService');
 const { writeAuditLog } = require('../middleware/auditLogger');
+const { logSecurityEvent, checkRepeatedFailedLogins } = require('../services/securityEventService');
+const { generateYearScopedId } = require('../utils/sequence');
 const env = require('../config/env');
 
 const REFRESH_COOKIE_NAME = 'refreshToken';
+
+/**
+ * Logs a failed login attempt and, if this email has failed repeatedly in a
+ * short window, escalates to a suspicious-login event + fraud alert.
+ * Explainable rule (Section 17), not ML. Never throws — a failure here must
+ * not mask the original "Invalid email or password" response.
+ */
+const handleFailedLogin = async (email, req, userId = null) => {
+  await logSecurityEvent({ type: 'LOGIN_FAILED', user: userId, email, req, severity: 'low' });
+  try {
+    const isSuspicious = await checkRepeatedFailedLogins(email);
+    if (isSuspicious) {
+      await logSecurityEvent({ type: 'SUSPICIOUS_LOGIN', user: userId, email, req, severity: 'high', metadata: { rule: 'repeated_failed_logins' } });
+      const FraudAlert = require('../models/FraudAlert');
+      const alertId = await generateYearScopedId('FRD');
+      await FraudAlert.create({
+        alertId,
+        severity: 'high',
+        reason: `5 or more failed login attempts for ${email} within 15 minutes`,
+        rule: 'repeated_failed_logins',
+        relatedUser: userId
+      });
+    }
+  } catch (error) {
+    console.error(`Failed-login escalation check failed: ${error.message}`);
+  }
+};
 
 const refreshCookieOptions = {
   httpOnly: true,
@@ -80,14 +109,21 @@ const login = asyncHandler(async (req, res) => {
 
   const user = await User.findOne({ email }).select('+passwordHash +refreshTokenHash');
 
-  if (!user) throw new ApiError(401, 'Invalid email or password');
+  if (!user) {
+    await handleFailedLogin(email, req);
+    throw new ApiError(401, 'Invalid email or password');
+  }
 
   if (!user.isActive) {
+    await handleFailedLogin(email, req, user._id);
     throw new ApiError(401, 'Invalid email or password');
   }
 
   const isMatch = await user.comparePassword(password);
-  if (!isMatch) throw new ApiError(401, 'Invalid email or password');
+  if (!isMatch) {
+    await handleFailedLogin(email, req, user._id);
+    throw new ApiError(401, 'Invalid email or password');
+  }
 
   const accessToken = generateAccessToken(user);
   const refreshToken = generateRefreshToken(user);
@@ -96,6 +132,8 @@ const login = asyncHandler(async (req, res) => {
   await user.save();
 
   res.cookie(REFRESH_COOKIE_NAME, refreshToken, refreshCookieOptions);
+
+  await logSecurityEvent({ type: 'LOGIN_SUCCESS', user: user._id, email, req, severity: 'low' });
 
   await writeAuditLog({
     actor: user,

@@ -6,8 +6,25 @@
 const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 const User = require('../models/User');
+const Department = require('../models/Department');
 const connectDB = require('../config/db');
 const env = require('../config/env');
+
+const DEPARTMENTS = [
+  { code: 'RETAIL_BANKING', name: 'Retail Banking', description: 'Branch operations: accounts, deposits, withdrawals, KYC' },
+  { code: 'LOAN', name: 'Loan Department', description: 'Loan applications, review, and disbursement' },
+  { code: 'INSURANCE', name: 'Insurance Department', description: 'Insurance policies and claims' },
+  { code: 'COLLECTION', name: 'Loan Collection Department', description: 'Overdue loan collection casework' },
+  { code: 'SALES', name: 'Sales & Business Department', description: 'Lead generation and conversion' },
+  { code: 'IT_SECURITY', name: 'IT & Cybersecurity Department', description: 'Security monitoring, incidents, fraud review' }
+];
+
+const seedDepartments = async () => {
+  for (const dept of DEPARTMENTS) {
+    await Department.findOneAndUpdate({ code: dept.code }, { $setOnInsert: dept }, { upsert: true, new: true });
+  }
+  console.log(`Departments seeded/verified: ${DEPARTMENTS.map((d) => d.code).join(', ')}`);
+};
 
 const seed = async () => {
   if (!env.adminSeed.email || !env.adminSeed.password) {
@@ -18,6 +35,8 @@ const seed = async () => {
   }
 
   await connectDB();
+  await seedDepartments();
+
   const email = env.adminSeed.email.trim().toLowerCase();
   const passwordHash = await bcrypt.hash(env.adminSeed.password, 12);
   let user = await User.findOne({ email }).select('+passwordHash +refreshTokenHash');
