@@ -81,6 +81,7 @@ const failOperation = async (record) => {
   try {
     await record.deleteOne();
   } catch (_) {
+    // Best effort cleanup; the TTL index prevents indefinite retention.
   }
 };
 
@@ -219,6 +220,7 @@ const transfer = asyncHandler(async (req, res) => {
       if (fromAccount.currency !== toAccount.currency) throw new ApiError(400, 'Source and recipient currencies must match');
       if (compareMoney(fromAccount.balance, amount) < 0) throw new ApiError(400, 'Insufficient balance for this transfer');
 
+      // Deterministic write order reduces transaction contention/deadlock risk.
       const accountsInOrder = [fromAccount, toAccount].sort((a, b) => String(a._id).localeCompare(String(b._id)));
       for (const account of accountsInOrder) {
         if (account._id.equals(fromAccount._id)) account.balance = subtractMoney(account.balance, amount);

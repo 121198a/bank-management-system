@@ -14,6 +14,7 @@ const getEmployeeScope = async (userId, permission) => {
   return employee;
 };
 
+// ==================== SECURITY EVENTS (read-only feed) ====================
 
 const listSecurityEvents = asyncHandler(async (req, res) => {
   await getEmployeeScope(req.user._id, 'security.alert.view');
@@ -24,6 +25,7 @@ const listSecurityEvents = asyncHandler(async (req, res) => {
   return new ApiResponse(200, 'Security events fetched', { events }).send(res);
 });
 
+// ==================== INCIDENTS ====================
 
 const createIncident = asyncHandler(async (req, res) => {
   await getEmployeeScope(req.user._id, 'security.incident.create');
@@ -67,6 +69,7 @@ const resolveIncident = asyncHandler(async (req, res) => {
   return new ApiResponse(200, 'Incident updated', { incident }).send(res);
 });
 
+// ==================== FRAUD ALERTS ====================
 
 const listFraudAlerts = asyncHandler(async (req, res) => {
   await getEmployeeScope(req.user._id, 'security.alert.view');

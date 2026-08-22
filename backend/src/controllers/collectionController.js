@@ -11,7 +11,9 @@ const { toDecimal128, decimalToString, compareMoney, addMoney } = require('../ut
 const { generateYearScopedId } = require('../utils/sequence');
 const { loadEmployeeContext, requirePermissions, buildScopeFilter, canAccessResource } = require('../services/orgScope');
 
-
+// Cases are scoped by department/branch AND by assignment, so a manager
+// sees their team's cases (via assigneeField) without needing department-
+// wide access, matching Section 10's "managers can see their team's cases".
 const CASE_SCOPE_FIELDS = { branchField: 'branch', departmentField: 'department', assigneeField: 'assignedEmployee' };
 
 const serializeCase = (c) => {

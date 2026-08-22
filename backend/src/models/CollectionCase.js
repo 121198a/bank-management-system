@@ -21,11 +21,16 @@ const remarkSchema = new mongoose.Schema(
 
 const collectionCaseSchema = new mongoose.Schema(
   {
+    // e.g. COL-2026-000001
     caseNumber: { type: String, required: true, unique: true, immutable: true },
     loan: { type: mongoose.Schema.Types.ObjectId, ref: 'LoanApplication', required: true, immutable: true },
     customer: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, immutable: true },
     branch: { type: mongoose.Schema.Types.ObjectId, ref: 'Branch', default: null },
     department: { type: mongoose.Schema.Types.ObjectId, ref: 'Department', default: null },
+
+    // Recorded manually at case creation by the opening employee/manager —
+    // there is no automated EMI/repayment-schedule engine yet to detect
+    // this, so it is not derived from loan data server-side.
     overdueAmount: { type: mongoose.Schema.Types.Decimal128, required: true },
     dueSince: { type: Date, required: true },
 
@@ -46,7 +51,9 @@ const collectionCaseSchema = new mongoose.Schema(
       recordedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
       recordedAt: { type: Date, default: null }
     },
-    
+    // Tracking/reporting only — does NOT move real money. No repayment
+    // ledger exists yet to post an actual transaction against; recording a
+    // real settlement here without one would misrepresent account state.
     recoveredAmount: { type: mongoose.Schema.Types.Decimal128, default: '0.00' },
 
     escalatedTo: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },

@@ -1,4 +1,6 @@
-
+/**
+ * Standard success response shape used across all controllers.
+ */
 class ApiResponse {
   constructor(statusCode, message, data = null, meta = null) {
     this.success = statusCode < 400;

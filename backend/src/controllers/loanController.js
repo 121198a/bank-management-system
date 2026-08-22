@@ -621,6 +621,9 @@ const managerReviewLoan = asyncHandler(async (req, res) => {
       throw new ApiError(400, "Manager recommendation cannot exceed the employee's recommended amount");
     }
     loan.managerRecommendedAmount = amount;
+    // Status stays 'manager_review' — approveLoanApplication is the gate
+    // that requires managerRecommendedAmount to be set, mirroring how
+    // employee recommendation already works without a separate status.
   }
   await loan.save();
 
@@ -709,7 +712,7 @@ const rejectLoanApplication = asyncHandler(async (req, res) => {
   const loan = await LoanApplication.findById(req.params.id);
   if (!loan) throw new ApiError(404, 'Loan application not found');
 
-  if (!['under_review', 'documents_required'].includes(loan.status)) {
+  if (!['under_review', 'documents_required', 'manager_review'].includes(loan.status)) {
     throw new ApiError(400, `Cannot reject a loan while it is ${loan.status}`);
   }
 
@@ -764,7 +767,8 @@ const disburseLoan = asyncHandler(async (req, res) => {
         accountBalance: decimalToString(account.balance)
       };
 
-    
+      // The approved -> disbursed state check is inside the MongoDB
+      // transaction, so concurrent disbursement attempts cannot both commit.
       account.balance = require('../utils/money').addMoney(account.balance, loan.approvedAmount);
       await account.save({ session });
 

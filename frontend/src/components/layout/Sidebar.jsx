@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, CreditCard, ArrowDownToLine, ArrowUpFromLine,
   ArrowLeftRight, History, ShieldCheck, User, Bell, LogOut,
-  Users, FileText, ClipboardList, ChevronLeft, ChevronRight,
-  Banknote, Building2
+  Users, ClipboardList, ChevronLeft, ChevronRight,
+  Banknote, Building2, Umbrella, PhoneCall, TrendingUp, ShieldAlert
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import toast from 'react-hot-toast';
+import { useEmployee } from '../../context/EmployeeContext';
 
 const navConfig = {
   customer: [
@@ -18,6 +18,7 @@ const navConfig = {
     { to: '/dashboard/transfer', icon: ArrowLeftRight, label: 'Transfer' },
     { to: '/dashboard/transactions', icon: History, label: 'Transactions' },
     { to: '/dashboard/loans', icon: Banknote, label: 'Loans' },
+    { to: '/dashboard/insurance', icon: Umbrella, label: 'Insurance' },
     { to: '/dashboard/kyc', icon: ShieldCheck, label: 'KYC Verification' },
     { to: '/dashboard/notifications', icon: Bell, label: 'Notifications' },
     { to: '/dashboard/profile', icon: User, label: 'Profile' }
@@ -28,28 +29,64 @@ const navConfig = {
     { to: '/admin/accounts', icon: CreditCard, label: 'Accounts' },
     { to: '/admin/transactions', icon: History, label: 'Transactions' },
     { to: '/admin/loans', icon: Banknote, label: 'Loans' },
+    { to: '/admin/insurance', icon: Umbrella, label: 'Insurance' },
+    { to: '/admin/collections', icon: PhoneCall, label: 'Collections' },
+    { to: '/admin/sales', icon: TrendingUp, label: 'Sales' },
+    { to: '/admin/security', icon: ShieldAlert, label: 'Security' },
     { to: '/admin/kyc', icon: ShieldCheck, label: 'KYC Management' },
     { to: '/admin/audit', icon: ClipboardList, label: 'Audit Logs' },
     { to: '/admin/notifications', icon: Bell, label: 'Notifications' },
     { to: '/admin/profile', icon: User, label: 'Profile' }
-  ],
-  employee: [
-    { to: '/employee', icon: LayoutDashboard, label: 'Dashboard' },
-    { to: '/employee/accounts', icon: CreditCard, label: 'Account Approvals' },
-    { to: '/employee/kyc', icon: ShieldCheck, label: 'KYC Review' },
-    { to: '/employee/transactions', icon: History, label: 'Transactions' },
-    { to: '/employee/loans', icon: Banknote, label: 'Loan Review' },
-    { to: '/employee/audit', icon: ClipboardList, label: 'Audit Logs' },
-    { to: '/employee/notifications', icon: Bell, label: 'Notifications' },
-    { to: '/employee/profile', icon: User, label: 'Profile' }
   ]
 };
 
-const Sidebar = ({ role }) => {
+// Base links every employee gets regardless of department (retail-banking
+// duties, unchanged from before this phase).
+const EMPLOYEE_BASE = [
+  { to: '/employee', icon: LayoutDashboard, label: 'Dashboard' },
+  { to: '/employee/accounts', icon: CreditCard, label: 'Account Approvals' },
+  { to: '/employee/kyc', icon: ShieldCheck, label: 'KYC Review' },
+  { to: '/employee/transactions', icon: History, label: 'Transactions' }
+];
+
+// Department-specific links, shown only when the employee's own department
+// matches AND (for the loan link, which everyone already had) is unconditional.
+const buildEmployeeNav = ({ hasDepartment, hasPermission }) => {
+  const links = [...EMPLOYEE_BASE];
+  links.push({ to: '/employee/loans', icon: Banknote, label: 'Loan Review' });
+  if (hasDepartment('INSURANCE') && hasPermission('insurance.review')) links.push({ to: '/employee/insurance', icon: Umbrella, label: 'Insurance' });
+  if (hasDepartment('COLLECTION') && hasPermission('collection.view')) links.push({ to: '/employee/collections', icon: PhoneCall, label: 'Collections' });
+  if (hasDepartment('SALES') && hasPermission('sales.view')) links.push({ to: '/employee/sales', icon: TrendingUp, label: 'Sales' });
+  if (hasDepartment('IT_SECURITY') && hasPermission('security.alert.view')) links.push({ to: '/employee/security', icon: ShieldAlert, label: 'Security' });
+  links.push({ to: '/employee/audit', icon: ClipboardList, label: 'Audit Logs' });
+  links.push({ to: '/employee/notifications', icon: Bell, label: 'Notifications' });
+  links.push({ to: '/employee/profile', icon: User, label: 'Profile' });
+  return links;
+};
+
+const Sidebar = ({ role, mobileOpen = false, onMobileClose = () => {} }) => {
   const [collapsed, setCollapsed] = useState(false);
   const { logout, user } = useAuth();
+  const employeeCtx = useEmployee();
   const navigate = useNavigate();
-  const links = navConfig[role] || navConfig.customer;
+  const location = useLocation();
+
+  // Frontend nav-hiding is UX only — every route below is still enforced
+  // server-side by authorize()/requirePermission(); hiding here never
+  // substitutes for that (Section 27).
+  const links = role === 'employee' ? buildEmployeeNav(employeeCtx) : (navConfig[role] || navConfig.customer);
+
+  // Close the mobile drawer whenever the route changes (tapping a link) or
+  // Escape is pressed — mirrors Modal.jsx's keyboard-close pattern.
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentionally only re-runs on route change, not on onMobileClose identity
+  useEffect(() => { onMobileClose(); }, [location.pathname]);
+  useEffect(() => {
+    if (!mobileOpen) return undefined;
+    const onKeyDown = (e) => { if (e.key === 'Escape') onMobileClose(); };
+    document.addEventListener('keydown', onKeyDown);
+    document.body.style.overflow = 'hidden';
+    return () => { document.removeEventListener('keydown', onKeyDown); document.body.style.overflow = ''; };
+  }, [mobileOpen, onMobileClose]);
 
   const handleLogout = async () => {
     await logout();
@@ -57,11 +94,26 @@ const Sidebar = ({ role }) => {
   };
 
   return (
-    <aside
-      className={`relative flex flex-col h-screen bg-white dark:bg-banking-card border-r border-gray-100 dark:border-banking-border transition-all duration-300 flex-shrink-0 ${
-        collapsed ? 'w-16' : 'w-60'
-      }`}
-    >
+    <>
+      {/* Mobile backdrop — only rendered/interactive below lg, closes on tap */}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          onClick={onMobileClose}
+          aria-hidden="true"
+        />
+      )}
+
+      <aside
+        className={`
+          fixed inset-y-0 left-0 z-50 flex flex-col h-screen bg-white dark:bg-banking-card
+          border-r border-gray-100 dark:border-banking-border transition-transform duration-300 flex-shrink-0
+          w-72 ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}
+          lg:static lg:translate-x-0 lg:transition-all
+          ${collapsed ? 'lg:w-16' : 'lg:w-60'}
+        `}
+        aria-label="Main navigation"
+      >
       {/* Logo */}
       <div className="flex items-center gap-3 px-4 py-5 border-b border-gray-100 dark:border-banking-border bg-gradient-to-b from-primary-50/70 to-transparent dark:from-primary-950/30">
         <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary-500 to-emerald-700 flex items-center justify-center flex-shrink-0 shadow-lg shadow-primary-600/20">
@@ -111,6 +163,7 @@ const Sidebar = ({ role }) => {
           </div>
         )}
         <button
+          type="button"
           onClick={handleLogout}
           className="sidebar-link-inactive w-full"
           title={collapsed ? 'Logout' : undefined}
@@ -120,11 +173,12 @@ const Sidebar = ({ role }) => {
         </button>
       </div>
 
-      {/* Collapse toggle */}
+      {/* Collapse toggle — desktop only, doesn't apply to the mobile overlay drawer */}
       <button
+        type="button"
         aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         onClick={() => setCollapsed((c) => !c)}
-        className="absolute -right-3 top-20 w-6 h-6 rounded-full bg-white dark:bg-banking-card border border-gray-200 dark:border-banking-border flex items-center justify-center shadow-sm hover:bg-gray-50 dark:hover:bg-banking-border transition-colors"
+        className="hidden lg:flex absolute -right-3 top-20 w-6 h-6 rounded-full bg-white dark:bg-banking-card border border-gray-200 dark:border-banking-border items-center justify-center shadow-sm hover:bg-gray-50 dark:hover:bg-banking-border transition-colors"
         style={{ position: 'fixed', left: collapsed ? '52px' : '228px', top: '80px', zIndex: 50 }}
       >
         {collapsed ? (
@@ -133,7 +187,8 @@ const Sidebar = ({ role }) => {
           <ChevronLeft className="w-3.5 h-3.5 text-gray-500" />
         )}
       </button>
-    </aside>
+      </aside>
+    </>
   );
 };
 

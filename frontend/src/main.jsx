@@ -6,6 +6,7 @@ import { CheckCircle2, Info, X, XCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 import App from './App';
 import { AuthProvider } from './context/AuthContext';
+import { EmployeeProvider } from './context/EmployeeContext';
 import { ThemeProvider } from './context/ThemeContext';
 import './index.css';
 
@@ -47,15 +48,17 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <BrowserRouter>
       <ThemeProvider>
         <AuthProvider>
-          <App />
-          <Toaster
-            position="top-right"
-            gutter={10}
-            reverseOrder={false}
-            toastOptions={{ duration: 4500 }}
-          >
-            {(t) => <ToastNotification t={t} />}
-          </Toaster>
+          <EmployeeProvider>
+            <App />
+            <Toaster
+              position="top-right"
+              gutter={10}
+              reverseOrder={false}
+              toastOptions={{ duration: 4500 }}
+            >
+              {(t) => <ToastNotification t={t} />}
+            </Toaster>
+          </EmployeeProvider>
         </AuthProvider>
       </ThemeProvider>
     </BrowserRouter>

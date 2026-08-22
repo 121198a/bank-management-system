@@ -17,10 +17,12 @@ export default defineConfig({
     sourcemap: false,
     rollupOptions: {
       output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom', 'react-router-dom'],
-          charts: ['recharts'],
-          icons: ['lucide-react']
+        manualChunks(id) {
+          if (!id.includes('node_modules')) return undefined;
+          if (id.includes('recharts')) return 'charts';
+          if (id.includes('lucide-react')) return 'icons';
+          if (id.includes('react-router-dom') || id.includes(`${'/'}react${'/'}`) || id.includes('react-dom')) return 'vendor';
+          return undefined;
         }
       }
     }

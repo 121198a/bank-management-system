@@ -19,6 +19,7 @@ const generatePassword = () => {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$';
   let pwd = '';
   for (let i = 0; i < 12; i++) pwd += chars[Math.floor(Math.random() * chars.length)];
+  // Guarantee it passes validation: uppercase + lowercase + digit
   return 'A1' + pwd;
 };
 

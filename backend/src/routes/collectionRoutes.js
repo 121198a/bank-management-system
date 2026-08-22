@@ -19,7 +19,8 @@ const {
 const router = express.Router();
 
 router.use(authenticate);
-
+// Collection is entirely internal — no customer-facing endpoints here,
+// unlike loans/insurance which have customer application flows.
 router.use(authorize('admin', 'employee'));
 
 router.post('/cases', createCaseValidator, validate, createCase);

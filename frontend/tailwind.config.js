@@ -4,6 +4,13 @@ export default {
   darkMode: 'class',
   theme: {
     extend: {
+      // Additive only — Tailwind's default sm(640)/md(768)/lg(1024)/xl(1280)/
+      // 2xl(1536) scale stays untouched (every existing page already relies
+      // on it). `xs` fills the gap for the smallest phones in the deployment
+      // target list (320-414px) where the default scale has no breakpoint.
+      screens: {
+        xs: '400px'
+      },
       colors: {
         primary: {
           50:  '#f0fdf4',

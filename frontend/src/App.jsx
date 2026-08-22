@@ -24,6 +24,7 @@ import CustomerKyc from './pages/customer/Kyc';
 import CustomerProfile from './pages/customer/Profile';
 import CustomerNotifications from './pages/customer/Notifications';
 import CustomerLoans from './pages/customer/Loans';
+import CustomerInsurance from './pages/customer/Insurance';
 
 // Admin pages
 import AdminDashboard from './pages/admin/Dashboard';
@@ -41,6 +42,10 @@ import EmployeeKyc from './pages/employee/Kyc';
 import EmployeeTransactions from './pages/employee/Transactions';
 import EmployeeLoans from './pages/employee/Loans';
 import EmployeeAuditLogs from './pages/employee/AuditLogs';
+import EmployeeInsurance from './pages/employee/Insurance';
+import EmployeeCollections from './pages/employee/Collections';
+import EmployeeSales from './pages/employee/Sales';
+import EmployeeSecurity from './pages/employee/Security';
 
 const RoleRedirect = () => {
   const { user } = useAuth();
@@ -87,6 +92,7 @@ const App = () => {
         <Route path="transfer" element={<CustomerTransfer />} />
         <Route path="transactions" element={<CustomerTransactions />} />
         <Route path="loans" element={<CustomerLoans />} />
+        <Route path="insurance" element={<CustomerInsurance />} />
         <Route path="kyc" element={<CustomerKyc />} />
         <Route path="profile" element={<CustomerProfile />} />
         <Route path="notifications" element={<CustomerNotifications />} />
@@ -106,6 +112,10 @@ const App = () => {
         <Route path="accounts" element={<AdminAccounts />} />
         <Route path="transactions" element={<AdminTransactions />} />
         <Route path="loans" element={<AdminLoans />} />
+        <Route path="insurance" element={<EmployeeInsurance />} />
+        <Route path="collections" element={<EmployeeCollections />} />
+        <Route path="sales" element={<EmployeeSales />} />
+        <Route path="security" element={<EmployeeSecurity />} />
         <Route path="kyc" element={<AdminKyc />} />
         <Route path="audit" element={<AdminAuditLogs />} />
         <Route path="profile" element={<CustomerProfile />} />
@@ -126,6 +136,10 @@ const App = () => {
         <Route path="kyc" element={<EmployeeKyc />} />
         <Route path="transactions" element={<EmployeeTransactions />} />
         <Route path="loans" element={<EmployeeLoans />} />
+        <Route path="insurance" element={<EmployeeInsurance />} />
+        <Route path="collections" element={<EmployeeCollections />} />
+        <Route path="sales" element={<EmployeeSales />} />
+        <Route path="security" element={<EmployeeSecurity />} />
         <Route path="audit" element={<EmployeeAuditLogs />} />
         <Route path="profile" element={<CustomerProfile />} />
         <Route path="notifications" element={<CustomerNotifications />} />
