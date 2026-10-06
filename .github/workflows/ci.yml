@@ -1,5 +1,8 @@
 name: CI
 
+permissions:
+  contents: read
+
 on:
   push:
     branches: [main, master]
@@ -19,6 +22,8 @@ jobs:
         working-directory: backend
       - run: npm test
         working-directory: backend
+      - run: npm audit --omit=dev --audit-level=high
+        working-directory: backend
       - name: Dependency audit (production, high+)
         run: npm audit --omit=dev --audit-level=high
         working-directory: backend
@@ -37,6 +42,8 @@ jobs:
       - run: npm run lint
         working-directory: frontend
       - run: npm run build
+        working-directory: frontend
+      - run: npm audit --omit=dev --audit-level=high
         working-directory: frontend
       # react-router advisories need the v6->v7 migration (tracked in docs/DECISIONS.md);
       # gate on high+ only until then.

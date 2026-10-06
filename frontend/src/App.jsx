@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import ProtectedRoute from './routes/ProtectedRoute';
 import LoadingScreen from './components/ui/LoadingScreen';
+import NotFound from './pages/public/NotFound';
 
 // Auth pages
 const LoginPage = lazy(() => import('./pages/auth/LoginPage'));
@@ -48,7 +49,6 @@ const EmployeeCollections = lazy(() => import('./pages/employee/Collections'));
 const EmployeeSales = lazy(() => import('./pages/employee/Sales'));
 const EmployeeSecurity = lazy(() => import('./pages/employee/Security'));
 
-const NotFound = lazy(() => import('./pages/public/NotFound'));
 
 const RoleRedirect = () => {
   const { user } = useAuth();

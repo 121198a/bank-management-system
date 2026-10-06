@@ -5,10 +5,10 @@ import { Toaster, resolveValue } from 'react-hot-toast';
 import { CheckCircle2, Info, X, XCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 import App from './App';
+import ErrorBoundary from './components/ui/ErrorBoundary';
 import { AuthProvider } from './context/AuthContext';
 import { EmployeeProvider } from './context/EmployeeContext';
 import { ThemeProvider } from './context/ThemeContext';
-import ErrorBoundary from './components/ui/ErrorBoundary';
 import './index.css';
 
 const ToastNotification = ({ t }) => {
