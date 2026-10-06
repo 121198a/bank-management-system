@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Lock, Eye, EyeOff, Building2, CheckCircle } from 'lucide-react';
 import { authAPI } from '../../api/authAPI';
 import Button from '../../components/ui/Button';

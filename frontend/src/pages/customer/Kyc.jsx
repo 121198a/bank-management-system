@@ -6,6 +6,7 @@ import Button from '../../components/ui/Button';
 import Select from '../../components/ui/Select';
 import Badge from '../../components/ui/Badge';
 import { formatDate, getErrorMessage } from '../../utils/formatters';
+import { CardSkeleton } from '../../components/skeletons/Skeletons';
 import toast from 'react-hot-toast';
 
 const statusIcon = { approved: CheckCircle, rejected: XCircle, pending: Clock };
@@ -109,13 +110,15 @@ const CustomerKyc = () => {
             <Clock className="w-6 h-6 text-yellow-500" />
             <div>
               <p className="font-semibold text-yellow-700 dark:text-yellow-400">Review in Progress</p>
-              <p className="text-sm text-yellow-600 dark:text-yellow-500">Your KYC request is under review. We'll notify you once complete.</p>
+              <p className="text-sm text-yellow-600 dark:text-yellow-500">Your KYC request is under review. We&apos;ll notify you once complete.</p>
             </div>
           </div>
         </div>
       )}
 
-      {requests.length > 0 && (
+      {loading && <div aria-busy="true" aria-label="Loading KYC requests"><CardSkeleton /></div>}
+
+      {!loading && requests.length > 0 && (
         <div className="card p-5">
           <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-4">Submission History</h3>
           <div className="space-y-3">

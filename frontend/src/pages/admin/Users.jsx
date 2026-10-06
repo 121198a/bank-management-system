@@ -181,7 +181,7 @@ const AdminUsers = () => {
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-banking-border bg-white dark:bg-banking-card">
                   {users.length === 0 ? (
-                    <tr><td colSpan={6} className="table-td text-center py-10 text-gray-400">No users found. Click "Create User" to add your first employee or customer.</td></tr>
+                    <tr><td colSpan={6} className="table-td text-center py-10 text-gray-400">No users found. Click &quot;Create User&quot; to add your first employee or customer.</td></tr>
                   ) : users.map((u) => (
                     <tr key={u.id} className="table-row">
                       <td className="table-td">

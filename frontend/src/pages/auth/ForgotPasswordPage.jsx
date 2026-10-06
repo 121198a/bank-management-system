@@ -44,7 +44,7 @@ const ForgotPasswordPage = () => {
               </div>
               <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Check your email</h2>
               <p className="text-gray-500 dark:text-gray-400 text-sm mb-6">
-                If an account exists for <strong>{email}</strong>, we've sent a password reset link. Check your inbox and spam folder.
+                If an account exists for <strong>{email}</strong>, we&apos;ve sent a password reset link. Check your inbox and spam folder.
               </p>
               <Link to="/login" className="btn-primary inline-flex items-center gap-2">
                 <ArrowLeft className="w-4 h-4" /> Back to Sign In
@@ -55,7 +55,7 @@ const ForgotPasswordPage = () => {
               <div className="mb-6">
                 <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Reset your password</h1>
                 <p className="text-gray-500 dark:text-gray-400 text-sm">
-                  Enter the email address associated with your account and we'll send you a link to reset your password.
+                  Enter the email address associated with your account and we&apos;ll send you a link to reset your password.
                 </p>
               </div>
               <form onSubmit={handleSubmit} className="space-y-5">

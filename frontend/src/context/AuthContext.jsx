@@ -38,7 +38,6 @@ export const AuthProvider = ({ children }) => {
   const scheduleRefresh = useCallback(() => {
     clearRefreshTimer();
     refreshTimerRef.current = setTimeout(() => {
-      // eslint-disable-next-line no-use-before-define
       silentRefresh();
     }, 14 * 60 * 1000);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
