@@ -4,7 +4,7 @@ const Input = React.forwardRef(
   ({ label, error, icon: Icon, className = '', containerClass = '', ...props }, ref) => {
     return (
       <div className={`w-full ${containerClass}`}>
-        {label && <label className="input-label">{label}</label>}
+        {label && <label className="input-label">{label}{props.required && <span className="text-red-500 ml-1">*</span>}</label>}
         <div className="relative">
           {Icon && (
             <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">

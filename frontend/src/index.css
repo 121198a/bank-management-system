@@ -7,9 +7,22 @@
     @apply box-border;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
-    @apply font-sans antialiased bg-slate-50 text-slate-900 dark:bg-banking-dark dark:text-gray-100 transition-colors duration-200;
-    background-image: radial-gradient(circle at 10% 0%, rgba(34, 197, 94, 0.06), transparent 28%), radial-gradient(circle at 90% 10%, rgba(59, 130, 246, 0.05), transparent 24%);
+    @apply font-sans antialiased bg-slate-50 text-slate-900 dark:bg-banking-dark dark:text-gray-100 transition-colors duration-300;
+    background-image: radial-gradient(circle at 10% 0%, rgba(34, 197, 94, 0.07), transparent 28%), radial-gradient(circle at 90% 10%, rgba(59, 130, 246, 0.06), transparent 24%);
+    min-height: 100vh;
+  }
+
+  button, a, input, select, textarea {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  ::selection {
+    @apply bg-primary-200 text-primary-950 dark:bg-primary-900 dark:text-primary-100;
   }
 
   ::-webkit-scrollbar {
@@ -26,10 +39,56 @@
 @layer components {
   .card {
     @apply bg-white/95 dark:bg-banking-card rounded-2xl shadow-card border border-gray-100 dark:border-banking-border;
+    transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease, background-color 220ms ease;
+  }
+
+  .card:hover {
+    @apply border-gray-200 dark:border-slate-600;
+    box-shadow: 0 16px 40px -24px rgba(15, 23, 42, 0.45);
+  }
+
+  .page-shell {
+    @apply relative isolate;
+  }
+
+  .page-shell::before {
+    content: '';
+    position: absolute;
+    width: 420px;
+    height: 420px;
+    right: -220px;
+    top: -180px;
+    border-radius: 999px;
+    background: radial-gradient(circle, rgba(34, 197, 94, 0.10), transparent 68%);
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .surface-glow {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .surface-glow::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(115deg, transparent 25%, rgba(255,255,255,0.09) 48%, transparent 70%);
+    transform: translateX(-120%);
+    transition: transform 700ms ease;
+    pointer-events: none;
+  }
+
+  .surface-glow:hover::after {
+    transform: translateX(120%);
   }
 
   .premium-card {
     @apply card relative overflow-hidden;
+  }
+
+  .premium-card:hover {
+    transform: translateY(-2px);
   }
 
   .page-heading {
@@ -45,7 +104,13 @@
   }
 
   .btn-primary {
-    @apply bg-gradient-to-r from-primary-600 to-emerald-500 hover:from-primary-700 hover:to-emerald-600 active:scale-[0.99] text-white font-semibold py-2.5 px-5 rounded-xl transition-all duration-200 shadow-lg shadow-primary-600/20 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+    @apply bg-gradient-to-r from-primary-600 to-emerald-500 hover:from-primary-700 hover:to-emerald-600 active:scale-[0.98] text-white font-semibold py-2.5 px-5 rounded-xl transition-all duration-200 shadow-lg shadow-primary-600/20 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+    background-size: 140% 100%;
+  }
+
+  .btn-primary:hover {
+    background-position: 100% 0;
+    transform: translateY(-1px);
   }
 
   .btn-secondary {
@@ -58,6 +123,22 @@
 
   .input-field {
     @apply w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-banking-border bg-white dark:bg-banking-card text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all duration-200 text-sm shadow-sm;
+  }
+
+  .input-field:hover {
+    @apply border-gray-300 dark:border-slate-600;
+  }
+
+  .input-field:disabled {
+    @apply bg-gray-50 dark:bg-banking-darker opacity-70 cursor-not-allowed;
+  }
+
+  textarea.input-field {
+    @apply min-h-28 resize-y;
+  }
+
+  select.input-field {
+    @apply cursor-pointer;
   }
 
   .input-label {
@@ -105,7 +186,11 @@
   }
 
   .table-row {
-    @apply hover:bg-gray-50 dark:hover:bg-banking-darker transition-colors duration-100;
+    @apply hover:bg-gray-50 dark:hover:bg-banking-darker transition-all duration-150;
+  }
+
+  .table-row:hover {
+    transform: translateX(2px);
   }
 
   .sidebar-link {
@@ -138,3 +223,37 @@
 }
 
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; } }
+
+
+@layer utilities {
+  .animate-page-enter {
+    animation: pageEnter 420ms cubic-bezier(.2,.7,.2,1) both;
+  }
+
+  .animate-float-soft {
+    animation: floatSoft 6s ease-in-out infinite;
+  }
+
+  .focus-ring {
+    @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-banking-dark;
+  }
+}
+
+@keyframes pageEnter {
+  from { opacity: 0; transform: translateY(8px); filter: blur(2px); }
+  to { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+@keyframes floatSoft {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -7px, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

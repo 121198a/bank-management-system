@@ -30,10 +30,10 @@ const Navbar = ({ role, onMenuClick = () => {} }) => {
         )}
       </div>
       <div className="flex items-center gap-1.5 sm:gap-2">
-        <button aria-label="Search" onClick={() => setSearchOpen((s) => !s)} className="icon-action"><Search className="w-[18px] h-[18px]" /></button>
-        <button aria-label="Toggle theme" onClick={toggleTheme} className="icon-action">{isDark ? <Sun className="w-[18px] h-[18px] text-yellow-400" /> : <Moon className="w-[18px] h-[18px]" />}</button>
+        <button aria-label="Search" onClick={() => setSearchOpen((s) => !s)} className="icon-action focus-ring hover:-translate-y-0.5 transition-all"><Search className="w-[18px] h-[18px]" /></button>
+        <button aria-label="Toggle theme" onClick={toggleTheme} className="icon-action focus-ring hover:-translate-y-0.5 transition-all">{isDark ? <Sun className="w-[18px] h-[18px] text-yellow-400" /> : <Moon className="w-[18px] h-[18px]" />}</button>
         <button aria-label="Notifications" onClick={() => navigate(notifPath)} className="icon-action relative"><Bell className="w-[18px] h-[18px]" />{unread > 0 && <span className="absolute -top-0.5 -right-0.5 min-w-4 h-4 px-1 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center ring-2 ring-white dark:ring-banking-card">{unread > 9 ? '9+' : unread}</span>}</button>
-        <button onClick={() => navigate(`/${role === 'customer' ? 'dashboard' : role}/profile`)} className="flex items-center gap-2 ml-1 pl-2 border-l border-gray-100 dark:border-banking-border hover:opacity-90 transition-opacity">
+        <button onClick={() => navigate(`/${role === 'customer' ? 'dashboard' : role}/profile`)} className="flex items-center gap-2 ml-1 pl-2 border-l border-gray-100 dark:border-banking-border hover:opacity-90 transition-all hover:-translate-y-0.5 focus-ring">
           <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary-500 to-emerald-700 flex items-center justify-center text-white text-sm font-bold shadow-sm">{user?.fullName?.charAt(0).toUpperCase()}</div>
           <div className="hidden md:block text-left max-w-32"><p className="text-sm font-semibold text-gray-900 dark:text-white truncate">{user?.fullName}</p><p className="text-[11px] text-gray-400 capitalize">{user?.role}</p></div><ChevronDown className="hidden md:block w-3.5 h-3.5 text-gray-400" />
         </button>

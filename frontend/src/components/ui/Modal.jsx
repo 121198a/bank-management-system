@@ -35,7 +35,7 @@ const Modal = ({ isOpen, onClose, title, children, size = 'md' }) => {
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className={`relative w-full ${sizes[size]} card p-6 animate-fade-in max-h-[90vh] overflow-y-auto outline-none`}
+        className={`relative w-full ${sizes[size]} card p-6 animate-page-enter max-h-[90vh] overflow-y-auto outline-none shadow-2xl shadow-slate-950/20`}
       >
         <div className="flex items-center justify-between mb-5">
           <h2 id={titleId} className="text-lg font-bold text-gray-900 dark:text-white">{title}</h2>

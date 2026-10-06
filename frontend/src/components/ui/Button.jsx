@@ -5,7 +5,7 @@ const variants = {
   primary: 'btn-primary',
   secondary: 'btn-secondary',
   danger: 'btn-danger',
-  ghost: 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-banking-border font-semibold py-2.5 px-5 rounded-xl transition-all duration-150'
+  ghost: 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-banking-border font-semibold py-2.5 px-5 rounded-xl transition-all duration-200 hover:-translate-y-0.5'
 };
 
 const sizes = {
@@ -26,7 +26,7 @@ const Button = ({
 }) => {
   return (
     <button
-      className={`${variants[variant]} ${sizes[size]} ${className} inline-flex items-center justify-center gap-2`}
+      className={`${variants[variant]} ${sizes[size]} ${className} inline-flex items-center justify-center gap-2 focus-ring`}
       disabled={disabled || loading}
       {...props}
     >

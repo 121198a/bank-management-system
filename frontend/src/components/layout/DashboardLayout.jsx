@@ -11,7 +11,9 @@ const DashboardLayout = ({ role }) => {
       <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
         <Navbar role={role} onMenuClick={() => setMobileNavOpen(true)} />
         <main className="flex-1 overflow-y-auto p-3 xs:p-4 sm:p-6 lg:p-7">
-          <div className="max-w-[1480px] mx-auto animate-fade-in"><Outlet /></div>
+          <div className="max-w-[1480px] mx-auto page-shell animate-page-enter">
+            <Outlet />
+          </div>
         </main>
       </div>
     </div>

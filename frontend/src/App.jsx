@@ -25,6 +25,7 @@ import CustomerProfile from './pages/customer/Profile';
 import CustomerNotifications from './pages/customer/Notifications';
 import CustomerLoans from './pages/customer/Loans';
 import CustomerInsurance from './pages/customer/Insurance';
+import ServiceCenter from './pages/shared/ServiceCenter';
 
 // Admin pages
 import AdminDashboard from './pages/admin/Dashboard';
@@ -96,6 +97,7 @@ const App = () => {
         <Route path="kyc" element={<CustomerKyc />} />
         <Route path="profile" element={<CustomerProfile />} />
         <Route path="notifications" element={<CustomerNotifications />} />
+        <Route path="services" element={<ServiceCenter />} />
       </Route>
 
       {/* Admin routes */}
@@ -120,6 +122,7 @@ const App = () => {
         <Route path="audit" element={<AdminAuditLogs />} />
         <Route path="profile" element={<CustomerProfile />} />
         <Route path="notifications" element={<CustomerNotifications />} />
+        <Route path="services" element={<ServiceCenter />} />
       </Route>
 
       {/* Employee routes */}
@@ -143,6 +146,7 @@ const App = () => {
         <Route path="audit" element={<EmployeeAuditLogs />} />
         <Route path="profile" element={<CustomerProfile />} />
         <Route path="notifications" element={<CustomerNotifications />} />
+        <Route path="services" element={<ServiceCenter />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />
