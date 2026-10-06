@@ -1,52 +1,54 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import ProtectedRoute from './routes/ProtectedRoute';
 import LoadingScreen from './components/ui/LoadingScreen';
 
 // Auth pages
-import LoginPage from './pages/auth/LoginPage';
-import RegisterPage from './pages/auth/RegisterPage';
-import ForgotPasswordPage from './pages/auth/ForgotPasswordPage';
-import ResetPasswordPage from './pages/auth/ResetPasswordPage';
+const LoginPage = lazy(() => import('./pages/auth/LoginPage'));
+const RegisterPage = lazy(() => import('./pages/auth/RegisterPage'));
+const ForgotPasswordPage = lazy(() => import('./pages/auth/ForgotPasswordPage'));
+const ResetPasswordPage = lazy(() => import('./pages/auth/ResetPasswordPage'));
 
 // Layouts
 import DashboardLayout from './components/layout/DashboardLayout';
 
 // Customer pages
-import CustomerDashboard from './pages/customer/Dashboard';
-import CustomerAccounts from './pages/customer/Accounts';
-import CustomerDeposit from './pages/customer/Deposit';
-import CustomerWithdraw from './pages/customer/Withdraw';
-import CustomerTransfer from './pages/customer/Transfer';
-import CustomerTransactions from './pages/customer/Transactions';
-import CustomerKyc from './pages/customer/Kyc';
-import CustomerProfile from './pages/customer/Profile';
-import CustomerNotifications from './pages/customer/Notifications';
-import CustomerLoans from './pages/customer/Loans';
-import CustomerInsurance from './pages/customer/Insurance';
-import ServiceCenter from './pages/shared/ServiceCenter';
+const CustomerDashboard = lazy(() => import('./pages/customer/Dashboard'));
+const CustomerAccounts = lazy(() => import('./pages/customer/Accounts'));
+const CustomerDeposit = lazy(() => import('./pages/customer/Deposit'));
+const CustomerWithdraw = lazy(() => import('./pages/customer/Withdraw'));
+const CustomerTransfer = lazy(() => import('./pages/customer/Transfer'));
+const CustomerTransactions = lazy(() => import('./pages/customer/Transactions'));
+const CustomerKyc = lazy(() => import('./pages/customer/Kyc'));
+const CustomerProfile = lazy(() => import('./pages/customer/Profile'));
+const CustomerNotifications = lazy(() => import('./pages/customer/Notifications'));
+const CustomerLoans = lazy(() => import('./pages/customer/Loans'));
+const CustomerInsurance = lazy(() => import('./pages/customer/Insurance'));
+const ServiceCenter = lazy(() => import('./pages/shared/ServiceCenter'));
 
 // Admin pages
-import AdminDashboard from './pages/admin/Dashboard';
-import AdminUsers from './pages/admin/Users';
-import AdminAccounts from './pages/admin/Accounts';
-import AdminTransactions from './pages/admin/Transactions';
-import AdminKyc from './pages/admin/Kyc';
-import AdminAuditLogs from './pages/admin/AuditLogs';
-import AdminLoans from './pages/admin/Loans';
+const AdminDashboard = lazy(() => import('./pages/admin/Dashboard'));
+const AdminUsers = lazy(() => import('./pages/admin/Users'));
+const AdminAccounts = lazy(() => import('./pages/admin/Accounts'));
+const AdminTransactions = lazy(() => import('./pages/admin/Transactions'));
+const AdminKyc = lazy(() => import('./pages/admin/Kyc'));
+const AdminAuditLogs = lazy(() => import('./pages/admin/AuditLogs'));
+const AdminLoans = lazy(() => import('./pages/admin/Loans'));
 
 // Employee pages
-import EmployeeDashboard from './pages/employee/Dashboard';
-import EmployeeAccounts from './pages/employee/Accounts';
-import EmployeeKyc from './pages/employee/Kyc';
-import EmployeeTransactions from './pages/employee/Transactions';
-import EmployeeLoans from './pages/employee/Loans';
-import EmployeeAuditLogs from './pages/employee/AuditLogs';
-import EmployeeInsurance from './pages/employee/Insurance';
-import EmployeeCollections from './pages/employee/Collections';
-import EmployeeSales from './pages/employee/Sales';
-import EmployeeSecurity from './pages/employee/Security';
+const EmployeeDashboard = lazy(() => import('./pages/employee/Dashboard'));
+const EmployeeAccounts = lazy(() => import('./pages/employee/Accounts'));
+const EmployeeKyc = lazy(() => import('./pages/employee/Kyc'));
+const EmployeeTransactions = lazy(() => import('./pages/employee/Transactions'));
+const EmployeeLoans = lazy(() => import('./pages/employee/Loans'));
+const EmployeeAuditLogs = lazy(() => import('./pages/employee/AuditLogs'));
+const EmployeeInsurance = lazy(() => import('./pages/employee/Insurance'));
+const EmployeeCollections = lazy(() => import('./pages/employee/Collections'));
+const EmployeeSales = lazy(() => import('./pages/employee/Sales'));
+const EmployeeSecurity = lazy(() => import('./pages/employee/Security'));
+
+const NotFound = lazy(() => import('./pages/public/NotFound'));
 
 const RoleRedirect = () => {
   const { user } = useAuth();
@@ -60,6 +62,7 @@ const App = () => {
   if (loading) return <LoadingScreen />;
 
   return (
+    <Suspense fallback={<LoadingScreen />}>
     <Routes>
       {/* Public routes */}
       <Route path="/login" element={<LoginPage />} />
@@ -149,8 +152,9 @@ const App = () => {
         <Route path="services" element={<ServiceCenter />} />
       </Route>
 
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
+    </Suspense>
   );
 };
 

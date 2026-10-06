@@ -3,7 +3,7 @@ import api from './axiosInstance';
 // IMPORTANT: login/logout/refresh are intentionally NOT exposed here.
 // They live exclusively in AuthContext (src/context/AuthContext.jsx), which
 // is the single source of truth that keeps the axios-level access token
-// (sessionStorage, via setAuthToken) and the React-level `user` state in
+// (in memory only, via setAuthToken) and the React-level `user` state in
 // sync. Having a second, parallel implementation of login here previously
 // caused a bug where pages calling authAPI.login() directly would set the
 // token correctly, but AuthContext's own state (and its silent-refresh

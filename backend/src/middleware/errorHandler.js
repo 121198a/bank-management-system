@@ -18,14 +18,15 @@ const errorHandler = (err, req, res, next) => {
   if (err.code === 11000) {
     statusCode = 409;
     const field = Object.keys(err.keyValue || {})[0];
-    message = `Duplicate value for field: ${field}`;
-    errors = [{ field, message: `${field} already exists` }];
+    message = field ? `Duplicate value for field: ${field}` : 'Duplicate value';
+    errors = field ? [{ field, message: `${field} already exists` }] : [];
   }
 
   // Mongoose CastError (invalid ObjectId)
   if (err.name === 'CastError') {
     statusCode = 400;
-    message = `Invalid value for ${err.path}: ${err.value}`;
+    // Do not echo the client-supplied value back (reflection / log-injection risk).
+    message = `Invalid value for ${err.path}`;
   }
 
   // JWT errors
@@ -38,11 +39,23 @@ const errorHandler = (err, req, res, next) => {
     message = 'Token expired';
   }
 
+  // Never leak internal error text (DB errors, paths, library messages) for
+  // unexpected failures. ApiError instances carry intentionally public messages.
+  const isExpected = err instanceof ApiError || statusCode < 500;
+  if (!isExpected && env.nodeEnv !== 'development') {
+    message = 'Internal Server Error';
+    errors = [];
+  }
+  if (statusCode >= 500 && env.nodeEnv !== 'test') {
+    console.error(`[${req.requestId || 'no-request-id'}] ${req.method} ${req.originalUrl.split('?')[0]} -> ${statusCode}: ${err.name}`);
+  }
+
   const response = {
     success: false,
     statusCode,
     message,
-    errors
+    errors,
+    ...(req.requestId ? { requestId: req.requestId } : {})
   };
 
   if (env.nodeEnv === 'development' && !(err instanceof ApiError)) {

@@ -8,6 +8,7 @@ import App from './App';
 import { AuthProvider } from './context/AuthContext';
 import { EmployeeProvider } from './context/EmployeeContext';
 import { ThemeProvider } from './context/ThemeContext';
+import ErrorBoundary from './components/ui/ErrorBoundary';
 import './index.css';
 
 const ToastNotification = ({ t }) => {
@@ -45,6 +46,7 @@ const ToastNotification = ({ t }) => {
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
+    <ErrorBoundary>
     <BrowserRouter>
       <ThemeProvider>
         <AuthProvider>
@@ -62,5 +64,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         </AuthProvider>
       </ThemeProvider>
     </BrowserRouter>
+    </ErrorBoundary>
   </React.StrictMode>
 );

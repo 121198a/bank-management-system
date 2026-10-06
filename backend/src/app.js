@@ -32,7 +32,13 @@ app.disable('x-powered-by');
 app.set('trust proxy', env.trustProxy ? 1 : false);
 
 app.use(requestId);
-app.use(helmet({ contentSecurityPolicy: false }));
+// JSON-only API: lock the CSP down completely (the SPA gets its own CSP from nginx).
+app.use(helmet({
+  contentSecurityPolicy: { directives: { defaultSrc: ["'none'"], frameAncestors: ["'none'"], baseUri: ["'none'"], formAction: ["'none'"] } },
+  hsts: env.isProduction ? { maxAge: 15552000, includeSubDomains: true } : false,
+  referrerPolicy: { policy: 'no-referrer' },
+  crossOriginResourcePolicy: { policy: 'same-site' }
+}));
 app.use(cors({
   origin(origin, callback) {
     if (!origin || env.clientOrigins.includes(origin)) return callback(null, true);
