@@ -2,7 +2,14 @@ const app = require('./app');
 const connectDB = require('./config/db');
 const env = require('./config/env');
 
+const fieldCrypto = require('./utils/fieldCrypto');
+
 const startServer = async () => {
+  // Fail fast on a malformed key; warn loudly when production runs without encryption.
+  const encryptionOn = fieldCrypto.isEnabled(); // throws if KYC_ENCRYPTION_KEY is set but invalid
+  if (!encryptionOn && env.isProduction) {
+    console.warn('WARNING: KYC_ENCRYPTION_KEY is not set - KYC document numbers are stored in plain text.');
+  }
   await connectDB();
   const server = app.listen(env.port, () => {
     console.log(`Server running in ${env.nodeEnv} mode on port ${env.port}`);

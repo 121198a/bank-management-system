@@ -8,6 +8,7 @@ const ApiResponse = require('../utils/ApiResponse');
 const { writeAuditLog } = require('../middleware/auditLogger');
 const { sendKycStatusEmail } = require('../services/emailService');
 const { escapeRegex } = require('../utils/sanitize');
+const fieldCrypto = require('../utils/fieldCrypto');
 
 const submitKyc = asyncHandler(async (req, res) => {
   try {
@@ -42,7 +43,12 @@ const listKycRequests = asyncHandler(async (req, res) => {
   if (req.query.search) {
     const searchRegex = new RegExp(escapeRegex(req.query.search), 'i');
     const matchingUsers = await User.find({ $or: [{ fullName: searchRegex }, { email: searchRegex }] }).select('_id').limit(1000);
-    filter.$or = [{ documentNumber: searchRegex }, { user: { $in: matchingUsers.map((u) => u._id) } }];
+    // With encryption on, a partial-match regex over documentNumber is impossible by design;
+    // an exact document number is matched through the keyed blind index instead.
+    const byDocument = fieldCrypto.isEnabled()
+      ? { documentNumberIndex: fieldCrypto.blindIndex(req.query.search) }
+      : { documentNumber: searchRegex };
+    filter.$or = [byDocument, { user: { $in: matchingUsers.map((u) => u._id) } }];
   }
 
   const [kycRequests, total] = await Promise.all([

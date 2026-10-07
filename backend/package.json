@@ -10,7 +10,8 @@
     "seed": "node src/utils/seed.js",
     "test": "node --test",
     "indexes": "node src/utils/createIndexes.js",
-    "migrate-money": "node src/utils/migrateMoney.js"
+    "migrate-money": "node src/utils/migrateMoney.js",
+    "kyc:encrypt": "node scripts/encrypt-kyc.js"
   },
   "keywords": [
     "banking",

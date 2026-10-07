@@ -13,6 +13,7 @@
 | `JWT_ACCESS_EXPIRES` / `JWT_REFRESH_EXPIRES` / `JWT_REFRESH_EXPIRES_MS` | No | Server | No | token lifetimes |
 | `SMTP_HOST/PORT/SECURE/USER/FROM` | For email | Server | No | mail transport |
 | `SMTP_PASS` | For email | Server | **Yes** | mail credential |
+| `KYC_ENCRYPTION_KEY` | Recommended (prod) | Server | **Yes** | 32 bytes (64 hex chars or base64). Enables AES-256-GCM encryption of KYC document numbers. **Losing it makes encrypted data unrecoverable** — keep it in a secrets manager and back it up separately from the database. |
 | `RESET_PASSWORD_EXPIRES_MS` | No | Server | No | reset link TTL |
 | `ADMIN_SEED_EMAIL/PASSWORD/FULL_NAME` | Seed only | Server | **Yes** | first admin (password ≥12 chars); remove after seeding |
 

@@ -38,7 +38,7 @@ Required: `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`, `MONGO_URI`. Optional: PORT
 | S6 | Medium | nginx had no security headers/CSP; Helmet CSP was disabled. | **Fixed** (nginx CSP/XFO/nosniff/referrer/permissions; API CSP `default-src 'none'`, HSTS in prod) |
 | S7 | Low | Rate limiter is in-memory, per-process (does not span multiple instances); the `/transactions` limiter key uses `req.user`, which isn't set yet at that point, so it is effectively per-IP. | **Open** — needs Redis store / per-route placement after auth |
 | S8 | Low | Frontend `react-router` advisory (GHSA-337j-9hxr-rhxg) concerns SSR hydration; this is a client-only SPA. | **Open, accepted** (upgrade to RR 7 is a breaking change; schedule separately) |
-| S10 | **Medium** | `KYCRequest.documentNumber` (Aadhaar/PAN/passport numbers) is stored as plain text in MongoDB. Aadhaar storage is legally restricted in India (masking/vault rules). | **Open** — needs field-level encryption or masking plus a data migration; not done automatically because it alters stored data |
+| S10 | **Medium** | `KYCRequest.documentNumber` (Aadhaar/PAN/passport numbers) was stored as plain text. Aadhaar storage is legally restricted in India. | **Code ready, not yet active.** AES-256-GCM field encryption + blind-index search + last-4 are implemented and unit-tested; **it only takes effect once you set `KYC_ENCRYPTION_KEY` and run `npm run kyc:encrypt -- --apply`** (dry-run by default, rollback supported). Migration and real-database behaviour were **not tested** (no MongoDB in the build environment). Reviewers (admin/employee) still see the full number; masking that is a policy decision. |
 | S9 | Info | `SECURITY.md` records a historic hard-coded admin password in git history. | **Open** — history rewrite not performed (needs your authorisation); rotate instead |
 
 ### Reliability / structure
@@ -71,5 +71,5 @@ Entry JS 288 kB → 37 kB; charts (387 kB) now only load on dashboard pages. Pag
 | 09 Error handling | IMPLEMENTED (boundary, 404, timeout, safe 5xx); offline-specific UI MISSING |
 | 10 Security | PARTIAL (see table; secrets rotation + Redis limiter + CSRF review open) |
 | 12 GitHub Actions | IMPLEMENTED (+audit, least-privilege permissions) |
-| 13 Testing | PARTIAL — 30 backend tests + 16 frontend tests (Vitest/Testing Library, in CI); E2E and automated a11y tests MISSING |
+| 13 Testing | PARTIAL — 40 backend tests + 16 frontend tests (Vitest/Testing Library, in CI); E2E and automated a11y tests MISSING |
 | 14 Production checklist | PARTIAL — see report; privacy/terms pages are **draft templates needing legal review**; sitemap intentionally omitted (app is noindex); uptime monitoring and backup-restore test MISSING / UNKNOWN |
