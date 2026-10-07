@@ -38,6 +38,7 @@ Required: `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`, `MONGO_URI`. Optional: PORT
 | S6 | Medium | nginx had no security headers/CSP; Helmet CSP was disabled. | **Fixed** (nginx CSP/XFO/nosniff/referrer/permissions; API CSP `default-src 'none'`, HSTS in prod) |
 | S7 | Low | Rate limiter is in-memory, per-process (does not span multiple instances); the `/transactions` limiter key uses `req.user`, which isn't set yet at that point, so it is effectively per-IP. | **Open** — needs Redis store / per-route placement after auth |
 | S8 | Low | Frontend `react-router` advisory (GHSA-337j-9hxr-rhxg) concerns SSR hydration; this is a client-only SPA. | **Open, accepted** (upgrade to RR 7 is a breaking change; schedule separately) |
+| S10 | **Medium** | `KYCRequest.documentNumber` (Aadhaar/PAN/passport numbers) is stored as plain text in MongoDB. Aadhaar storage is legally restricted in India (masking/vault rules). | **Open** — needs field-level encryption or masking plus a data migration; not done automatically because it alters stored data |
 | S9 | Info | `SECURITY.md` records a historic hard-coded admin password in git history. | **Open** — history rewrite not performed (needs your authorisation); rotate instead |
 
 ### Reliability / structure
@@ -49,7 +50,7 @@ Required: `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`, `MONGO_URI`. Optional: PORT
 | R4 | No error boundary; no 404; unguarded `localStorage`. | **Fixed** |
 | R5 | No code splitting: 288 kB entry chunk. | **Fixed**: entry 37 kB (pages lazy-loaded) |
 | R6 | KYC page computed `loading` but never showed it. | **Fixed** (skeleton) |
-| R7 | Stray artefacts: `backend/backen/`, `User.js.phase2-backup`, brace-expansion directories `{config,models,...}` and `{api,components...}` from a bad `mkdir`. | **Listed, not deleted** (see report) |
+| R7 | Stray artefacts: `backend/backen/` (a stray `.env`), `User.js.phase2-backup` (byte-identical to current `User.js`), empty brace-named directories from a bad `mkdir`. | **Removed** (none were tracked in git) |
 | R8 | CRLF-only edits on 4 backend files/.gitignore were uncommitted noise. | Reverted |
 
 ### UI/UX vs the 30-item anti-vibe checklist
@@ -65,10 +66,10 @@ Entry JS 288 kB → 37 kB; charts (387 kB) now only load on dashboard pages. Pag
 | 03 Architecture | PARTIAL — layering is already clean (routes→controllers→services/models); no moves were needed |
 | 04 Data model audit | PARTIAL — models inspected; per-entity retention/PII table not written (needs owner policy) |
 | 05 Data sources / 06 Scraping / 11 AdMob | NOT_APPLICABLE |
-| 07 API contract | PARTIAL — endpoint list above; full request/response schemas live in validators; no OpenAPI |
+| 07 API contract | PARTIAL — `API_ENDPOINTS.md` is generated from the live router (121 routes, auth + roles per route) and guarded by tests; request/response schemas live in validators; no OpenAPI |
 | 08 UI spec / responsive matrix | PARTIAL — Tailwind responsive classes exist; **the 20-viewport matrix was NOT executed** (no browser available in this run) |
 | 09 Error handling | IMPLEMENTED (boundary, 404, timeout, safe 5xx); offline-specific UI MISSING |
 | 10 Security | PARTIAL (see table; secrets rotation + Redis limiter + CSRF review open) |
 | 12 GitHub Actions | IMPLEMENTED (+audit, least-privilege permissions) |
-| 13 Testing | PARTIAL — 28 backend tests; frontend unit/E2E/a11y tests MISSING |
-| 14 Production checklist | PARTIAL — see report; privacy/terms pages, sitemap, uptime monitoring, backup-restore test MISSING / UNKNOWN |
+| 13 Testing | PARTIAL — 30 backend tests + 16 frontend tests (Vitest/Testing Library, in CI); E2E and automated a11y tests MISSING |
+| 14 Production checklist | PARTIAL — see report; privacy/terms pages are **draft templates needing legal review**; sitemap intentionally omitted (app is noindex); uptime monitoring and backup-restore test MISSING / UNKNOWN |

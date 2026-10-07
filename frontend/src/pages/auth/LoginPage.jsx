@@ -114,7 +114,7 @@ const LoginPage = () => {
               <p className="text-sm text-gray-500 dark:text-gray-400">New to NexaBank? <Link to="/register" className="text-primary-600 hover:text-primary-700 font-bold">Create an account</Link></p>
             </div>
           </div>
-          <p className="text-center text-xs text-gray-400 mt-5">Your session is protected by secure authentication controls.</p>
+          <p className="text-center text-xs text-gray-400 mt-5">Your session is protected by secure authentication controls. <Link to="/privacy" className="underline">Privacy</Link> · <Link to="/terms" className="underline">Terms</Link></p>
         </div>
       </section>
     </div>

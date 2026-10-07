@@ -4,6 +4,7 @@ import { useAuth } from './context/AuthContext';
 import ProtectedRoute from './routes/ProtectedRoute';
 import LoadingScreen from './components/ui/LoadingScreen';
 import NotFound from './pages/public/NotFound';
+import LegalPage from './pages/public/LegalPage';
 
 // Auth pages
 const LoginPage = lazy(() => import('./pages/auth/LoginPage'));
@@ -65,6 +66,8 @@ const App = () => {
     <Suspense fallback={<LoadingScreen />}>
     <Routes>
       {/* Public routes */}
+      <Route path="/privacy" element={<LegalPage kind="privacy" />} />
+      <Route path="/terms" element={<LegalPage kind="terms" />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />

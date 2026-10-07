@@ -10,7 +10,7 @@ const EmployeeProfile = require('../models/EmployeeProfile');
  * router.get('/', authorize('admin', 'employee'), controller);
  */
 const authorize = (...allowedRoles) => {
-  return (req, res, next) => {
+  const middleware = (req, res, next) => {
     if (!req.user) {
       return next(new ApiError(401, 'Authentication required'));
     }
@@ -26,6 +26,9 @@ const authorize = (...allowedRoles) => {
 
     next();
   };
+  // Exposed so tooling (scripts/list-routes.js) can document who may call a route.
+  middleware.allowedRoles = allowedRoles;
+  return middleware;
 };
 
 /**
