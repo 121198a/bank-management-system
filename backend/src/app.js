@@ -6,9 +6,7 @@ const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const env = require('./config/env');
 const requestId = require('./middleware/requestId');
-const createRateLimiterBase = require('./middleware/rateLimit');
-const createRedisStore = require('./middleware/redisRateLimitStore');
-const { getRedis } = require('./config/redis');
+const { createRateLimiter } = require('./middleware/limiters');
 const errorHandler = require('./middleware/errorHandler');
 const notFound = require('./middleware/notFound');
 
@@ -31,10 +29,6 @@ const securityRoutes = require('./routes/securityRoutes');
 
 const app = express();
 
-// Shared Redis store when REDIS_URL is set (limits then hold across all instances).
-const redis = getRedis();
-const rateLimitStore = redis ? createRedisStore(redis) : null;
-const createRateLimiter = (options) => createRateLimiterBase({ store: rateLimitStore, ...options });
 app.disable('x-powered-by');
 app.set('trust proxy', env.trustProxy ? 1 : false);
 
@@ -85,7 +79,7 @@ app.get('/api/ready', (_req, res) => {
 app.use('/api/auth', createRateLimiter({ name: 'auth', limit: env.rateLimit.authMax }), authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/accounts', accountRoutes);
-app.use('/api/transactions', createRateLimiter({ name: 'transactions', limit: env.rateLimit.transactionMax, keyGenerator: (req) => `${req.ip}:${req.user?._id || 'anonymous'}` }), transactionRoutes);
+app.use('/api/transactions', createRateLimiter({ name: 'transactions-ip', limit: env.rateLimit.transactionMax * 5 }), transactionRoutes);
 app.use('/api/kyc', kycRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/audit', auditRoutes);

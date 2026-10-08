@@ -24,6 +24,9 @@ coverage/
 
 # Temporary database backups
 backend/backup-*.json
+backend/backups/
+*.bkp
+*.bkp.manifest.json
 
 # Editor / OS
 .DS_Store

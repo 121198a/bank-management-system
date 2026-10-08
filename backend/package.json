@@ -13,7 +13,9 @@
     "migrate-money": "node src/utils/migrateMoney.js",
     "kyc:encrypt": "node scripts/encrypt-kyc.js",
     "test:e2e": "node --test test/e2e/bank.e2e.test.js",
-    "docs:openapi": "node scripts/generate-openapi.js"
+    "docs:openapi": "node scripts/generate-openapi.js",
+    "backup": "node scripts/backup.js",
+    "restore": "node scripts/restore.js"
   },
   "keywords": [
     "banking",

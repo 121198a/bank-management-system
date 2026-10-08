@@ -17,11 +17,14 @@ const {
 } = require('../validators/transactionValidators');
 const validate = require('../middleware/validate');
 const authenticate = require('../middleware/auth');
+const { perUserTransactionLimiter } = require('../middleware/limiters');
 const authorize = require('../middleware/rbac');
 
 const router = express.Router();
 
 router.use(authenticate);
+// Per-user cap on money movement (the app-level limiter in app.js only sees the IP).
+router.use(perUserTransactionLimiter);
 
 router.post('/deposit', authorize('customer', 'employee', 'admin'), depositValidator, validate, deposit);
 router.post('/withdraw', authorize('customer', 'employee', 'admin'), withdrawValidator, validate, withdraw);
