@@ -11,7 +11,8 @@
     "test": "node --test",
     "indexes": "node src/utils/createIndexes.js",
     "migrate-money": "node src/utils/migrateMoney.js",
-    "kyc:encrypt": "node scripts/encrypt-kyc.js"
+    "kyc:encrypt": "node scripts/encrypt-kyc.js",
+    "test:e2e": "node --test test/e2e/bank.e2e.test.js"
   },
   "keywords": [
     "banking",

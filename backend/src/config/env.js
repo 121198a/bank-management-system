@@ -24,6 +24,14 @@ if (accessSecret.length < 32 || refreshSecret.length < 32) {
 
 const mongoUri = required('MONGO_URI');
 
+const positiveInt = (key, fallback) => {
+  const raw = process.env[key];
+  if (raw === undefined || raw === '') return fallback;
+  const n = Number(raw);
+  if (!Number.isInteger(n) || n < 1) throw new Error(`${key} must be a positive integer`);
+  return n;
+};
+
 module.exports = {
   port,
   nodeEnv,
@@ -32,6 +40,11 @@ module.exports = {
   mongoUri,
   requireReplicaSet: process.env.REQUIRE_REPLICA_SET !== 'false',
   trustProxy: process.env.TRUST_PROXY === 'true',
+  rateLimit: {
+    globalMax: positiveInt('RATE_LIMIT_GLOBAL_MAX', 120),
+    authMax: positiveInt('RATE_LIMIT_AUTH_MAX', 10),
+    transactionMax: positiveInt('RATE_LIMIT_TRANSACTION_MAX', 30)
+  },
   jwt: {
     accessSecret,
     refreshSecret,

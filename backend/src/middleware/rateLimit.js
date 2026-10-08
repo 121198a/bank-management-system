@@ -1,38 +1,46 @@
 const ApiError = require('../utils/ApiError');
 
-const buckets = new Map();
 const WINDOW_MS = 60 * 1000;
 
+/**
+ * Fixed-window, in-memory rate limiter.
+ *
+ * Every limiter instance owns its OWN bucket map. (A previous version shared one module-level
+ * map keyed only by IP, so all limiters drained the same counter: ~12 ordinary API calls were
+ * enough to make the first login attempt return 429.)
+ *
+ * Still per-process: with several instances you need a shared store (e.g. Redis).
+ */
 const createRateLimiter = ({ limit = 100, windowMs = WINDOW_MS, keyGenerator = (req) => req.ip } = {}) => {
+  const buckets = new Map();
+
+  // Drop expired buckets so memory cannot grow without bound.
+  const sweep = setInterval(() => {
+    const now = Date.now();
+    for (const [key, bucket] of buckets) if (now >= bucket.resetAt) buckets.delete(key);
+  }, Math.max(windowMs, 1000));
+  sweep.unref();
+
   return (req, res, next) => {
     const now = Date.now();
     const key = keyGenerator(req);
-    const current = buckets.get(key);
+    let bucket = buckets.get(key);
 
-    if (!current || now >= current.resetAt) {
-      buckets.set(key, { count: 1, resetAt: now + windowMs });
-      res.setHeader('X-RateLimit-Limit', limit);
-      res.setHeader('X-RateLimit-Remaining', limit - 1);
-      return next();
+    if (!bucket || now >= bucket.resetAt) {
+      bucket = { count: 0, resetAt: now + windowMs };
+      buckets.set(key, bucket);
     }
+    bucket.count += 1;
 
-    current.count += 1;
     res.setHeader('X-RateLimit-Limit', limit);
-    res.setHeader('X-RateLimit-Remaining', Math.max(0, limit - current.count));
-    res.setHeader('Retry-After', Math.ceil((current.resetAt - now) / 1000));
+    res.setHeader('X-RateLimit-Remaining', Math.max(0, limit - bucket.count));
 
-    if (current.count > limit) {
+    if (bucket.count > limit) {
+      res.setHeader('Retry-After', Math.max(1, Math.ceil((bucket.resetAt - now) / 1000)));
       return next(new ApiError(429, 'Too many requests. Please try again later.'));
     }
     return next();
   };
 };
-
-setInterval(() => {
-  const now = Date.now();
-  for (const [key, bucket] of buckets) {
-    if (bucket.resetAt <= now) buckets.delete(key);
-  }
-}, 5 * 60 * 1000).unref();
 
 module.exports = createRateLimiter;

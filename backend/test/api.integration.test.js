@@ -56,6 +56,13 @@ test('oversized JSON bodies are rejected before reaching handlers', async () => 
   assert.equal(res.status, 413);
 });
 
+test('ordinary API traffic does not lock a client out of login (regression: shared rate-limit buckets)', async () => {
+  for (let i = 0; i < 15; i++) await fetch(`${base}/api/accounts/my`); // 401s, but they pass the global limiter
+  const res = await fetch(`${base}/api/auth/login`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+  assert.notEqual(res.status, 429, 'first login attempt must not be rate limited by unrelated traffic');
+  assert.equal(res.status, 400); // empty body fails validation instead
+});
+
 test('auth endpoints are rate limited', async () => {
   let last;
   for (let i = 0; i < 14; i++) {

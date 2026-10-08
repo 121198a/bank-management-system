@@ -56,7 +56,7 @@ app.use((_req, res, next) => {
   next();
 });
 
-app.use(createRateLimiter({ limit: 120 }));
+app.use(createRateLimiter({ limit: env.rateLimit.globalMax }));
 
 if (env.nodeEnv !== 'test') app.use(morgan(env.nodeEnv === 'development' ? 'dev' : 'combined'));
 
@@ -75,10 +75,10 @@ app.get('/api/ready', (_req, res) => {
   });
 });
 
-app.use('/api/auth', createRateLimiter({ limit: 10 }), authRoutes);
+app.use('/api/auth', createRateLimiter({ limit: env.rateLimit.authMax }), authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/accounts', accountRoutes);
-app.use('/api/transactions', createRateLimiter({ limit: 30, keyGenerator: (req) => `${req.ip}:${req.user?._id || 'anonymous'}` }), transactionRoutes);
+app.use('/api/transactions', createRateLimiter({ limit: env.rateLimit.transactionMax, keyGenerator: (req) => `${req.ip}:${req.user?._id || 'anonymous'}` }), transactionRoutes);
 app.use('/api/kyc', kycRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/audit', auditRoutes);

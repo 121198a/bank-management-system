@@ -14,6 +14,8 @@
 | `SMTP_HOST/PORT/SECURE/USER/FROM` | For email | Server | No | mail transport |
 | `SMTP_PASS` | For email | Server | **Yes** | mail credential |
 | `KYC_ENCRYPTION_KEY` | Recommended (prod) | Server | **Yes** | 32 bytes (64 hex chars or base64). Enables AES-256-GCM encryption of KYC document numbers. **Losing it makes encrypted data unrecoverable** — keep it in a secrets manager and back it up separately from the database. |
+| `RATE_LIMIT_GLOBAL_MAX` / `RATE_LIMIT_AUTH_MAX` / `RATE_LIMIT_TRANSACTION_MAX` | No | Server | No | requests per minute per IP; defaults 120 / 10 / 30 |
+| `E2E_MONGO_URI` | Tests only | CI | No | replica-set URI for `npm run test:e2e`; uses and drops a throw-away database — never point at real data |
 | `RESET_PASSWORD_EXPIRES_MS` | No | Server | No | reset link TTL |
 | `ADMIN_SEED_EMAIL/PASSWORD/FULL_NAME` | Seed only | Server | **Yes** | first admin (password ≥12 chars); remove after seeding |
 
