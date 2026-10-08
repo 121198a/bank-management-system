@@ -12,7 +12,8 @@
     "indexes": "node src/utils/createIndexes.js",
     "migrate-money": "node src/utils/migrateMoney.js",
     "kyc:encrypt": "node scripts/encrypt-kyc.js",
-    "test:e2e": "node --test test/e2e/bank.e2e.test.js"
+    "test:e2e": "node --test test/e2e/bank.e2e.test.js",
+    "docs:openapi": "node scripts/generate-openapi.js"
   },
   "keywords": [
     "banking",
@@ -38,6 +39,7 @@
     "pdfkit": "^0.15.0"
   },
   "devDependencies": {
+    "@apidevtools/swagger-parser": "^13.1.0",
     "nodemon": "^3.1.0"
   },
   "engines": {

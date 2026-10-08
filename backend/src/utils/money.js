@@ -1,18 +1,21 @@
+const ApiError = require('./ApiError');
+
 const getDecimal128 = () => require('mongoose').Types.Decimal128;
 
 const MONEY_SCALE = 2;
 const MONEY_PATTERN = /^(?:0|[1-9]\d*)(?:\.\d{1,2})?$/;
 
 const normalizeMoneyString = (value, { allowZero = false } = {}) => {
-  if (value === undefined || value === null) throw new Error('Amount is required');
+  // Bad amounts are client errors: ApiError(400), never an opaque 500.
+  if (value === undefined || value === null) throw new ApiError(400, 'Amount is required');
   const raw = typeof value === 'number' ? String(value) : String(value).trim();
   if (!MONEY_PATTERN.test(raw)) {
-    throw new Error('Amount must be a valid positive decimal with at most 2 decimal places');
+    throw new ApiError(400, 'Amount must be a valid positive decimal with at most 2 decimal places');
   }
   const [whole, fraction = ''] = raw.split('.');
   const minor = BigInt(whole) * 100n + BigInt((fraction + '00').slice(0, MONEY_SCALE));
-  if (!allowZero && minor <= 0n) throw new Error('Amount must be greater than zero');
-  if (allowZero && minor < 0n) throw new Error('Amount cannot be negative');
+  if (!allowZero && minor <= 0n) throw new ApiError(400, 'Amount must be greater than zero');
+  if (allowZero && minor < 0n) throw new ApiError(400, 'Amount cannot be negative');
   return `${whole}.${(fraction + '00').slice(0, MONEY_SCALE)}`;
 };
 
@@ -74,6 +77,7 @@ const moneyToJSON = (value) => Number(decimalToString(value));
 
 module.exports = {
   MONEY_SCALE,
+  MONEY_PATTERN,
   normalizeMoneyString,
   toDecimal128,
   decimalToString,

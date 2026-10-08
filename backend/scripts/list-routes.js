@@ -31,7 +31,9 @@ const walk = (stack, prefix, inherited) => {
     if (layer.route) {
       let rJwt = jwt;
       let rRoles = roles;
+      const validators = [];
       for (const l of layer.route.stack) {
+        if (l.handle && l.handle.builder && typeof l.handle.builder.build === 'function') validators.push(l.handle.builder.build());
         const g = guardOf(l.handle);
         if (g.jwt) rJwt = true;
         if (g.roles) rRoles = g.roles;
@@ -41,7 +43,8 @@ const walk = (stack, prefix, inherited) => {
           method: method.toUpperCase(),
           path: (prefix + layer.route.path).replace(/\/$/, '') || '/',
           auth: rJwt ? 'JWT' : 'public',
-          roles: !rJwt ? '—' : rRoles ? rRoles.join(', ') : '(any authenticated role)'
+          roles: !rJwt ? '—' : rRoles ? rRoles.join(', ') : '(any authenticated role)',
+          validators
         });
       }
     } else if (layer.name === 'router' && layer.handle.stack) {

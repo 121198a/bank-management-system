@@ -31,3 +31,27 @@ test('percentageOf computes without float drift', () => {
   assert.equal(decimalToString(percentageOf(toDecimal128('333.33'), 12.75)), '42.49');
   assert.equal(decimalToString(percentageOf(toDecimal128('999999.99'), 0.1)), '999.99');
 });
+
+test('malformed amounts are client errors (400), never an opaque 500', () => {
+  const ApiError = require('../src/utils/ApiError');
+  for (const bad of ['10.', '.5', '+5', '007', '1e3', 'abc', '', '-5', '0', '1.234']) {
+    assert.throws(
+      () => normalizeMoneyString(bad),
+      (err) => err instanceof ApiError && err.statusCode === 400,
+      `"${bad}" must raise ApiError(400)`
+    );
+  }
+});
+
+test('malformed amounts reach the client as a 400 through the real error handler', () => {
+  process.env.JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || 'a'.repeat(40);
+  process.env.JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || 'b'.repeat(40);
+  process.env.MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1/unused';
+  const errorHandler = require('../src/middleware/errorHandler');
+  let caught;
+  try { toDecimal128('10.'); } catch (e) { caught = e; }
+  const res = { statusCode: 0, body: null, status(c) { this.statusCode = c; return this; }, json(b) { this.body = b; return this; } };
+  errorHandler(caught, { method: 'POST', originalUrl: '/api/transactions/deposit' }, res, () => {});
+  assert.equal(res.statusCode, 400);
+  assert.match(res.body.message, /valid positive decimal/);
+});
