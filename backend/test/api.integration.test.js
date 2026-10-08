@@ -8,7 +8,10 @@ test.before(async () => {
   await new Promise((r) => { server = app.listen(0, '127.0.0.1', r); });
   base = `http://127.0.0.1:${server.address().port}`;
 });
-test.after(() => new Promise((r) => server.close(r)));
+test.after(async () => {
+  await new Promise((r) => server.close(r));
+  await require('../src/config/redis').closeRedis(); // no-op unless REDIS_URL is set
+});
 
 test('health endpoint is public and sends hardened headers', async () => {
   const res = await fetch(`${base}/api/health`);

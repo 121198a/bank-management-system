@@ -40,6 +40,7 @@ module.exports = {
   mongoUri,
   requireReplicaSet: process.env.REQUIRE_REPLICA_SET !== 'false',
   trustProxy: process.env.TRUST_PROXY === 'true',
+  redisUrl: process.env.REDIS_URL || '',
   rateLimit: {
     globalMax: positiveInt('RATE_LIMIT_GLOBAL_MAX', 120),
     authMax: positiveInt('RATE_LIMIT_AUTH_MAX', 10),

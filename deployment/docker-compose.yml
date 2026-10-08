@@ -11,6 +11,19 @@ services:
       timeout: 5s
       retries: 20
 
+  redis:
+    image: redis:7-alpine
+    # Rate-limit counters only: no persistence needed, bounded memory, never published to the host.
+    command: ["redis-server", "--save", "", "--appendonly", "no", "--maxmemory", "64mb", "--maxmemory-policy", "volatile-ttl"]
+    restart: unless-stopped
+    expose:
+      - "6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
   backend:
     build:
       context: ..
@@ -24,9 +37,13 @@ services:
       # Behind nginx every request would otherwise share nginx's IP and the
       # per-IP rate limiter would lock all users out together.
       TRUST_PROXY: "true"
+      # Shared rate-limit counters across backend instances (falls back to in-memory if unreachable).
+      REDIS_URL: redis://redis:6379
     depends_on:
       mongo:
         condition: service_healthy
+      redis:
+        condition: service_started
     # Not published to the host: the API is reachable only through nginx (/api).
     expose:
       - "5000"

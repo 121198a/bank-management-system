@@ -20,6 +20,7 @@ const startServer = async () => {
     server.close(async () => {
       const mongoose = require('mongoose');
       await mongoose.connection.close(false);
+      await require('./config/redis').closeRedis();
       process.exit(0);
     });
     setTimeout(() => process.exit(1), 10000).unref();
