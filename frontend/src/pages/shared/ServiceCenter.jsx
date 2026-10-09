@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowLeftRight, Banknote, Bell, Building2, CreditCard, FileCheck2,
-  History, LockKeyhole, PhoneCall, ReceiptText, ShieldCheck, Sparkles,
+  History, LockKeyhole, PhoneCall, ReceiptText, ShieldCheck, LifeBuoy,
   TrendingUp, Umbrella, WalletCards
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
@@ -59,20 +59,19 @@ const ServiceCenter = () => {
 
   return (
     <div className="space-y-6">
-      <section className="premium-card surface-glow p-6 sm:p-8 bg-gradient-to-br from-slate-950 via-slate-900 to-primary-950 text-white border-0 shadow-xl shadow-slate-300/30 dark:shadow-black/30">
-        <div className="absolute -right-20 -top-24 w-80 h-80 rounded-full bg-primary-500/15 blur-3xl animate-float-soft" />
+      <section className="premium-card surface-glow p-6 sm:p-8 bg-slate-900 text-white border-0 shadow-xl shadow-slate-300/30 dark:shadow-black/30">
         <div className="relative flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
           <div>
             <div className="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/10 px-3 py-1.5 text-xs text-slate-300">
-              <Sparkles className="w-3.5 h-3.5 text-primary-300" /> Banking service center
+              <LifeBuoy className="w-3.5 h-3.5 text-primary-300" /> Help and services
             </div>
-            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mt-4">Everything banking, in one place.</h1>
-            <p className="text-slate-300 mt-2 max-w-2xl">A unified workspace for {isCustomer ? 'your everyday banking, lending, insurance, compliance and account security.' : 'your authorized banking operations, reviews, compliance and security workflows.'}</p>
+            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mt-4">Service Center</h1>
+            <p className="text-slate-300 mt-2 max-w-2xl">{isCustomer ? 'Apply for loans and insurance, complete identity verification and manage your account security.' : 'Review the applications, collections, verification requests and security events you are authorised to handle.'}</p>
           </div>
           <div className="rounded-2xl bg-white/10 border border-white/10 backdrop-blur px-5 py-4 min-w-[190px]">
             <p className="text-xs text-slate-400">Workspace</p>
             <p className="text-lg font-bold mt-1 capitalize">{role}</p>
-            <p className="text-xs text-primary-300 mt-1 flex items-center gap-1"><Building2 className="w-3.5 h-3.5" /> Secure session</p>
+            <p className="text-xs text-primary-300 mt-1 flex items-center gap-1"><Building2 className="w-3.5 h-3.5" /> Signed in</p>
           </div>
         </div>
       </section>
@@ -84,7 +83,7 @@ const ServiceCenter = () => {
       <section className="card p-5 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-start gap-3">
           <div className="w-10 h-10 rounded-xl bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center shrink-0"><ShieldCheck className="w-5 h-5 text-primary-700 dark:text-primary-400" /></div>
-          <div><p className="font-bold text-gray-900 dark:text-white">Built for secure banking operations</p><p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Access is still governed by the existing authentication, role, permission and organizational scope rules.</p></div>
+          <div><p className="font-bold text-gray-900 dark:text-white">Access follows your role</p><p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Access is still governed by the existing authentication, role, permission and organizational scope rules.</p></div>
         </div>
         <Link to={isCustomer ? '/dashboard/notifications' : `${base}/audit`} className="btn-secondary text-sm text-center">Review activity</Link>
       </section>

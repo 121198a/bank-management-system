@@ -44,11 +44,9 @@ const LoginPage = () => {
 
   return (
     <div className="min-h-screen bg-slate-950 flex items-stretch">
-      <section className="hidden lg:flex lg:w-[52%] relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-primary-950 p-12 xl:p-16 flex-col justify-between text-white">
-        <div className="absolute -top-32 -left-24 w-96 h-96 bg-primary-500/20 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-0 w-[32rem] h-[32rem] bg-blue-500/10 rounded-full blur-3xl" />
+      <section className="hidden lg:flex lg:w-[52%] relative overflow-hidden bg-slate-900 p-12 xl:p-16 flex-col justify-between text-white">
         <div className="relative z-10 flex items-center gap-3">
-          <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-primary-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-primary-500/20">
+          <div className="w-11 h-11 rounded-2xl bg-primary-700 flex items-center justify-center shadow-lg shadow-primary-500/20">
             <Building2 className="w-6 h-6" />
           </div>
           <div>

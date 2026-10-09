@@ -5,7 +5,7 @@
 ## Verdicts
 | # | Check | Verdict | Evidence |
 |---|---|---|---|
-| 1 | Harsh gradients | **Recommend change** | 49 uses in 10 files: dark slate→blue/violet hero banners on the 3 dashboards, Service Center, sign-in/register, and a green page backdrop. Not rainbow, but repeated. *(Primary button gradient removed in this phase — see below.)* |
+| 1 | Harsh gradients | **Pass (fixed)** | Was 49 uses in 10 files. All hero banners, logo/avatar tiles, the account card, the active sidebar link and the primary button are now solid colours. One subtle `primary-50 → transparent` tint behind the sidebar header remains |
 | 2 | Default icon library | Minor | `lucide-react` in 40 files, 67 distinct icons. Normal for a back-office app; no custom iconography |
 | 3 | Pure-white canvas | Pass | App canvas is `slate-50` / dark navy; white is used for cards |
 | 4 | Rainbow colouring | Minor | Green 111, red 73, yellow/amber 71, blue 48, orange 21, purple/violet 21. Mostly semantic status colours; purple/violet appears in 4 files as decoration |
@@ -13,7 +13,7 @@
 | 6 | Identical 3-card rows | Minor | 10 uses; these are KPI stat grids, which suit dashboards |
 | 7 | Emojis as design assets | Pass | none |
 | 8 | Glassmorphism everywhere | **Recommend change** | `backdrop-blur` in 7 files plus a `.glass-panel` utility (navbar, hero chips). Limited, not everywhere |
-| 9 | Formulaic AI-style copy | **Recommend change** | "Everything banking, in one place." and "Built for secure banking operations" (Service Center). Rest of sampled copy is plain. "Built for secure…" is also a claim nothing in the product backs |
+| 9 | Formulaic AI-style copy | **Pass (fixed)** | Replaced "Everything banking, in one place.", "Everything important about your money, in one place." and "Built for secure banking operations" with plain statements; the Service Center `<h1>` is now "Service Center" (it also feeds the browser tab title). "Secure session" → "Signed in" |
 | 10 | Default trendy font | **Recommend change** | Inter via Google Fonts, no display face or art direction |
 | 11 | Repeated coloured left stripes | Pass | 2 uses |
 | 12 | Fake testimonials | Pass | none |
@@ -26,9 +26,9 @@
 | 19 | Same soft radius everywhere | Pass | Mixed: `xl` 48, `full` 30, `lg` 27, `2xl` 17 |
 | 20 | Purple + black by default | Pass | Hero is near-black slate with green accent; purple is a minor accent |
 | 21 | No skeleton loaders | Pass | Skeleton components used in 20 files (KYC page gap fixed earlier) |
-| 22 | Radial orbs | **Recommend change** | 7 blurred orbs across sign-in, register, 3 dashboards and Service Center |
+| 22 | Radial orbs | **Pass (fixed)** | All 7 blurred orbs removed (sign-in, register, 3 dashboards, Service Center) |
 | 23 | Dot grids | Pass | none (the radial gradients are page tints) |
-| 24 | Sparkle icons | **Recommend change** | `Sparkles` marks "Service Center" in all three sidebars and in two hero chips. A headset/help icon would say what the page is |
+| 24 | Sparkle icons | **Pass (fixed)** | `Sparkles` removed everywhere: Service Center now uses a life-buoy icon, dashboard chips a bank icon |
 | 25 | Animated arrows | Minor | 6 uses |
 | 26 | No terms where applicable | **Partial** | `/terms` exists but is a **draft template** needing legal review |
 | 27 | No privacy information | **Partial** | `/privacy` exists but is a **draft template** needing legal review |
@@ -36,10 +36,13 @@
 | 29 | Neon colours as identity | Pass | none |
 | 30 | Generic pastel blocks | **Recommend change** | 139 uses of `bg-*-50/100`: the heaviest pattern, mostly status badges and icon tiles |
 
-**Totals: 16 pass · 7 recommend change · 5 minor/justified · 2 partial (draft legal pages).**
+**Totals (after this round): 20 pass · 3 recommend change (8 glass surfaces, 10 default font, 30 pastel status/icon blocks) · 5 minor/justified · 2 partial (draft legal pages).**
 
-The same few elements account for most findings: the dark "premium" hero banner (gradient + blurred orbs + sparkle chip + stock headline) repeated on six screens, and pastel icon tiles. Replacing that one pattern with a plain page header would clear checks 1, 22, 24 and part of 8 and 9.
+The three remaining items are design taste rather than defects: translucent navbar/chips (check 8), Inter as the only typeface (10), and pastel badge/icon tiles (30). They are left for the Phase 5 direction decision, since changing them alters the look of every screen.
 
-## Changed in this phase (accessibility, not redesign)
-- Primary button was a green-to-emerald gradient with white text at 3.3:1 (2.5:1 at the emerald end). Now solid `primary-700`/`-800` (5.0:1 / 7.1:1), no gradient, no lift on hover.
-- No other visual patterns were removed.
+## Changed (Phase 6 pass, plus accessibility fixes found while doing it)
+- Removed the repeated dark "premium hero" decoration: 7 blurred orbs, 6 hero gradients (now solid `slate-900`), 4 logo/avatar/card gradients (now solid `primary-700`).
+- Sparkle icons replaced with meaningful ones; stock marketing headlines replaced with plain statements; an unsupported "Built for secure banking operations" claim removed.
+- **Contrast defects found by this scan and fixed:** the active sidebar link (white on a green→emerald gradient, 3.3–3.8:1) is now solid `primary-700` (5.0:1); avatar initials and logo tiles that sat on `primary-500` (2.3:1) are now `primary-700`.
+- Earlier: primary button gradient → solid (3.3:1 → 5.0:1).
+- **Not changed:** glass/translucent surfaces, typeface, pastel status/icon blocks, layout, spacing. No browser was available, so none of this was looked at visually; the banners are simply plainer than before.

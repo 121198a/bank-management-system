@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { CreditCard, ArrowDownToLine, ArrowUpFromLine, ArrowLeftRight, TrendingUp, Clock, ShieldCheck, Wallet, Sparkles } from 'lucide-react';
+import { CreditCard, ArrowDownToLine, ArrowUpFromLine, ArrowLeftRight, TrendingUp, Clock, ShieldCheck, Wallet, Landmark } from 'lucide-react';
 import { dashboardAPI } from '../../api';
 import { useAuth } from '../../context/AuthContext';
 import StatsCard from '../../components/ui/StatsCard';
@@ -29,10 +29,9 @@ const CustomerDashboard = () => {
   const greeting = hour < 12 ? 'Morning' : hour < 17 ? 'Afternoon' : 'Evening';
 
   return <div className="space-y-6">
-    <section className="premium-card p-6 sm:p-7 bg-gradient-to-br from-slate-950 via-slate-900 to-primary-950 text-white border-0 shadow-xl shadow-slate-300/30 dark:shadow-black/30">
-      <div className="absolute -right-20 -top-24 w-72 h-72 bg-primary-500/20 rounded-full blur-3xl" />
+    <section className="premium-card p-6 sm:p-7 bg-slate-900 text-white border-0 shadow-xl shadow-slate-300/30 dark:shadow-black/30">
       <div className="relative flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
-        <div><div className="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/10 px-3 py-1.5 text-xs text-slate-300"><Sparkles className="w-3.5 h-3.5 text-primary-300" /> Personal banking overview</div><h1 className="text-3xl sm:text-4xl font-bold tracking-tight mt-4">Good {greeting}, {user?.fullName?.split(' ')[0]} 👋</h1><p className="text-slate-300 mt-2">Everything important about your money, in one place.</p></div>
+        <div><div className="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/10 px-3 py-1.5 text-xs text-slate-300"><Landmark className="w-3.5 h-3.5 text-primary-300" /> Personal banking overview</div><h1 className="text-3xl sm:text-4xl font-bold tracking-tight mt-4">Good {greeting}, {user?.fullName?.split(' ')[0]} 👋</h1><p className="text-slate-300 mt-2">Your accounts, balances and recent activity.</p></div>
         <div className="min-w-[220px] rounded-2xl bg-white/10 border border-white/10 backdrop-blur p-4"><p className="text-xs text-slate-400">Total available balance</p><p className="text-3xl font-bold mt-1">{loading ? '••••••' : formatCurrency(totalBalance)}</p><p className="text-xs text-primary-300 mt-2 flex items-center gap-1"><Wallet className="w-3.5 h-3.5" /> {activeAccounts.length} active account(s)</p></div>
       </div>
     </section>

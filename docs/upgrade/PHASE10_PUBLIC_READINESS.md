@@ -10,6 +10,8 @@
 | Secondary text `text-gray-400` on white (106 uses in 31 files) | 2.54:1 | **4.83:1** (`gray-500`), dark mode keeps `gray-400` (5.8:1) |
 | Input placeholders | 2.54:1 | 4.83:1 |
 | Login/register footer text on near-black | 4.24:1 | 7.87:1 |
+| Active sidebar link: white on green→emerald gradient | 3.30–3.77:1 | **5.02:1** (solid `primary-700`) |
+| Avatar initials / logo tiles on `primary-500` | 2.28:1 | **5.02:1** (`primary-700`) |
 | Focus ring / input focus border (`primary-500`, 2.3:1, below the 3:1 non-text minimum) | 2.3:1 | 3.3:1 (`primary-600`) |
 | Dashboard pages had the same `<h1>` ("Customer Portal") everywhere; real page title was an `<h2>` | 7 of 35 pages had an h1 | every page has **exactly one h1 = its title** (25 titles promoted; navbar label is now a plain element) |
 | Browser tab title never changed on dashboards | static | follows the page `<h1>` (also for lazy-loaded pages); tested |

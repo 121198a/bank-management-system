@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, CreditCard, ArrowDownToLine, ArrowUpFromLine,
-  ArrowLeftRight, History, ShieldCheck, User, Bell, LogOut, Sparkles,
+  ArrowLeftRight, History, ShieldCheck, User, Bell, LogOut, LifeBuoy,
   Users, ClipboardList, ChevronLeft, ChevronRight,
   Banknote, Building2, Umbrella, PhoneCall, TrendingUp, ShieldAlert
 } from 'lucide-react';
@@ -22,7 +22,7 @@ const navConfig = {
     { to: '/dashboard/kyc', icon: ShieldCheck, label: 'KYC Verification' },
     { to: '/dashboard/notifications', icon: Bell, label: 'Notifications' },
     { to: '/dashboard/profile', icon: User, label: 'Profile' },
-    { to: '/dashboard/services', icon: Sparkles, label: 'Service Center' }
+    { to: '/dashboard/services', icon: LifeBuoy, label: 'Service Center' }
   ],
   admin: [
     { to: '/admin', icon: LayoutDashboard, label: 'Dashboard' },
@@ -38,7 +38,7 @@ const navConfig = {
     { to: '/admin/audit', icon: ClipboardList, label: 'Audit Logs' },
     { to: '/admin/notifications', icon: Bell, label: 'Notifications' },
     { to: '/admin/profile', icon: User, label: 'Profile' },
-    { to: '/admin/services', icon: Sparkles, label: 'Service Center' }
+    { to: '/admin/services', icon: LifeBuoy, label: 'Service Center' }
   ]
 };
 
@@ -63,7 +63,7 @@ const buildEmployeeNav = ({ hasDepartment, hasPermission }) => {
   links.push({ to: '/employee/audit', icon: ClipboardList, label: 'Audit Logs' });
   links.push({ to: '/employee/notifications', icon: Bell, label: 'Notifications' });
   links.push({ to: '/employee/profile', icon: User, label: 'Profile' });
-  links.push({ to: '/employee/services', icon: Sparkles, label: 'Service Center' });
+  links.push({ to: '/employee/services', icon: LifeBuoy, label: 'Service Center' });
   return links;
 };
 
@@ -119,7 +119,7 @@ const Sidebar = ({ role, mobileOpen = false, onMobileClose = () => {} }) => {
       >
       {/* Logo */}
       <div className="flex items-center gap-3 px-4 py-5 border-b border-gray-100 dark:border-banking-border bg-gradient-to-b from-primary-50/80 to-transparent dark:from-primary-950/30">
-        <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary-500 to-emerald-700 flex items-center justify-center flex-shrink-0 shadow-lg shadow-primary-600/20 animate-float-soft">
+        <div className="w-10 h-10 rounded-2xl bg-primary-700 flex items-center justify-center flex-shrink-0 shadow-lg shadow-primary-600/20 animate-float-soft">
           <Building2 className="w-5 h-5 text-white" />
         </div>
         {!collapsed && (

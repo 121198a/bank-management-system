@@ -47,8 +47,7 @@ const RegisterPage = () => {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-banking-dark py-8 px-4">
       <div className="max-w-6xl mx-auto grid lg:grid-cols-[.85fr_1.15fr] gap-6 items-stretch min-h-[calc(100vh-4rem)]">
-        <aside className="hidden lg:flex rounded-3xl overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-primary-950 p-10 flex-col justify-between text-white relative">
-          <div className="absolute -right-24 -top-20 w-80 h-80 bg-primary-500/20 blur-3xl rounded-full" />
+        <aside className="hidden lg:flex rounded-3xl overflow-hidden bg-slate-900 p-10 flex-col justify-between text-white relative">
           <div className="relative"><div className="flex items-center gap-3"><div className="w-11 h-11 rounded-2xl bg-primary-500 flex items-center justify-center"><Building2 className="w-6 h-6" /></div><div><p className="font-bold text-lg">NexaBank</p><p className="text-xs text-slate-400">Bank Management System</p></div></div></div>
           <div className="relative max-w-md"><span className="inline-flex items-center gap-2 text-xs text-primary-300 bg-primary-400/10 border border-primary-400/20 px-3 py-1.5 rounded-full"><ShieldCheck className="w-4 h-4" /> Secure account onboarding</span><h1 className="text-4xl xl:text-5xl font-bold leading-tight mt-5">Open your digital banking account.</h1><p className="text-slate-300 mt-5 leading-7">Create your customer profile and get access to accounts, transfers, statements and transaction history.</p></div>
           <p className="text-xs text-slate-400">© {new Date().getFullYear()} NexaBank{import.meta.env.DEV ? ' · Local development' : ''}</p>

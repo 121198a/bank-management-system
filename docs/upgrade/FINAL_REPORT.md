@@ -1,6 +1,6 @@
 # Final report — Bank Management System upgrade (master-kit Phases 0–13)
 
-Branch `upgrade/master-kit` · baseline tag `pre-upgrade-20261006` (= `origin/main` = `9240780`) · 14 commits · 129 files changed
+Branch `upgrade/master-kit` · baseline tag `pre-upgrade-20261006` (= `origin/main` = `9240780`) · 15 commits · 129 files changed
 
 ## Verdict
 **Not "production ready".** The kit allows that phrase only when the documented checks support it, and these do not yet: the end-to-end suite has never run, nothing has been tested in a browser or at any viewport size, the backup/restore CLI has never touched a real database, the KYC encryption migration has not been run, secrets from the uploaded ZIP have not been rotated, and the legal pages are unreviewed drafts. What *has* been done is real and verified (section 9). Section 12 lists what only the owner can do.
@@ -13,8 +13,8 @@ Branch `upgrade/master-kit` · baseline tag `pre-upgrade-20261006` (= `origin/ma
 | 2 Product identity | Audit done, 3 safe fixes made, **rename awaits owner decisions D1–D6** — `PHASE2_IDENTITY.md` |
 | 3 Architecture | Done where needed (layering was already sound; limiter factory extracted, tooling added under `scripts/`) |
 | 4 Security | Largely done; open items are owner actions (section 11–12) |
-| 5 UI/UX redesign | **Not done** — needs the owner's direction (kit default is light/neutral; current UI uses glass/gradients) |
-| 6 Anti-vibe audit | Done as a scored audit (16 pass · 7 recommend change · 5 minor · 2 partial); **no redesign** — `PHASE6_ANTI_VIBE_AUDIT.md` |
+| 5 UI/UX redesign | **Not done** — needs the owner's direction (kit default is light/neutral; the app is dark-first with translucent surfaces, Inter only, pastel badges) |
+| 6 Anti-vibe checklist | **Done** — scored audit, then the objective items fixed (orbs, hero/logo gradients, sparkle icons, stock copy): now 20 pass · 3 design-taste items left · 5 minor · 2 partial (draft legal pages) — `PHASE6_ANTI_VIBE_AUDIT.md` |
 | 7 Responsive engineering | **Partial** — static code review done (all breakpoints present, all 16 table files scroll, modals scroll, no small tap targets) and one real fix (`dvh` app shell); the kit's 20-viewport browser suite is **written but has never run** (needs a browser; non-blocking CI job) |
 | 8 Performance | Partial — code splitting and caching done; no Lighthouse or load tests |
 | 9 Reliability | **Done** — timeouts, plain-language network/timeout errors, error boundary, offline banner, shared rate limiting, backups |
@@ -39,7 +39,7 @@ Root `.npmrc` (legacy-peer-deps workaround that CI never read) · `backend/backe
 Safe production error responses with request IDs · API CSP/HSTS/referrer policy and nginx CSP and security headers · all backend advisories cleared (production audit: 0) · isolated, expiring, configurable rate limiters; optional Redis-backed shared limits with in-memory fallback; per-user money-movement cap · malformed amounts → 400 · opt-in AES-256-GCM encryption of KYC document numbers with blind-index search and a dry-run/rollback migration · compose: `TRUST_PROXY`, backend port not published, healthchecks, Redis unpublished · CI: least-privilege token, `npm audit` · route-guard tests that fail if any non-intended route becomes public · encrypted verify-then-apply backups.
 
 ## 6. UI/UX improvements
-Real 404 page · error boundary · skeleton on the KYC page · draft privacy/terms pages linked from sign-in · dev label hidden in production · one `h1` per page matching its title · tab title follows the page · skip-to-content link · primary button, links, secondary text, placeholders and focus indicators now meet WCAG contrast (measured). **No visual redesign** (Phase 5).
+Real 404 page · error boundary · skeleton on the KYC page · draft privacy/terms pages linked from sign-in · dev label hidden in production · one `h1` per page matching its title · tab title follows the page · skip-to-content link · primary button, links, secondary text, placeholders and focus indicators now meet WCAG contrast (measured). Hero banners made plain (no orbs, no gradients, no sparkle icons, plain copy). **No broader redesign** (Phase 5).
 
 ## 7. Responsive improvements
 Static review only — **no viewport was ever rendered.** Confirmed in code and in the built CSS: all breakpoints (400/640/768/1024/1280) exist; every file with a `<table>` has a horizontal-scroll wrapper; modals can scroll; no small tap-target patterns; no unprefixed wide grids. One fix: the app shell and mobile sidebar used `100vh`, which mobile browsers make taller than the visible area (bottom controls such as sign-out can hide behind the toolbar) — now `100dvh` with a `100vh` fallback. Minor items left: 7 uses of 9–11 px text, 9 fixed `min-w-[…px]` blocks (190–220 px, fine down to ~240 px but unverified), `min-h-screen` on auth/legal pages. A Playwright suite covering the kit's 20 viewports and axe scans is in `frontend/e2e/`; **it has never been run**.
@@ -154,6 +154,7 @@ The frontend uses no environment variables; nothing secret reaches the browser b
 - Draft `/privacy` and `/terms` pages (placeholders require legal review), linked from sign-in
 - 16 backend tests (error handler, rate limit, RBAC, HTTP integration); 404 page; error boundary; robots/OG/noindex meta; axios timeout; CI `npm audit` + least-privilege permissions
 ### Changed
+- UI de-vibe pass: removed 7 decorative blurred orbs and 10 gradients (hero banners, logo/avatar tiles, account card, active sidebar link) in favour of solid colours; replaced sparkle icons; replaced stock marketing copy with plain statements; Service Center heading is now "Service Center"
 - **Behaviour change when encryption is enabled:** admin/employee KYC search matches a document number by exact value only (partial-number search is impossible on encrypted data); name/email search is unchanged
 - Pages lazy-loaded (entry chunk 288 kB → 37 kB); nginx caches only hashed assets, revalidates the SPA shell
 ### Removed

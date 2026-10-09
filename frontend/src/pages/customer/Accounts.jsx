@@ -86,7 +86,7 @@ const CustomerAccounts = () => {
           {accounts.map((acc) => (
             <div key={acc._id} className="card p-6 hover:shadow-card-hover transition-shadow">
               <div className="flex items-start justify-between mb-4">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center">
+                <div className="w-12 h-12 rounded-2xl bg-primary-700 flex items-center justify-center">
                   <CreditCard className="w-6 h-6 text-white" />
                 </div>
                 <Badge value={acc.status} />
