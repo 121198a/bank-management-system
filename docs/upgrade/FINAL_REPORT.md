@@ -1,6 +1,6 @@
 # Final report — Bank Management System upgrade (master-kit Phases 0–13)
 
-Branch `upgrade/master-kit` · baseline tag `pre-upgrade-20261006` (= `origin/main` = `9240780`) · 13 commits · 121 files changed
+Branch `upgrade/master-kit` · baseline tag `pre-upgrade-20261006` (= `origin/main` = `9240780`) · 14 commits · 129 files changed
 
 ## Verdict
 **Not "production ready".** The kit allows that phrase only when the documented checks support it, and these do not yet: the end-to-end suite has never run, nothing has been tested in a browser or at any viewport size, the backup/restore CLI has never touched a real database, the KYC encryption migration has not been run, secrets from the uploaded ZIP have not been rotated, and the legal pages are unreviewed drafts. What *has* been done is real and verified (section 9). Section 12 lists what only the owner can do.
@@ -15,11 +15,11 @@ Branch `upgrade/master-kit` · baseline tag `pre-upgrade-20261006` (= `origin/ma
 | 4 Security | Largely done; open items are owner actions (section 11–12) |
 | 5 UI/UX redesign | **Not done** — needs the owner's direction (kit default is light/neutral; current UI uses glass/gradients) |
 | 6 Anti-vibe audit | Done as a scored audit (16 pass · 7 recommend change · 5 minor · 2 partial); **no redesign** — `PHASE6_ANTI_VIBE_AUDIT.md` |
-| 7 Responsive engineering | **Not done** — needs a real browser |
+| 7 Responsive engineering | **Partial** — static code review done (all breakpoints present, all 16 table files scroll, modals scroll, no small tap targets) and one real fix (`dvh` app shell); the kit's 20-viewport browser suite is **written but has never run** (needs a browser; non-blocking CI job) |
 | 8 Performance | Partial — code splitting and caching done; no Lighthouse or load tests |
-| 9 Reliability | Mostly done — timeouts, error boundary, shared rate limiting, backups; no offline UI state |
+| 9 Reliability | **Done** — timeouts, plain-language network/timeout errors, error boundary, offline banner, shared rate limiting, backups |
 | 10 SEO/a11y/public readiness | Partial — contrast, headings, skip link, title sync fixed; source-level only — `PHASE10_PUBLIC_READINESS.md` |
-| 11 Testing | Partial — 85 tests run by default (66 backend + 19 frontend); 5 Redis tests (verified) and 10 e2e tests (never run) are opt-in; no browser/a11y tests |
+| 11 Testing | Partial — 90 tests run by default (66 backend + 24 frontend); 5 Redis tests (verified) are opt-in; **never run:** 10 database e2e tests and 146 browser tests (20 viewports + axe) |
 | 12 Git | Partial — logical commits and `diff --check` clean; **push is yours to do** |
 | 13 Final report | This document |
 
@@ -42,7 +42,7 @@ Safe production error responses with request IDs · API CSP/HSTS/referrer policy
 Real 404 page · error boundary · skeleton on the KYC page · draft privacy/terms pages linked from sign-in · dev label hidden in production · one `h1` per page matching its title · tab title follows the page · skip-to-content link · primary button, links, secondary text, placeholders and focus indicators now meet WCAG contrast (measured). **No visual redesign** (Phase 5).
 
 ## 7. Responsive improvements
-**None made and none verified.** Tailwind breakpoints exist in the code; no viewport was ever rendered.
+Static review only — **no viewport was ever rendered.** Confirmed in code and in the built CSS: all breakpoints (400/640/768/1024/1280) exist; every file with a `<table>` has a horizontal-scroll wrapper; modals can scroll; no small tap-target patterns; no unprefixed wide grids. One fix: the app shell and mobile sidebar used `100vh`, which mobile browsers make taller than the visible area (bottom controls such as sign-out can hide behind the toolbar) — now `100dvh` with a `100vh` fallback. Minor items left: 7 uses of 9–11 px text, 9 fixed `min-w-[…px]` blocks (190–220 px, fine down to ~240 px but unverified), `min-h-screen` on auth/legal pages. A Playwright suite covering the kit's 20 viewports and axe scans is in `frontend/e2e/`; **it has never been run**.
 
 ## 8. Performance improvements
 Main JavaScript chunk 288 kB → 37 kB (route-level lazy loading) · nginx: gzip, immutable cache for hashed assets, `no-cache` for the SPA shell · 20 s API timeout · shared Redis rate-limit store. **No Lighthouse, load or concurrency testing was run.**
@@ -51,12 +51,12 @@ Main JavaScript chunk 288 kB → 37 kB (route-level lazy loading) · nginx: gzip
 | Suite | Result |
 |---|---|
 | Backend `npm test` | **66 passed, 0 failed, 15 skipped** (10 e2e need MongoDB; 5 need Redis). With `TEST_REDIS_URL`: 71 passed — verified against a real Redis 7 |
-| Frontend `npm test` | **19 passed** |
+| Frontend `npm test` | **24 passed** |
 | Frontend lint / build | clean / builds |
 | `npm audit --omit=dev` | backend **0**; frontend **2 moderate** (react-router SSR advisory; app is client-only; upgrade is a breaking v7 move — accepted) |
 | Dev-dependency audit | 3 high in the `nodemon` chain; only fix is a 2017 downgrade; not shipped (`--omit=dev`) — accepted |
 | OpenAPI | valid 3.0.3, 121 operations, drift-tested |
-| **Never executed** | the 10-step real-database end-to-end suite · backup/restore CLI against MongoDB · KYC encryption migration · real SMTP with nodemailer 10 · any browser, viewport or screen-reader test |
+| **Never executed** | the 10-step real-database end-to-end suite · the 146-test Playwright suite · backup/restore CLI against MongoDB · KYC encryption migration · real SMTP with nodemailer 10 · any screen-reader test |
 
 ## 10. Deployment changes
 Compose adds `redis` (no persistence, 64 MB cap, healthcheck), `NODE_ENV=production`, `TRUST_PROXY=true`, `REDIS_URL`, backend healthcheck, `expose` instead of `ports`. nginx gains security headers and cache rules. CI gains `backend-e2e` (MongoDB 7 replica set), a Redis service, frontend tests and audits. **TLS is not handled here** — terminate HTTPS in front of nginx.
@@ -65,7 +65,7 @@ Compose adds `redis` (no persistence, 64 MB cap, healthcheck), `NODE_ENV=product
 1. End-to-end suite unproven — first CI run may expose test/assumption mismatches.
 2. KYC numbers remain plain text until the key is set and the migration run; key loss would make encrypted data unrecoverable.
 3. Backups are logical, not point-in-time; restore never rehearsed.
-4. No responsive, browser, accessibility-tool or load testing; contrast measured for 13+ pairs only.
+4. No browser, viewport, accessibility-tool or load test has ever run (the suites exist); contrast measured for 13+ pairs only.
 5. Plain-text secrets and PII were in the uploaded ZIP; historic hard-coded admin password remains in git history (`SECURITY.md`).
 6. Rate limiter is fixed-window (up to 2× burst at a window edge).
 7. Legal pages are unreviewed drafts; contact details are placeholders.
@@ -75,7 +75,7 @@ Compose adds `redis` (no persistence, 64 MB cap, healthcheck), `NODE_ENV=product
 ## 12. Manual actions required from the owner
 1. **Rotate every secret** that was in `backend/.env` and `backend/backen/.env` (JWT secrets, database credentials, SMTP password). Delete or secure the five `backup-*.json` files (customer data).
 2. **Push**: `git push origin pre-upgrade-20261006` then `git push origin upgrade/master-kit`; open a PR; do not force-push.
-3. **Watch the `backend-e2e` CI job** and send/fix failures.
+3. **Watch the `backend-e2e` and `frontend-browser` CI jobs** and send/fix failures. `frontend-browser` is non-blocking: once green, delete its `continue-on-error: true` line to make it a gate.
 4. Decide D1–D6 (`PHASE2_IDENTITY.md`) and the UI direction for Phase 5.
 5. Set `KYC_ENCRYPTION_KEY`, back the key up separately, then on a *copy* of the data run `npm run kyc:encrypt` (dry run) → `--apply`; verify the admin KYC page and an exact-number search. Decide whether reviewers should see full or masked numbers.
 6. Set `BACKUP_ENCRYPTION_KEY`, run `npm run backup`, and rehearse a restore into a scratch database (`BACKUP_RUNBOOK.md`).
@@ -141,6 +141,8 @@ The frontend uses no environment variables; nothing secret reaches the browser b
 - **Rate limiters no longer share one counter per IP** (first login after ~12 normal API calls returned 429); per-limiter buckets, expiry sweep, configurable limits
 - Frontend `npm ci` failure (Vite 8 peer conflict); ESLint scanning `dist/`; 9 lint errors; unused KYC loading state
 ### Added
+- Offline banner (`role=status`) and plain-language messages for timeouts and unreachable servers; app shell and mobile sidebar use `100dvh` with a `100vh` fallback
+- Playwright suite (`frontend/e2e/`, `npm run test:e2e`): the kit's 20 viewports x 6 public pages (no horizontal overflow, heading visible) + axe WCAG A/AA scans in light and dark; non-blocking `frontend-browser` CI job. **Never run**
 - Encrypted backup/restore tooling (`npm run backup` / `npm run restore`): AES-256-GCM, verify-then-apply, refuses non-empty targets and requires `--confirm=<db>`; 12 tests; `BACKUP_RUNBOOK.md` with restore rehearsal and monitoring checklist
 - `docs/upgrade/openapi.json`: OpenAPI 3.0.3 generated from the live router + validators (`npm run docs:openapi`), validated and drift-tested in `npm test`; `@apidevtools/swagger-parser` added as a devDependency
 - Optional Redis-backed rate limiting (`REDIS_URL`): atomic shared counters across instances, named per-limiter keys, automatic in-memory fallback on Redis failure; `redis` service in Docker Compose and CI; 6 tests against a real Redis

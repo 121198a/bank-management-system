@@ -24,6 +24,11 @@ describe('DashboardLayout accessibility', () => {
     expect(main).toHaveAttribute('tabindex', '-1');
   });
 
+  it('sizes the app shell to the dynamic viewport so mobile browser toolbars do not clip it', () => {
+    const { container } = renderLayout(<Page title="X" />);
+    expect(container.firstChild.className).toMatch(/supports-\[height:100dvh\]:h-dvh/);
+  });
+
   it('sets the document title from the page h1', async () => {
     renderLayout(<Page title="Fund Transfer" />);
     await waitFor(() => expect(document.title).toBe('Fund Transfer — Bank Management System'));

@@ -29,5 +29,13 @@ export const getErrorMessage = (err) => {
   if (err?.response?.data?.errors?.length) {
     return err.response.data.errors.map((e) => e.message).join('. ');
   }
-  return err?.response?.data?.message || err?.message || 'Something went wrong';
+  if (err?.response?.data?.message) return err.response.data.message;
+  // No HTTP response at all: the request timed out or never reached the server.
+  if (err?.code === 'ECONNABORTED' || err?.code === 'ETIMEDOUT') {
+    return 'The server took too long to respond. Please try again.';
+  }
+  if (err?.request && !err?.response) {
+    return "Can't reach the server. Check your internet connection and try again.";
+  }
+  return err?.message || 'Something went wrong';
 };

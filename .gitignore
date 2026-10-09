@@ -44,3 +44,7 @@ Thumbs.db
 
 # Temporary development backups
 *.phase2-backup
+
+# Playwright
+frontend/playwright-report/
+frontend/test-results/

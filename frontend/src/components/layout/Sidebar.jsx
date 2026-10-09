@@ -109,7 +109,7 @@ const Sidebar = ({ role, mobileOpen = false, onMobileClose = () => {} }) => {
 
       <aside
         className={`
-          fixed inset-y-0 left-0 z-50 flex flex-col h-screen bg-white/95 dark:bg-banking-card/95 backdrop-blur-xl
+          fixed inset-y-0 left-0 z-50 flex flex-col h-screen supports-[height:100dvh]:h-dvh bg-white/95 dark:bg-banking-card/95 backdrop-blur-xl
           border-r border-gray-100 dark:border-banking-border transition-transform duration-300 flex-shrink-0
           w-72 ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}
           lg:static lg:translate-x-0 lg:transition-all
