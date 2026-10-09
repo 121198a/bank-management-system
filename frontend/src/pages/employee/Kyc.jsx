@@ -55,7 +55,7 @@ const EmployeeKyc = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">KYC Management</h2>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">KYC Management</h1>
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Verify customer identity documents</p>
       </div>
 
@@ -83,17 +83,17 @@ const EmployeeKyc = () => {
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-banking-border bg-white dark:bg-banking-card">
                   {requests.length === 0 ? (
-                    <tr><td colSpan={6} className="table-td text-center py-10 text-gray-400">No KYC requests found</td></tr>
+                    <tr><td colSpan={6} className="table-td text-center py-10 text-gray-500 dark:text-gray-400">No KYC requests found</td></tr>
                   ) : requests.map((kyc) => (
                     <tr key={kyc._id} className="table-row">
                       <td className="table-td">
                         <p className="font-medium text-sm text-gray-800 dark:text-gray-200">{kyc.user?.fullName}</p>
-                        <p className="text-xs text-gray-400">{kyc.user?.email}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">{kyc.user?.email}</p>
                       </td>
                       <td className="table-td text-sm">{docTypeLabel[kyc.documentType] || kyc.documentType}</td>
                       <td className="table-td font-mono text-xs">{kyc.documentNumber}</td>
                       <td className="table-td"><Badge value={kyc.status} /></td>
-                      <td className="table-td text-xs text-gray-400">{formatDate(kyc.createdAt, { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' })}</td>
+                      <td className="table-td text-xs text-gray-500 dark:text-gray-400">{formatDate(kyc.createdAt, { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' })}</td>
                       <td className="table-td">
                         {kyc.status === 'pending' && (
                           <div className="flex gap-2">
@@ -108,7 +108,7 @@ const EmployeeKyc = () => {
                           </div>
                         )}
                         {kyc.status !== 'pending' && (
-                          <p className="text-xs text-gray-400">{kyc.reviewedBy?.fullName || 'Reviewed'}</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">{kyc.reviewedBy?.fullName || 'Reviewed'}</p>
                         )}
                       </td>
                     </tr>

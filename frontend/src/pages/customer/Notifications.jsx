@@ -66,7 +66,7 @@ const Notifications = () => {
     <div className="max-w-2xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Notifications</h2>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Notifications</h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
             {unreadCount > 0 ? unreadCount + ' unread notification(s)' : 'All caught up!'}
           </p>
@@ -95,19 +95,19 @@ const Notifications = () => {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2">
                       <p className={'text-sm font-semibold ' + (n.isRead ? 'text-gray-700 dark:text-gray-300' : 'text-gray-900 dark:text-white')}>{n.title}</p>
-                      <span className="text-xs text-gray-400 whitespace-nowrap">{formatDate(n.createdAt)}</span>
+                      <span className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">{formatDate(n.createdAt)}</span>
                     </div>
                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{n.message}</p>
                     {!n.isRead && (
                       <button onClick={() => handleMarkRead(n._id)}
-                        className="text-xs text-primary-600 hover:underline mt-1 font-medium">
+                        className="text-xs text-primary-700 dark:text-primary-400 hover:underline mt-1 font-medium">
                         Mark as read
                       </button>
                     )}
                   </div>
                   <button onClick={() => handleDelete(n._id)}
                     className="p-1.5 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/20 transition-colors flex-shrink-0">
-                    <Trash2 className="w-3.5 h-3.5 text-gray-400 hover:text-red-500" />
+                    <Trash2 className="w-3.5 h-3.5 text-gray-500 dark:text-gray-400 hover:text-red-500" />
                   </button>
                 </div>
               );

@@ -58,7 +58,7 @@ const Withdraw = () => {
   return (
     <div className="max-w-lg mx-auto space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Withdraw Funds</h2>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Withdraw Funds</h1>
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Withdraw cash from your account</p>
       </div>
 

@@ -10,6 +10,9 @@ const startServer = async () => {
   if (!encryptionOn && env.isProduction) {
     console.warn('WARNING: KYC_ENCRYPTION_KEY is not set - KYC document numbers are stored in plain text.');
   }
+  if (env.isProduction && /@example\.(com|org|net)>?$/i.test(env.smtp.from)) {
+    console.warn('WARNING: SMTP_FROM still uses an example.com address - set SMTP_FROM to a sender on a domain you control.');
+  }
   await connectDB();
   const server = app.listen(env.port, () => {
     console.log(`Server running in ${env.nodeEnv} mode on port ${env.port}`);

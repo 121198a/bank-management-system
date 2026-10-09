@@ -64,7 +64,7 @@ const ForgotPasswordPage = () => {
                 <Button type="submit" loading={loading} className="w-full">Send Reset Link</Button>
               </form>
               <div className="mt-6 text-center">
-                <Link to="/login" className="text-sm text-primary-600 hover:text-primary-700 font-medium inline-flex items-center gap-1">
+                <Link to="/login" className="text-sm text-primary-700 dark:text-primary-400 hover:text-primary-700 font-medium inline-flex items-center gap-1">
                   <ArrowLeft className="w-3.5 h-3.5" /> Back to Sign In
                 </Link>
               </div>

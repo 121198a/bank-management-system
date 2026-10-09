@@ -50,7 +50,7 @@ const EmployeeAccounts = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Account Management</h2>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Account Management</h1>
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Review and approve customer account applications</p>
       </div>
 
@@ -79,13 +79,13 @@ const EmployeeAccounts = () => {
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-banking-border bg-white dark:bg-banking-card">
                   {accounts.length === 0 ? (
-                    <tr><td colSpan={7} className="table-td text-center py-10 text-gray-400">No accounts found</td></tr>
+                    <tr><td colSpan={7} className="table-td text-center py-10 text-gray-500 dark:text-gray-400">No accounts found</td></tr>
                   ) : accounts.map((acc) => (
                     <tr key={acc._id} className="table-row">
                       <td className="table-td font-mono text-xs">{acc.accountNumber}</td>
                       <td className="table-td">
                         <p className="font-medium text-sm text-gray-800 dark:text-gray-200">{acc.user?.fullName}</p>
-                        <p className="text-xs text-gray-400">{acc.user?.email}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">{acc.user?.email}</p>
                       </td>
                       <td className="table-td"><Badge value={acc.user?.kycStatus} /></td>
                       <td className="table-td capitalize text-sm">{acc.accountType}</td>
@@ -99,7 +99,7 @@ const EmployeeAccounts = () => {
                           </button>
                         )}
                         {acc.status !== 'pending' && (
-                          <span className="text-xs text-gray-400">
+                          <span className="text-xs text-gray-500 dark:text-gray-400">
                             {acc.approvedAt ? formatDate(acc.approvedAt, { month: 'short', day: '2-digit' }) : '—'}
                           </span>
                         )}

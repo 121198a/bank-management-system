@@ -1,5 +1,7 @@
 # CURRENT_STATE_AUDIT — Bank Management System
 
+> Companion documents: `FINAL_REPORT.md` (phase status, verdict, rollback), `PHASE2_IDENTITY.md`, `PHASE6_ANTI_VIBE_AUDIT.md`, `PHASE10_PUBLIC_READINESS.md`, `BACKUP_RUNBOOK.md`.
+
 Audit date: 2026-10-06 · Baseline: git `9240780` (tag `pre-upgrade-20261006`) · Branch: `upgrade/master-kit`
 
 ## 1. Repository inventory
@@ -53,6 +55,8 @@ Required: `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`, `MONGO_URI`. Optional: PORT
 | R5 | No code splitting: 288 kB entry chunk. | **Fixed**: entry 37 kB (pages lazy-loaded) |
 | R6 | KYC page computed `loading` but never showed it. | **Fixed** (skeleton) |
 | R9 | **Malformed amounts returned HTTP 500.** The validators accept `10.`, `.5`, `+5` and `007` but the money parser rejects them with a plain `Error`, which the error handler turned into *Internal Server Error* (and a server-side error log) instead of a 400. Affects every money field (deposit, withdraw, transfer, opening deposit, loans, insurance, collections). Found by the new OpenAPI drift test. | **Fixed** at the parser (`ApiError(400)`); regression-tested through the real error handler |
+| R10 | Sign-in/register showed "Local development environment" in every build. | **Fixed** (dev builds only) |
+| R11 | WCAG contrast failures (button 3.3:1, links 3.3:1, secondary text 2.5:1, focus ring 2.3:1) and a single repeated `h1` on dashboards. | **Fixed** — see `PHASE10_PUBLIC_READINESS.md` |
 | R7 | Stray artefacts: `backend/backen/` (a stray `.env`), `User.js.phase2-backup` (byte-identical to current `User.js`), empty brace-named directories from a bad `mkdir`. | **Removed** (none were tracked in git) |
 | R8 | CRLF-only edits on 4 backend files/.gitignore were uncommitted noise. | Reverted |
 

@@ -139,10 +139,10 @@ const TransactionMonitoring = ({ role = 'customer' }) => {
         <div>
           <div className="flex items-center gap-3">
             <div className="w-11 h-11 rounded-2xl bg-primary-50 dark:bg-primary-900/20 flex items-center justify-center">
-              <History className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+              <History className="w-5 h-5 text-primary-700 dark:text-primary-400" />
             </div>
             <div>
-              <h2 className="page-heading">{title}</h2>
+              <h1 className="page-heading">{title}</h1>
               <p className="page-subtitle">{subtitle}</p>
             </div>
           </div>
@@ -255,7 +255,7 @@ const TransactionMonitoring = ({ role = 'customer' }) => {
             <>
               <TransactionTable transactions={transactions} showAccount={!isCustomer} />
               <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mt-4">
-                <p className="text-xs text-gray-400">
+                <p className="text-xs text-gray-500 dark:text-gray-400">
                   {transactions.length > 0
                     ? `Showing ${transactions.length} of ${meta.total ?? transactions.length} transactions`
                     : 'No transactions match your filters'}
@@ -270,15 +270,15 @@ const TransactionMonitoring = ({ role = 'customer' }) => {
       {isCustomer && selectedAccountData && (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div className="card p-4">
-            <p className="text-xs font-medium uppercase tracking-wider text-gray-400">Account</p>
+            <p className="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Account</p>
             <p className="font-mono font-semibold text-gray-800 dark:text-white mt-1">{selectedAccountData.accountNumber}</p>
           </div>
           <div className="card p-4">
-            <p className="text-xs font-medium uppercase tracking-wider text-gray-400">Available Balance</p>
+            <p className="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Available Balance</p>
             <p className="font-semibold text-gray-800 dark:text-white mt-1">{formatCurrency(selectedAccountData.balance)}</p>
           </div>
           <div className="card p-4">
-            <p className="text-xs font-medium uppercase tracking-wider text-gray-400">Account Type</p>
+            <p className="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Account Type</p>
             <p className="font-semibold text-gray-800 dark:text-white mt-1 capitalize">{selectedAccountData.accountType}</p>
           </div>
         </div>

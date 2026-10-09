@@ -76,9 +76,9 @@ const LoginPage = () => {
           </div>
         </div>
 
-        <div className="relative z-10 flex items-end justify-between text-xs text-slate-500">
+        <div className="relative z-10 flex items-end justify-between text-xs text-slate-400">
           <span>© {new Date().getFullYear()} NexaBank</span>
-          <span>Local development environment</span>
+          {import.meta.env.DEV ? <span>Local development environment</span> : <span aria-hidden="true" />}
         </div>
       </section>
 
@@ -90,7 +90,7 @@ const LoginPage = () => {
           </div>
 
           <div className="mb-7">
-            <p className="text-sm font-semibold text-primary-600 mb-2">Welcome back</p>
+            <p className="text-sm font-semibold text-primary-700 dark:text-primary-400 mb-2">Welcome back</p>
             <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Sign in to your account</h2>
             <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Enter your credentials to continue to your dashboard.</p>
           </div>
@@ -100,21 +100,21 @@ const LoginPage = () => {
               <Input label="Email address" type="email" icon={Mail} placeholder="you@example.com" value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })} error={errors.email} autoComplete="email" />
               <div>
-                <div className="flex items-center justify-between mb-1.5"><label className="input-label !mb-0">Password</label><Link to="/forgot-password" className="text-xs font-semibold text-primary-600 hover:text-primary-700">Forgot password?</Link></div>
+                <div className="flex items-center justify-between mb-1.5"><label className="input-label !mb-0">Password</label><Link to="/forgot-password" className="text-xs font-semibold text-primary-700 dark:text-primary-400 hover:text-primary-700">Forgot password?</Link></div>
                 <div className="relative">
-                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 dark:text-gray-400" />
                   <input type={showPassword ? 'text' : 'password'} className={`input-field pl-10 pr-11 ${errors.password ? 'border-red-400 focus:ring-red-400/20' : ''}`} placeholder="Enter your password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} autoComplete="current-password" />
-                  <button type="button" aria-label={showPassword ? 'Hide password' : 'Show password'} onClick={() => setShowPassword((s) => !s)} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">{showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}</button>
+                  <button type="button" aria-label={showPassword ? 'Hide password' : 'Show password'} onClick={() => setShowPassword((s) => !s)} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400 hover:text-gray-600">{showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}</button>
                 </div>
                 {errors.password && <p className="mt-1.5 text-xs text-red-500">{errors.password}</p>}
               </div>
               <Button type="submit" loading={loading} className="w-full !py-3.5">Sign in <ArrowRight className="w-4 h-4" /></Button>
             </form>
             <div className="mt-6 pt-6 border-t border-gray-100 dark:border-banking-border text-center">
-              <p className="text-sm text-gray-500 dark:text-gray-400">New to NexaBank? <Link to="/register" className="text-primary-600 hover:text-primary-700 font-bold">Create an account</Link></p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">New to NexaBank? <Link to="/register" className="text-primary-700 dark:text-primary-400 hover:text-primary-700 font-bold">Create an account</Link></p>
             </div>
           </div>
-          <p className="text-center text-xs text-gray-400 mt-5">Your session is protected by secure authentication controls. <Link to="/privacy" className="underline">Privacy</Link> · <Link to="/terms" className="underline">Terms</Link></p>
+          <p className="text-center text-xs text-gray-500 dark:text-gray-400 mt-5">Your session is protected by secure authentication controls. <Link to="/privacy" className="underline">Privacy</Link> · <Link to="/terms" className="underline">Terms</Link></p>
         </div>
       </section>
     </div>

@@ -90,7 +90,7 @@ const EmployeeLoans = () => {
 
   return (
     <div className="space-y-6">
-      <div><h2 className="text-2xl font-bold text-gray-900 dark:text-white">Loan Review</h2><p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Review loan applications within your authorized branch</p></div>
+      <div><h1 className="text-2xl font-bold text-gray-900 dark:text-white">Loan Review</h1><p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Review loan applications within your authorized branch</p></div>
       <ManagementFilterBar
         search={search}
         onSearch={(e) => { setSearch(e.target.value); setPage(1); }}
@@ -101,7 +101,7 @@ const EmployeeLoans = () => {
           containerClass="w-full sm:w-48 lg:w-48" />
       </ManagementFilterBar>
       <div className="card p-5">
-        {loading ? <TableSkeleton rows={8} cols={7} /> : <><div className="table-container"><table className="table"><thead><tr>{['Customer','Application','Type','Requested','Status','Submitted',''].map(h => <th key={h} className="table-th">{h}</th>)}</tr></thead><tbody className="divide-y divide-gray-100 dark:divide-banking-border">{loans.map(l => <tr className="table-row" key={l._id}><td className="table-td"><p className="font-medium text-sm">{l.customer?.fullName}</p><p className="text-xs text-gray-400">{l.customer?.email}</p></td><td className="table-td font-mono text-xs">{l.applicationId}</td><td className="table-td capitalize text-sm">{l.loanType}</td><td className="table-td font-semibold">{formatCurrency(l.requestedAmount)}</td><td className="table-td"><Badge value={l.status} /></td><td className="table-td text-xs text-gray-400">{formatDate(l.submittedAt || l.createdAt)}</td><td className="table-td"><button type="button" aria-label={`View application ${l.applicationId}`} onClick={() => open(l)} className="p-2 text-primary-600 hover:bg-primary-50 rounded-lg"><Eye className="w-4 h-4" /></button></td></tr>)}</tbody></table></div><Pagination page={page} totalPages={meta.totalPages || 1} onPageChange={setPage} /></>}
+        {loading ? <TableSkeleton rows={8} cols={7} /> : <><div className="table-container"><table className="table"><thead><tr>{['Customer','Application','Type','Requested','Status','Submitted',''].map(h => <th key={h} className="table-th">{h}</th>)}</tr></thead><tbody className="divide-y divide-gray-100 dark:divide-banking-border">{loans.map(l => <tr className="table-row" key={l._id}><td className="table-td"><p className="font-medium text-sm">{l.customer?.fullName}</p><p className="text-xs text-gray-500 dark:text-gray-400">{l.customer?.email}</p></td><td className="table-td font-mono text-xs">{l.applicationId}</td><td className="table-td capitalize text-sm">{l.loanType}</td><td className="table-td font-semibold">{formatCurrency(l.requestedAmount)}</td><td className="table-td"><Badge value={l.status} /></td><td className="table-td text-xs text-gray-500 dark:text-gray-400">{formatDate(l.submittedAt || l.createdAt)}</td><td className="table-td"><button type="button" aria-label={`View application ${l.applicationId}`} onClick={() => open(l)} className="p-2 text-primary-700 dark:text-primary-400 hover:bg-primary-50 rounded-lg"><Eye className="w-4 h-4" /></button></td></tr>)}</tbody></table></div><Pagination page={page} totalPages={meta.totalPages || 1} onPageChange={setPage} /></>}
       </div>
 
       <Modal isOpen={!!selected} onClose={() => setSelected(null)} title={selected ? `Review ${selected.applicationId}` : 'Loan'} size="lg">
@@ -116,7 +116,7 @@ const EmployeeLoans = () => {
             {selected.managerRecommendedAmount && <p><span className="text-gray-500">Manager recommended:</span> {formatCurrency(selected.managerRecommendedAmount)}</p>}
           </div>
 
-          <div><h4 className="font-semibold text-sm mb-2">Documents</h4><div className="space-y-2">{(selected.documents || []).map(doc => <div key={doc._id} className="flex items-center justify-between gap-3 p-3 rounded-xl bg-gray-50 dark:bg-banking-darker"><div><p className="text-sm">{doc.fileName}</p><p className="text-xs text-gray-500 capitalize">{doc.type.replaceAll('_',' ')} · {doc.status}</p></div><div className="flex items-center gap-2">{doc.status === 'uploaded' && ['under_review','documents_required'].includes(selected.status) && <Button size="sm" icon={BadgeCheck} loading={actionLoading} onClick={() => verify(doc)}>Verify</Button>}<Badge value={doc.status} /></div></div>)}{selected.documents?.length === 0 && <p className="text-xs text-gray-400">No documents submitted.</p>}</div></div>
+          <div><h4 className="font-semibold text-sm mb-2">Documents</h4><div className="space-y-2">{(selected.documents || []).map(doc => <div key={doc._id} className="flex items-center justify-between gap-3 p-3 rounded-xl bg-gray-50 dark:bg-banking-darker"><div><p className="text-sm">{doc.fileName}</p><p className="text-xs text-gray-500 capitalize">{doc.type.replaceAll('_',' ')} · {doc.status}</p></div><div className="flex items-center gap-2">{doc.status === 'uploaded' && ['under_review','documents_required'].includes(selected.status) && <Button size="sm" icon={BadgeCheck} loading={actionLoading} onClick={() => verify(doc)}>Verify</Button>}<Badge value={doc.status} /></div></div>)}{selected.documents?.length === 0 && <p className="text-xs text-gray-500 dark:text-gray-400">No documents submitted.</p>}</div></div>
 
           {selected.status === 'submitted' && <Button icon={PlayCircle} loading={actionLoading} onClick={start}>Start Review</Button>}
 
@@ -129,7 +129,7 @@ const EmployeeLoans = () => {
 
           {selected.status === 'manager_review' && canManagerReview && <div className="border-t border-gray-100 dark:border-banking-border pt-4 space-y-3">
             <h4 className="font-semibold text-sm flex items-center gap-2"><Users2 className="w-4 h-4" /> Manager Review</h4>
-            <p className="text-xs text-gray-400">Employee recommended {formatCurrency(selected.employeeRecommendedAmount)}. Your recommendation cannot exceed this.</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">Employee recommended {formatCurrency(selected.employeeRecommendedAmount)}. Your recommendation cannot exceed this.</p>
             <Input label="Manager Recommended Amount (INR)" type="number" min="0.01" step="0.01" value={managerAmount} onChange={(e) => setManagerAmount(e.target.value)} />
             <div className="flex flex-wrap gap-3">
               <Button icon={Send} loading={actionLoading} onClick={managerForward}>Forward for Final Approval</Button>
@@ -146,7 +146,7 @@ const EmployeeLoans = () => {
                   <Input value={rejectReason} onChange={(e) => setRejectReason(e.target.value)} placeholder="Rejection reason" containerClass="flex-1 min-w-[180px]" />
                   <Button variant="danger" loading={actionLoading} onClick={finalReject}>Reject</Button>
                 </div>
-              : <p className="text-xs text-gray-400">Waiting for manager recommendation before final approval is available.</p>}
+              : <p className="text-xs text-gray-500 dark:text-gray-400">Waiting for manager recommendation before final approval is available.</p>}
           </div>}
         </div>}
       </Modal>

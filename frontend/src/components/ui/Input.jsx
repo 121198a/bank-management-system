@@ -8,7 +8,7 @@ const Input = React.forwardRef(
         <div className="relative">
           {Icon && (
             <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-              <Icon className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+              <Icon className="w-4 h-4 text-gray-500 dark:text-gray-500" />
             </div>
           )}
           <input

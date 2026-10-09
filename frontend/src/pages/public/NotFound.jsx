@@ -8,7 +8,7 @@ const NotFound = () => {
   return (
     <main className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-banking-dark px-4">
       <div className="max-w-md text-center">
-        <p className="text-sm font-semibold uppercase tracking-wider text-primary-600">Error 404</p>
+        <p className="text-sm font-semibold uppercase tracking-wider text-primary-700 dark:text-primary-400">Error 404</p>
         <h1 className="mt-2 text-3xl font-bold text-gray-900 dark:text-white">This page does not exist</h1>
         <p className="mt-3 text-sm text-gray-600 dark:text-gray-400">
           The address may be mistyped, or the page may have moved.

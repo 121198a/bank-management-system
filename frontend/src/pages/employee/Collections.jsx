@@ -42,7 +42,7 @@ const EmployeeCollections = () => {
 
   return (
     <div className="space-y-6">
-      <div><h2 className="text-2xl font-bold text-gray-900 dark:text-white">Collections</h2><p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Manage overdue loan collection cases assigned to you</p></div>
+      <div><h1 className="text-2xl font-bold text-gray-900 dark:text-white">Collections</h1><p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Manage overdue loan collection cases assigned to you</p></div>
 
       <ManagementFilterBar search="" onSearch={() => {}} placeholder="">
         <Select value={status} onChange={(e) => setStatus(e.target.value)}
@@ -51,7 +51,7 @@ const EmployeeCollections = () => {
       </ManagementFilterBar>
 
       <div className="card p-5">
-        {loading ? <TableSkeleton rows={6} cols={6} /> : cases.length === 0 ? <p className="text-sm text-gray-400 py-8 text-center">No collection cases found.</p> : (
+        {loading ? <TableSkeleton rows={6} cols={6} /> : cases.length === 0 ? <p className="text-sm text-gray-500 dark:text-gray-400 py-8 text-center">No collection cases found.</p> : (
           <div className="table-container"><table className="table"><thead><tr>{['Customer','Case No.','Overdue','Priority','Status','Due Since',''].map(h => <th key={h} className="table-th">{h}</th>)}</tr></thead>
             <tbody className="divide-y divide-gray-100 dark:divide-banking-border">
               {cases.map(c => <tr key={c._id} className="table-row">
@@ -60,8 +60,8 @@ const EmployeeCollections = () => {
                 <td className="table-td font-semibold">{formatCurrency(c.overdueAmount)}</td>
                 <td className="table-td"><Badge value={c.priority} /></td>
                 <td className="table-td"><Badge value={c.status} /></td>
-                <td className="table-td text-xs text-gray-400">{formatDate(c.dueSince)}</td>
-                <td className="table-td"><button type="button" aria-label={`View case ${c.caseNumber}`} onClick={() => open(c)} className="p-2 text-primary-600 hover:bg-primary-50 rounded-lg"><Eye className="w-4 h-4" /></button></td>
+                <td className="table-td text-xs text-gray-500 dark:text-gray-400">{formatDate(c.dueSince)}</td>
+                <td className="table-td"><button type="button" aria-label={`View case ${c.caseNumber}`} onClick={() => open(c)} className="p-2 text-primary-700 dark:text-primary-400 hover:bg-primary-50 rounded-lg"><Eye className="w-4 h-4" /></button></td>
               </tr>)}
             </tbody></table></div>
         )}
@@ -77,7 +77,7 @@ const EmployeeCollections = () => {
 
           <p className="text-sm"><span className="text-gray-500">Recovered so far:</span> <span className="font-semibold">{formatCurrency(selected.recoveredAmount)}</span></p>
 
-          <div><h4 className="font-semibold text-sm mb-2">Contact Log</h4><div className="space-y-2">{(selected.contactLog || []).map((c, i) => <div key={i} className="p-3 rounded-xl bg-gray-50 dark:bg-banking-darker text-sm"><span className="capitalize font-medium">{c.method}</span>: {c.outcome} <span className="text-xs text-gray-400 block">{formatDate(c.contactedAt)}</span></div>)}{!selected.contactLog?.length && <p className="text-xs text-gray-400">No contact logged yet.</p>}</div></div>
+          <div><h4 className="font-semibold text-sm mb-2">Contact Log</h4><div className="space-y-2">{(selected.contactLog || []).map((c, i) => <div key={i} className="p-3 rounded-xl bg-gray-50 dark:bg-banking-darker text-sm"><span className="capitalize font-medium">{c.method}</span>: {c.outcome} <span className="text-xs text-gray-500 dark:text-gray-400 block">{formatDate(c.contactedAt)}</span></div>)}{!selected.contactLog?.length && <p className="text-xs text-gray-500 dark:text-gray-400">No contact logged yet.</p>}</div></div>
 
           {!closed && <div className="border-t border-gray-100 dark:border-banking-border pt-4 space-y-3">
             <h4 className="font-semibold text-sm">Log Contact</h4>

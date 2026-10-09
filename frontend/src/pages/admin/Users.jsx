@@ -148,7 +148,7 @@ const AdminUsers = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">User Management</h2>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">User Management</h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Create and manage employees and customers</p>
         </div>
         <Button icon={UserPlus} onClick={openCreate}>Create User</Button>
@@ -181,7 +181,7 @@ const AdminUsers = () => {
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-banking-border bg-white dark:bg-banking-card">
                   {users.length === 0 ? (
-                    <tr><td colSpan={6} className="table-td text-center py-10 text-gray-400">No users found. Click &quot;Create User&quot; to add your first employee or customer.</td></tr>
+                    <tr><td colSpan={6} className="table-td text-center py-10 text-gray-500 dark:text-gray-400">No users found. Click &quot;Create User&quot; to add your first employee or customer.</td></tr>
                   ) : users.map((u) => (
                     <tr key={u.id} className="table-row">
                       <td className="table-td">
@@ -192,7 +192,7 @@ const AdminUsers = () => {
                           </div>
                           <div>
                             <p className="font-medium text-gray-800 dark:text-gray-200">{u.fullName}</p>
-                            <p className="text-xs text-gray-400">{u.email}</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">{u.email}</p>
                           </div>
                         </div>
                       </td>
@@ -203,7 +203,7 @@ const AdminUsers = () => {
                           {u.isActive ? 'Active' : 'Inactive'}
                         </span>
                       </td>
-                      <td className="table-td text-gray-400 text-xs">{formatDate(u.createdAt, { year: 'numeric', month: 'short', day: '2-digit' })}</td>
+                      <td className="table-td text-gray-500 dark:text-gray-400 text-xs">{formatDate(u.createdAt, { year: 'numeric', month: 'short', day: '2-digit' })}</td>
                       <td className="table-td">
                         <div className="flex gap-2">
                           <button onClick={() => openEdit(u)}
@@ -227,7 +227,7 @@ const AdminUsers = () => {
               </table>
             </div>
             <Pagination page={page} totalPages={meta.totalPages || 1} onPageChange={setPage} />
-            <p className="text-xs text-gray-400 mt-2 text-center">{meta.total} total users</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">{meta.total} total users</p>
           </>
         )}
       </div>
@@ -253,7 +253,7 @@ const AdminUsers = () => {
               <Button type="button" variant="secondary" icon={Copy} onClick={copyPassword}>Copy</Button>
             </div>
             {createErrors.password && <p className="mt-1.5 text-xs text-red-500">{createErrors.password}</p>}
-            <p className="mt-1.5 text-xs text-gray-400">Share this password with the user securely. They can change it after logging in.</p>
+            <p className="mt-1.5 text-xs text-gray-500 dark:text-gray-400">Share this password with the user securely. They can change it after logging in.</p>
           </div>
           <Input label="Phone (optional)" placeholder="+91 98765 43210"
             value={createForm.phone} onChange={(e) => setCreateForm(f => ({ ...f, phone: e.target.value }))} />

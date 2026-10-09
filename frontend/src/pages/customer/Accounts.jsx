@@ -68,7 +68,7 @@ const CustomerAccounts = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">My Accounts</h2>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">My Accounts</h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Manage your bank accounts</p>
         </div>
         <Button icon={Plus} onClick={() => setShowCreate(true)}>New Account</Button>
@@ -94,7 +94,7 @@ const CustomerAccounts = () => {
               <p className="text-xs text-gray-500 dark:text-gray-400 font-mono mb-1">{acc.accountNumber}</p>
               <p className="text-2xl font-bold text-gray-900 dark:text-white mb-1">{formatCurrency(acc.balance)}</p>
               <p className="text-sm text-gray-500 dark:text-gray-400 capitalize mb-4">{acc.accountType} Account · {acc.currency}</p>
-              <div className="flex items-center justify-between text-xs text-gray-400">
+              <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
                 <span>Opened {formatDateOnly(acc.createdAt)}</span>
                 {acc.status === 'active' && (
                   <Button

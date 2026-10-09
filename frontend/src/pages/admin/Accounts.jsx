@@ -74,7 +74,7 @@ const AdminAccounts = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Account Management</h2>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Account Management</h1>
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">View and manage all customer accounts</p>
       </div>
 
@@ -105,18 +105,18 @@ const AdminAccounts = () => {
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-banking-border bg-white dark:bg-banking-card">
                   {accounts.length === 0 ? (
-                    <tr><td colSpan={7} className="table-td text-center py-10 text-gray-400">No accounts found</td></tr>
+                    <tr><td colSpan={7} className="table-td text-center py-10 text-gray-500 dark:text-gray-400">No accounts found</td></tr>
                   ) : accounts.map((acc) => (
                     <tr key={acc._id} className="table-row">
                       <td className="table-td font-mono text-xs">{acc.accountNumber}</td>
                       <td className="table-td">
                         <p className="font-medium text-gray-800 dark:text-gray-200 text-sm">{acc.user?.fullName}</p>
-                        <p className="text-xs text-gray-400">{acc.user?.email}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">{acc.user?.email}</p>
                       </td>
                       <td className="table-td"><Badge value={acc.accountType} /></td>
                       <td className="table-td font-semibold text-gray-800 dark:text-gray-200">{formatCurrency(acc.balance)}</td>
                       <td className="table-td"><Badge value={acc.status} /></td>
-                      <td className="table-td text-xs text-gray-400">{formatDate(acc.createdAt, { year: 'numeric', month: 'short', day: '2-digit' })}</td>
+                      <td className="table-td text-xs text-gray-500 dark:text-gray-400">{formatDate(acc.createdAt, { year: 'numeric', month: 'short', day: '2-digit' })}</td>
                       <td className="table-td">
                         <div className="flex gap-2">
                           {acc.status === 'pending' && (

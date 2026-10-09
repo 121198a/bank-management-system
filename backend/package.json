@@ -1,7 +1,7 @@
 {
   "name": "bank-management-system-backend",
   "version": "1.0.0",
-  "description": "Production-ready Bank Management System Backend with JWT auth, RBAC, audit logs, and transaction management",
+  "description": "Bank Management System backend with JWT auth, RBAC, audit logs, and transaction management",
   "main": "src/server.js",
   "type": "commonjs",
   "scripts": {

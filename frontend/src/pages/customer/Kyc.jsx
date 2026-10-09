@@ -54,7 +54,7 @@ const CustomerKyc = () => {
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">KYC Verification</h2>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">KYC Verification</h1>
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Submit your identity documents for verification</p>
       </div>
 
@@ -74,7 +74,7 @@ const CustomerKyc = () => {
         <div className="card p-6">
           <div className="flex items-center gap-3 mb-5">
             <div className="w-10 h-10 rounded-xl bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center">
-              <Upload className="w-5 h-5 text-primary-600" />
+              <Upload className="w-5 h-5 text-primary-700 dark:text-primary-400" />
             </div>
             <div>
               <h3 className="font-semibold text-gray-900 dark:text-white">Submit KYC Documents</h3>
@@ -127,16 +127,16 @@ const CustomerKyc = () => {
               return (
                 <div key={req._id} className="flex items-start justify-between p-4 rounded-xl bg-gray-50 dark:bg-banking-darker">
                   <div className="flex items-center gap-3">
-                    <Icon className={'w-5 h-5 ' + (statusColor[req.status] || 'text-gray-400')} />
+                    <Icon className={'w-5 h-5 ' + (statusColor[req.status] || 'text-gray-500 dark:text-gray-400')} />
                     <div>
                       <p className="text-sm font-medium text-gray-800 dark:text-gray-200 capitalize">{req.documentType.replace('_', ' ')}</p>
                       <p className="text-xs text-gray-500 dark:text-gray-400">{req.documentNumber}</p>
-                      {req.remarks && <p className="text-xs text-gray-400 mt-0.5">Remarks: {req.remarks}</p>}
+                      {req.remarks && <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Remarks: {req.remarks}</p>}
                     </div>
                   </div>
                   <div className="text-right">
                     <Badge value={req.status} />
-                    <p className="text-xs text-gray-400 mt-1">{formatDate(req.createdAt)}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{formatDate(req.createdAt)}</p>
                   </div>
                 </div>
               );

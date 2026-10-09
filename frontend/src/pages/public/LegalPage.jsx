@@ -39,7 +39,7 @@ const LegalPage = ({ kind }) => {
   return (
     <main className="min-h-screen bg-gray-50 dark:bg-banking-dark px-4 py-12">
       <article className="mx-auto max-w-2xl">
-        <Link to="/login" className="text-sm font-semibold text-primary-600 hover:text-primary-700">&larr; Back to sign in</Link>
+        <Link to="/login" className="text-sm font-semibold text-primary-700 dark:text-primary-400 hover:text-primary-700">&larr; Back to sign in</Link>
         <h1 className="mt-4 text-3xl font-bold text-gray-900 dark:text-white">{page.title}</h1>
         <p role="note" className="mt-4 rounded-lg border border-amber-300 bg-amber-50 p-3 text-xs text-amber-900 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-200">
           {DRAFT_NOTICE}

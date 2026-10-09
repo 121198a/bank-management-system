@@ -125,13 +125,13 @@ const Sidebar = ({ role, mobileOpen = false, onMobileClose = () => {} }) => {
         {!collapsed && (
           <div className="overflow-hidden">
             <p className="text-sm font-bold text-gray-900 dark:text-white leading-none">NexaBank</p>
-            <p className="text-[11px] text-primary-600 font-semibold mt-1">Bank Management</p>
+            <p className="text-[11px] text-primary-700 dark:text-primary-400 font-semibold mt-1">Bank Management</p>
           </div>
         )}
       </div>
 
       {/* Navigation */}
-      <div className="px-3 pt-4 pb-2">{!collapsed && <p className="text-[10px] uppercase tracking-[0.16em] font-bold text-gray-400 dark:text-gray-500 px-2">Workspace</p>}</div>
+      <div className="px-3 pt-4 pb-2">{!collapsed && <p className="text-[10px] uppercase tracking-[0.16em] font-bold text-gray-500 dark:text-gray-500 px-2">Workspace</p>}</div>
       <nav className="flex-1 overflow-y-auto px-2 pb-4 space-y-1">
         {links.map(({ to, icon: Icon, label }) => (
           <NavLink

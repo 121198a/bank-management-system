@@ -56,7 +56,7 @@ const Profile = () => {
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">My Profile</h2>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">My Profile</h1>
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Manage your account details</p>
       </div>
 
@@ -75,7 +75,7 @@ const Profile = () => {
           </div>
         </div>
         <div className="ml-auto text-right hidden sm:block">
-          <p className="text-xs text-gray-400">Member since</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400">Member since</p>
           <p className="text-sm font-medium text-gray-700 dark:text-gray-300">{formatDate(user?.createdAt, { year: 'numeric', month: 'short' })}</p>
         </div>
       </div>

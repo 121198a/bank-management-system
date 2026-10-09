@@ -67,7 +67,7 @@ const EmployeeSales = () => {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
-        <div><h2 className="text-2xl font-bold text-gray-900 dark:text-white">Sales</h2><p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Manage leads and track conversions</p></div>
+        <div><h1 className="text-2xl font-bold text-gray-900 dark:text-white">Sales</h1><p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Manage leads and track conversions</p></div>
         {hasPermission('sales.lead.create') && <Button icon={Plus} onClick={() => setShowCreate(true)}>New Lead</Button>}
       </div>
 
@@ -84,7 +84,7 @@ const EmployeeSales = () => {
       </ManagementFilterBar>
 
       <div className="card p-5">
-        {loading ? <TableSkeleton rows={6} cols={6} /> : leads.length === 0 ? <p className="text-sm text-gray-400 py-8 text-center">No leads found.</p> : (
+        {loading ? <TableSkeleton rows={6} cols={6} /> : leads.length === 0 ? <p className="text-sm text-gray-500 dark:text-gray-400 py-8 text-center">No leads found.</p> : (
           <div className="table-container"><table className="table"><thead><tr>{['Name','Phone','Interest','Assigned To','Status','',].map(h => <th key={h} className="table-th">{h}</th>)}</tr></thead>
             <tbody className="divide-y divide-gray-100 dark:divide-banking-border">
               {leads.map(l => <tr key={l._id} className="table-row">
@@ -93,7 +93,7 @@ const EmployeeSales = () => {
                 <td className="table-td capitalize text-sm">{l.productInterest?.replaceAll('_',' ')}</td>
                 <td className="table-td text-sm">{l.assignedEmployee?.fullName || '—'}</td>
                 <td className="table-td"><Badge value={l.status} /></td>
-                <td className="table-td"><button type="button" aria-label={`View lead ${l.fullName}`} onClick={() => open(l)} className="p-2 text-primary-600 hover:bg-primary-50 rounded-lg"><Eye className="w-4 h-4" /></button></td>
+                <td className="table-td"><button type="button" aria-label={`View lead ${l.fullName}`} onClick={() => open(l)} className="p-2 text-primary-700 dark:text-primary-400 hover:bg-primary-50 rounded-lg"><Eye className="w-4 h-4" /></button></td>
               </tr>)}
             </tbody></table></div>
         )}
@@ -117,7 +117,7 @@ const EmployeeSales = () => {
             <div className="card p-3"><p className="text-xs text-gray-500">Status</p><Badge value={selected.status} /></div>
           </div>
 
-          <div><h4 className="font-semibold text-sm mb-2">Remarks</h4><div className="space-y-2">{(selected.remarks || []).map((r, i) => <div key={i} className="p-3 rounded-xl bg-gray-50 dark:bg-banking-darker text-sm">{r.text}<span className="text-xs text-gray-400 block">{formatDate(r.at)}</span></div>)}{!selected.remarks?.length && <p className="text-xs text-gray-400">No remarks yet.</p>}</div></div>
+          <div><h4 className="font-semibold text-sm mb-2">Remarks</h4><div className="space-y-2">{(selected.remarks || []).map((r, i) => <div key={i} className="p-3 rounded-xl bg-gray-50 dark:bg-banking-darker text-sm">{r.text}<span className="text-xs text-gray-500 dark:text-gray-400 block">{formatDate(r.at)}</span></div>)}{!selected.remarks?.length && <p className="text-xs text-gray-500 dark:text-gray-400">No remarks yet.</p>}</div></div>
 
           {NEXT_STATUSES[selected.status]?.length > 0 && <div className="border-t border-gray-100 dark:border-banking-border pt-4 space-y-3">
             <h4 className="font-semibold text-sm">Update Status</h4>

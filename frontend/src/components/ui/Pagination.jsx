@@ -35,7 +35,7 @@ const Pagination = ({ page, totalPages, onPageChange }) => {
 
       {withEllipsis.map((item, idx) =>
         item === '...' ? (
-          <span key={`e-${idx}`} className="px-2 text-gray-400">…</span>
+          <span key={`e-${idx}`} className="px-2 text-gray-500 dark:text-gray-400">…</span>
         ) : (
           <button
             key={item}

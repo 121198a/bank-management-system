@@ -75,7 +75,7 @@ const ResetPasswordPage = () => {
                     <label className="input-label">{label}</label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                        <Lock className="w-4 h-4 text-gray-400" />
+                        <Lock className="w-4 h-4 text-gray-500 dark:text-gray-400" />
                       </div>
                       <input
                         type={show[showKey] ? 'text' : 'password'}
@@ -86,7 +86,7 @@ const ResetPasswordPage = () => {
                       />
                       <button type="button" onClick={() => setShow(s => ({ ...s, [showKey]: !s[showKey] }))}
                         className="absolute inset-y-0 right-0 pr-3.5 flex items-center">
-                        {show[showKey] ? <EyeOff className="w-4 h-4 text-gray-400" /> : <Eye className="w-4 h-4 text-gray-400" />}
+                        {show[showKey] ? <EyeOff className="w-4 h-4 text-gray-500 dark:text-gray-400" /> : <Eye className="w-4 h-4 text-gray-500 dark:text-gray-400" />}
                       </button>
                     </div>
                     {errors[key] && <p className="mt-1.5 text-xs text-red-500">{errors[key]}</p>}

@@ -134,7 +134,7 @@ const CustomerLoans = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Loans</h2>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Loans</h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Apply for and track your loan applications</p>
         </div>
         <Button icon={Banknote} onClick={() => setShowApply(true)}>Apply for Loan</Button>
@@ -151,8 +151,8 @@ const CustomerLoans = () => {
 
       <div className="card p-5">
         <h3 className="font-semibold text-gray-900 dark:text-white mb-4">My Applications</h3>
-        {loading ? <p className="text-sm text-gray-400 py-8 text-center">Loading loans…</p> : loans.length === 0 ? (
-          <div className="py-12 text-center text-gray-400">No loan applications yet.</div>
+        {loading ? <p className="text-sm text-gray-500 dark:text-gray-400 py-8 text-center">Loading loans…</p> : loans.length === 0 ? (
+          <div className="py-12 text-center text-gray-500 dark:text-gray-400">No loan applications yet.</div>
         ) : (
           <div className="table-container">
             <table className="table">
@@ -165,8 +165,8 @@ const CustomerLoans = () => {
                     <td className="table-td font-semibold">{formatCurrency(loan.requestedAmount)}</td>
                     <td className="table-td text-sm">{loan.tenureMonths} mo.</td>
                     <td className="table-td"><Badge value={statusTone(loan.status)} /></td>
-                    <td className="table-td text-xs text-gray-400">{formatDate(loan.createdAt, { year: 'numeric', month: 'short', day: '2-digit' })}</td>
-                    <td className="table-td"><button onClick={() => openLoan(loan)} className="p-2 rounded-lg hover:bg-primary-50 dark:hover:bg-primary-900/20 text-primary-600" title="View"><Eye className="w-4 h-4" /></button></td>
+                    <td className="table-td text-xs text-gray-500 dark:text-gray-400">{formatDate(loan.createdAt, { year: 'numeric', month: 'short', day: '2-digit' })}</td>
+                    <td className="table-td"><button onClick={() => openLoan(loan)} className="p-2 rounded-lg hover:bg-primary-50 dark:hover:bg-primary-900/20 text-primary-700 dark:text-primary-400" title="View"><Eye className="w-4 h-4" /></button></td>
                   </tr>
                 ))}
               </tbody>
@@ -199,7 +199,7 @@ const CustomerLoans = () => {
         {selected && (
           <div className="space-y-5">
             <div className="flex items-center justify-between p-4 rounded-xl bg-gray-50 dark:bg-banking-darker">
-              <div><p className="text-xs text-gray-500">Current status</p><div className="flex items-center gap-2 mt-1"><Icon className="w-4 h-4 text-primary-600" /><Badge value={selected.status} /></div></div>
+              <div><p className="text-xs text-gray-500">Current status</p><div className="flex items-center gap-2 mt-1"><Icon className="w-4 h-4 text-primary-700 dark:text-primary-400" /><Badge value={selected.status} /></div></div>
               <div className="text-right"><p className="text-xs text-gray-500">Requested</p><p className="font-bold text-gray-900 dark:text-white">{formatCurrency(selected.requestedAmount)}</p></div>
             </div>
             <div className="grid sm:grid-cols-2 gap-3 text-sm">
@@ -219,7 +219,7 @@ const CustomerLoans = () => {
               <h4 className="font-semibold text-sm mb-2">Documents</h4>
               <div className="space-y-2">
                 {(selected.documents || []).map((doc) => <div key={doc._id} className="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-banking-darker"><div><p className="text-sm">{doc.fileName}</p><p className="text-xs text-gray-500 capitalize">{doc.type.replaceAll('_', ' ')} · {doc.status}</p></div><Badge value={doc.status} /></div>)}
-                {selected.documents?.length === 0 && <p className="text-xs text-gray-400">No documents submitted yet.</p>}
+                {selected.documents?.length === 0 && <p className="text-xs text-gray-500 dark:text-gray-400">No documents submitted yet.</p>}
               </div>
             </div>
 
@@ -234,7 +234,7 @@ const CustomerLoans = () => {
               </div>
             )}
 
-            {(selected.remarks || []).length > 0 && <div><h4 className="font-semibold text-sm mb-2">Remarks</h4><div className="space-y-2">{selected.remarks.map((r, i) => <div key={i} className="p-3 rounded-xl bg-gray-50 dark:bg-banking-darker text-sm"><p>{r.text}</p><p className="text-xs text-gray-400 mt-1">{r.by?.fullName || 'Bank'} · {formatDate(r.at)}</p></div>)}</div></div>}
+            {(selected.remarks || []).length > 0 && <div><h4 className="font-semibold text-sm mb-2">Remarks</h4><div className="space-y-2">{selected.remarks.map((r, i) => <div key={i} className="p-3 rounded-xl bg-gray-50 dark:bg-banking-darker text-sm"><p>{r.text}</p><p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{r.by?.fullName || 'Bank'} · {formatDate(r.at)}</p></div>)}</div></div>}
           </div>
         )}
       </Modal>

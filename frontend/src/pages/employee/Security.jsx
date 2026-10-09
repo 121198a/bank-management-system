@@ -57,7 +57,7 @@ const EmployeeSecurity = () => {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
-        <div><h2 className="text-2xl font-bold text-gray-900 dark:text-white">Security</h2><p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Monitor security events, incidents and fraud alerts</p></div>
+        <div><h1 className="text-2xl font-bold text-gray-900 dark:text-white">Security</h1><p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Monitor security events, incidents and fraud alerts</p></div>
         {tab === 'incidents' && hasPermission('security.incident.create') && <Button icon={Plus} onClick={() => setShowCreate(true)}>New Incident</Button>}
       </div>
 
@@ -67,14 +67,14 @@ const EmployeeSecurity = () => {
       </div>
 
       <div className="card p-5">
-        {loading ? <TableSkeleton rows={6} cols={5} /> : items.length === 0 ? <p className="text-sm text-gray-400 py-8 text-center">No {tab === 'alerts' ? 'fraud alerts' : tab} found.</p> : (
+        {loading ? <TableSkeleton rows={6} cols={5} /> : items.length === 0 ? <p className="text-sm text-gray-500 dark:text-gray-400 py-8 text-center">No {tab === 'alerts' ? 'fraud alerts' : tab} found.</p> : (
           <div className="table-container"><table className="table"><thead><tr>
             {(tab === 'events' ? ['Type','Email','IP','Severity','When'] : tab === 'incidents' ? ['Incident','Severity','Status','Created',''] : ['Alert','Rule','Severity','Status','']).map(h => <th key={h} className="table-th">{h}</th>)}
           </tr></thead>
             <tbody className="divide-y divide-gray-100 dark:divide-banking-border">
-              {tab === 'events' && items.map(e => <tr key={e._id} className="table-row"><td className="table-td text-sm">{e.type.replaceAll('_',' ')}</td><td className="table-td text-sm">{e.email || '—'}</td><td className="table-td text-xs font-mono">{e.ip || '—'}</td><td className="table-td"><Badge value={e.severity} /></td><td className="table-td text-xs text-gray-400">{formatDate(e.createdAt)}</td></tr>)}
-              {tab === 'incidents' && items.map(i => <tr key={i._id} className="table-row"><td className="table-td"><p className="font-medium text-sm">{i.title}</p><p className="text-xs text-gray-400">{i.incidentId}</p></td><td className="table-td"><Badge value={i.severity} /></td><td className="table-td"><Badge value={i.status} /></td><td className="table-td text-xs text-gray-400">{formatDate(i.createdAt)}</td><td className="table-td">{!['resolved','false_positive'].includes(i.status) && hasPermission('security.incident.resolve') && <Button size="sm" icon={CheckCircle2} onClick={() => { setSelected(i); setResolution(''); }}>Resolve</Button>}</td></tr>)}
-              {tab === 'alerts' && items.map(a => <tr key={a._id} className="table-row"><td className="table-td"><p className="font-medium text-sm">{a.alertId}</p><p className="text-xs text-gray-400">{a.reason}</p></td><td className="table-td text-sm capitalize">{a.rule.replaceAll('_',' ')}</td><td className="table-td"><Badge value={a.severity} /></td><td className="table-td"><Badge value={a.status} /></td><td className="table-td">{!['resolved','false_positive'].includes(a.status) && hasPermission('security.alert.investigate') && <Button size="sm" icon={ShieldAlert} onClick={() => { setSelected(a); setResolution(''); }}>Review</Button>}</td></tr>)}
+              {tab === 'events' && items.map(e => <tr key={e._id} className="table-row"><td className="table-td text-sm">{e.type.replaceAll('_',' ')}</td><td className="table-td text-sm">{e.email || '—'}</td><td className="table-td text-xs font-mono">{e.ip || '—'}</td><td className="table-td"><Badge value={e.severity} /></td><td className="table-td text-xs text-gray-500 dark:text-gray-400">{formatDate(e.createdAt)}</td></tr>)}
+              {tab === 'incidents' && items.map(i => <tr key={i._id} className="table-row"><td className="table-td"><p className="font-medium text-sm">{i.title}</p><p className="text-xs text-gray-500 dark:text-gray-400">{i.incidentId}</p></td><td className="table-td"><Badge value={i.severity} /></td><td className="table-td"><Badge value={i.status} /></td><td className="table-td text-xs text-gray-500 dark:text-gray-400">{formatDate(i.createdAt)}</td><td className="table-td">{!['resolved','false_positive'].includes(i.status) && hasPermission('security.incident.resolve') && <Button size="sm" icon={CheckCircle2} onClick={() => { setSelected(i); setResolution(''); }}>Resolve</Button>}</td></tr>)}
+              {tab === 'alerts' && items.map(a => <tr key={a._id} className="table-row"><td className="table-td"><p className="font-medium text-sm">{a.alertId}</p><p className="text-xs text-gray-500 dark:text-gray-400">{a.reason}</p></td><td className="table-td text-sm capitalize">{a.rule.replaceAll('_',' ')}</td><td className="table-td"><Badge value={a.severity} /></td><td className="table-td"><Badge value={a.status} /></td><td className="table-td">{!['resolved','false_positive'].includes(a.status) && hasPermission('security.alert.investigate') && <Button size="sm" icon={ShieldAlert} onClick={() => { setSelected(a); setResolution(''); }}>Review</Button>}</td></tr>)}
             </tbody></table></div>
         )}
       </div>

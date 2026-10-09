@@ -44,7 +44,7 @@ const ServiceCard = ({ service, base }) => {
           <h3 className="font-bold text-gray-900 dark:text-white">{service.title}</h3>
           <p className="text-xs leading-5 text-gray-500 dark:text-gray-400 mt-1.5">{service.description}</p>
         </div>
-        <span className="text-primary-600 dark:text-primary-400 opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+        <span className="text-primary-700 dark:text-primary-400 opacity-0 group-hover:opacity-100 transition-opacity">→</span>
       </div>
     </Link>
   );
@@ -83,7 +83,7 @@ const ServiceCenter = () => {
 
       <section className="card p-5 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-start gap-3">
-          <div className="w-10 h-10 rounded-xl bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center shrink-0"><ShieldCheck className="w-5 h-5 text-primary-600 dark:text-primary-400" /></div>
+          <div className="w-10 h-10 rounded-xl bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center shrink-0"><ShieldCheck className="w-5 h-5 text-primary-700 dark:text-primary-400" /></div>
           <div><p className="font-bold text-gray-900 dark:text-white">Built for secure banking operations</p><p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Access is still governed by the existing authentication, role, permission and organizational scope rules.</p></div>
         </div>
         <Link to={isCustomer ? '/dashboard/notifications' : `${base}/audit`} className="btn-secondary text-sm text-center">Review activity</Link>

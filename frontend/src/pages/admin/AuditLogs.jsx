@@ -58,7 +58,7 @@ const AuditLogs = ({ role = 'admin' }) => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Audit Logs</h2>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Audit Logs</h1>
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{role === 'employee' ? 'Review your recorded audit activity' : 'Complete record of all system actions'}</p>
       </div>
 
@@ -91,14 +91,14 @@ const AuditLogs = ({ role = 'admin' }) => {
                     <tr>
                       <td colSpan={5} className="table-td text-center py-12">
                         <ClipboardList className="w-8 h-8 mx-auto mb-2 text-gray-300 dark:text-gray-600" />
-                        <p className="text-gray-400">No audit logs found</p>
+                        <p className="text-gray-500 dark:text-gray-400">No audit logs found</p>
                       </td>
                     </tr>
                   ) : logs.map((log) => (
                     <tr key={log._id} className="table-row">
                       <td className="table-td">
                         <p className="font-medium text-sm text-gray-800 dark:text-gray-200">{log.actor?.fullName || 'System'}</p>
-                        <p className="text-xs text-gray-400 capitalize">{log.actor?.role || ''}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 capitalize">{log.actor?.role || ''}</p>
                       </td>
                       <td className="table-td">
                         <span className={'badge ' + (actionColors[log.action] || 'badge-gray')}>
@@ -107,17 +107,17 @@ const AuditLogs = ({ role = 'admin' }) => {
                       </td>
                       <td className="table-td">
                         <p className="text-sm text-gray-700 dark:text-gray-300">{log.targetType}</p>
-                        {log.targetId && <p className="text-xs font-mono text-gray-400">{String(log.targetId).slice(-8)}</p>}
+                        {log.targetId && <p className="text-xs font-mono text-gray-500 dark:text-gray-400">{String(log.targetId).slice(-8)}</p>}
                       </td>
-                      <td className="table-td font-mono text-xs text-gray-400">{log.ip || '—'}</td>
-                      <td className="table-td text-xs text-gray-400">{formatDate(log.createdAt)}</td>
+                      <td className="table-td font-mono text-xs text-gray-500 dark:text-gray-400">{log.ip || '—'}</td>
+                      <td className="table-td text-xs text-gray-500 dark:text-gray-400">{formatDate(log.createdAt)}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
             <div className="flex items-center justify-between mt-4">
-              <p className="text-xs text-gray-400">{meta.total ?? 0} total log entries</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">{meta.total ?? 0} total log entries</p>
               <Pagination page={page} totalPages={meta.totalPages || 1} onPageChange={setPage} />
             </div>
           </>

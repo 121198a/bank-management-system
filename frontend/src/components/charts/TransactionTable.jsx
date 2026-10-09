@@ -22,7 +22,7 @@ const amountSign = { deposit: '+', transfer_in: '+', withdraw: '-', transfer_out
 const TransactionTable = ({ transactions = [], showAccount = false }) => {
   if (transactions.length === 0) {
     return (
-      <div className="text-center py-12 text-gray-400 dark:text-gray-500">
+      <div className="text-center py-12 text-gray-500 dark:text-gray-500">
         <ArrowLeftRight className="w-10 h-10 mx-auto mb-3 opacity-30" />
         <p className="font-medium">No transactions found</p>
       </div>

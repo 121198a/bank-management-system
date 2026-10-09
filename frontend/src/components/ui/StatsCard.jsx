@@ -1,7 +1,7 @@
 import React from 'react';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 
-const StatsCard = ({ title, value, subtitle, icon: Icon, iconBg = 'bg-primary-100 dark:bg-primary-900/30', iconColor = 'text-primary-600 dark:text-primary-400', trend, trendLabel }) => {
+const StatsCard = ({ title, value, subtitle, icon: Icon, iconBg = 'bg-primary-100 dark:bg-primary-900/30', iconColor = 'text-primary-700 dark:text-primary-400', trend, trendLabel }) => {
   return (
     <div className="card p-5 flex items-start justify-between group relative overflow-hidden hover:-translate-y-1 hover:shadow-card-hover transition-all duration-300 animate-page-enter">
       <div className="flex-1">
