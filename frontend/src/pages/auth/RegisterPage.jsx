@@ -6,6 +6,7 @@ import Input from '../../components/ui/Input';
 import Button from '../../components/ui/Button';
 import { getErrorMessage } from '../../utils/formatters';
 import toast from 'react-hot-toast';
+import { BRAND } from '../../config/brand';
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -48,13 +49,13 @@ const RegisterPage = () => {
     <div className="min-h-screen bg-slate-50 dark:bg-banking-dark py-8 px-4">
       <div className="max-w-6xl mx-auto grid lg:grid-cols-[.85fr_1.15fr] gap-6 items-stretch min-h-[calc(100vh-4rem)]">
         <aside className="hidden lg:flex rounded-3xl overflow-hidden bg-slate-900 p-10 flex-col justify-between text-white relative">
-          <div className="relative"><div className="flex items-center gap-3"><div className="w-11 h-11 rounded-2xl bg-primary-500 flex items-center justify-center"><Building2 className="w-6 h-6" /></div><div><p className="font-bold text-lg">NexaBank</p><p className="text-xs text-slate-400">Bank Management System</p></div></div></div>
+          <div className="relative"><div className="flex items-center gap-3"><div className="w-11 h-11 rounded-2xl bg-primary-500 flex items-center justify-center"><Building2 className="w-6 h-6" /></div><div><p className="font-bold text-lg">{BRAND.name}</p><p className="text-xs text-slate-400">{BRAND.descriptor}</p></div></div></div>
           <div className="relative max-w-md"><span className="inline-flex items-center gap-2 text-xs text-primary-300 bg-primary-400/10 border border-primary-400/20 px-3 py-1.5 rounded-full"><ShieldCheck className="w-4 h-4" /> Secure account onboarding</span><p className="text-4xl xl:text-5xl font-bold leading-tight mt-5">Open your digital banking account.</p><p className="text-slate-300 mt-5 leading-7">Create your customer profile and get access to accounts, transfers, statements and transaction history.</p></div>
-          <p className="text-xs text-slate-400">© {new Date().getFullYear()} NexaBank{import.meta.env.DEV ? ' · Local development' : ''}</p>
+          <p className="text-xs text-slate-400">© {new Date().getFullYear()} {BRAND.name}{import.meta.env.DEV ? ' · Local development' : ''}</p>
         </aside>
 
         <main className="card p-6 sm:p-9 lg:p-10 shadow-xl shadow-slate-200/50 dark:shadow-black/20">
-          <div className="lg:hidden flex items-center gap-3 mb-7"><div className="w-10 h-10 rounded-xl bg-primary-600 flex items-center justify-center"><Building2 className="w-5 h-5 text-white" /></div><div><p className="font-bold text-gray-900 dark:text-white">NexaBank</p><p className="text-xs text-gray-500 dark:text-gray-400">Bank Management System</p></div></div>
+          <div className="lg:hidden flex items-center gap-3 mb-7"><div className="w-10 h-10 rounded-xl bg-primary-600 flex items-center justify-center"><Building2 className="w-5 h-5 text-white" /></div><div><p className="font-bold text-gray-900 dark:text-white">{BRAND.name}</p><p className="text-xs text-gray-500 dark:text-gray-400">{BRAND.descriptor}</p></div></div>
           <div className="mb-7"><p className="text-sm font-semibold text-primary-700 dark:text-primary-400 mb-2">Customer onboarding</p><h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Create your account</h1><p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Fill in your details. You can complete KYC after registration.</p></div>
           <form onSubmit={handleSubmit} className="space-y-4" noValidate>
             <div className="grid sm:grid-cols-2 gap-4">

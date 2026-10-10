@@ -59,7 +59,7 @@ for (const [role, who] of Object.entries(USERS)) {
 
         test('tab title follows the page heading', async ({ page }) => {
           const h1 = (await page.locator('h1:visible').innerText()).trim();
-          await expect(page).toHaveTitle(`${h1} — Bank Management System`);
+          await expect(page).toHaveTitle(`${h1} — NexaBank`);
         });
 
         test('has no WCAG 2.x A/AA violations', async ({ page }) => {

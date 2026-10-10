@@ -1,3 +1,4 @@
+const brand = require('../config/brand');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 const Notification = require('../models/Notification');
@@ -80,7 +81,7 @@ const register = asyncHandler(async (req, res) => {
 
   await Notification.create({
     user: user._id,
-    title: 'Welcome to Bank Management System',
+    title: `Welcome to ${brand.name}`,
     message: `Hi ${fullName}, your account has been created successfully. Open a bank account to get started.`,
     type: 'success'
   });

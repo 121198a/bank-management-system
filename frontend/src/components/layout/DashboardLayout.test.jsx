@@ -31,7 +31,7 @@ describe('DashboardLayout accessibility', () => {
 
   it('sets the document title from the page h1', async () => {
     renderLayout(<Page title="Fund Transfer" />);
-    await waitFor(() => expect(document.title).toBe('Fund Transfer — Bank Management System'));
+    await waitFor(() => expect(document.title).toBe('Fund Transfer — NexaBank'));
   });
 
   it('updates the title when content loads later (lazy pages) and falls back when there is no h1', async () => {
@@ -41,8 +41,8 @@ describe('DashboardLayout accessibility', () => {
       return ready ? <h1>Loaded Page</h1> : <p>loading</p>;
     };
     renderLayout(<Lazy />);
-    expect(document.title).toBe('Bank Management System');
+    expect(document.title).toBe('NexaBank — Bank Management System');
     await act(async () => { await new Promise((r) => setTimeout(r, 40)); });
-    await waitFor(() => expect(document.title).toBe('Loaded Page — Bank Management System'));
+    await waitFor(() => expect(document.title).toBe('Loaded Page — NexaBank'));
   });
 });

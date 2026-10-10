@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "Bank Management System API",
+    "title": "NexaBank API",
     "version": "1.0.0",
     "description": "Generated from the running Express router and its express-validator rules by `npm run docs:openapi`. Do not edit by hand. Success bodies other than the standard envelope are not described. Refresh/logout use the HTTP-only `refreshToken` cookie."
   },

@@ -6,6 +6,7 @@ import Input from '../../components/ui/Input';
 import Button from '../../components/ui/Button';
 import { getErrorMessage } from '../../utils/formatters';
 import toast from 'react-hot-toast';
+import { BRAND } from '../../config/brand';
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -50,8 +51,8 @@ const LoginPage = () => {
             <Building2 className="w-6 h-6" />
           </div>
           <div>
-            <p className="font-bold text-lg leading-none">NexaBank</p>
-            <p className="text-xs text-slate-400 mt-1">Bank Management System</p>
+            <p className="font-bold text-lg leading-none">{BRAND.name}</p>
+            <p className="text-xs text-slate-400 mt-1">{BRAND.descriptor}</p>
           </div>
         </div>
 
@@ -75,7 +76,7 @@ const LoginPage = () => {
         </div>
 
         <div className="relative z-10 flex items-end justify-between text-xs text-slate-400">
-          <span>© {new Date().getFullYear()} NexaBank</span>
+          <span>© {new Date().getFullYear()} {BRAND.name}</span>
           {import.meta.env.DEV ? <span>Local development environment</span> : <span aria-hidden="true" />}
         </div>
       </section>
@@ -84,7 +85,7 @@ const LoginPage = () => {
         <div className="w-full max-w-md">
           <div className="lg:hidden flex items-center gap-3 mb-8">
             <div className="w-10 h-10 rounded-xl bg-primary-600 flex items-center justify-center"><Building2 className="w-5 h-5 text-white" /></div>
-            <div><p className="font-bold text-gray-900 dark:text-white">NexaBank</p><p className="text-xs text-gray-500 dark:text-gray-400">Bank Management System</p></div>
+            <div><p className="font-bold text-gray-900 dark:text-white">{BRAND.name}</p><p className="text-xs text-gray-500 dark:text-gray-400">{BRAND.descriptor}</p></div>
           </div>
 
           <div className="mb-7">
@@ -109,7 +110,7 @@ const LoginPage = () => {
               <Button type="submit" loading={loading} className="w-full !py-3.5">Sign in <ArrowRight className="w-4 h-4" /></Button>
             </form>
             <div className="mt-6 pt-6 border-t border-gray-100 dark:border-banking-border text-center">
-              <p className="text-sm text-gray-500 dark:text-gray-400">New to NexaBank? <Link to="/register" className="text-primary-700 dark:text-primary-400 hover:text-primary-700 font-bold">Create an account</Link></p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">New to {BRAND.name}? <Link to="/register" className="text-primary-700 dark:text-primary-400 hover:text-primary-700 font-bold">Create an account</Link></p>
             </div>
           </div>
           <p className="text-center text-xs text-gray-500 dark:text-gray-400 mt-5">Your session is protected by secure authentication controls. <Link to="/privacy" className="underline">Privacy</Link> · <Link to="/terms" className="underline">Terms</Link></p>

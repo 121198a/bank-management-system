@@ -1,3 +1,4 @@
+const brand = require('./brand');
 require('dotenv').config();
 
 const required = (key) => {
@@ -59,7 +60,7 @@ module.exports = {
     secure: process.env.SMTP_SECURE === 'true',
     user: process.env.SMTP_USER || '',
     pass: process.env.SMTP_PASS || '',
-    from: process.env.SMTP_FROM || 'Bank Management System <no-reply@example.com>'
+    from: process.env.SMTP_FROM || `${brand.name} <no-reply@example.com>`
   },
   resetPasswordExpiresMs: Number(process.env.RESET_PASSWORD_EXPIRES_MS || 3600000),
   adminSeed: {

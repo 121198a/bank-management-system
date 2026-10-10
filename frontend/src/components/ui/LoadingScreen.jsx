@@ -1,4 +1,5 @@
 import React from 'react';
+import { BRAND } from '../../config/brand';
 
 const LoadingScreen = () => (
   <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-banking-dark">
@@ -12,7 +13,7 @@ const LoadingScreen = () => (
         <div className="w-2 h-2 rounded-full bg-primary-600 animate-bounce [animation-delay:-0.15s]" />
         <div className="w-2 h-2 rounded-full bg-primary-600 animate-bounce" />
       </div>
-      <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Loading Bank Management System...</p>
+      <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Loading {BRAND.name}...</p>
     </div>
   </div>
 );

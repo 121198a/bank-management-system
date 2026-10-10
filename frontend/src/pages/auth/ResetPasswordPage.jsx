@@ -5,6 +5,7 @@ import { authAPI } from '../../api/authAPI';
 import Button from '../../components/ui/Button';
 import { getErrorMessage } from '../../utils/formatters';
 import toast from 'react-hot-toast';
+import { BRAND } from '../../config/brand';
 
 const ResetPasswordPage = () => {
   const { token } = useParams();
@@ -49,7 +50,7 @@ const ResetPasswordPage = () => {
           <div className="w-9 h-9 rounded-xl bg-primary-600 flex items-center justify-center">
             <Building2 className="w-5 h-5 text-white" />
           </div>
-          <span className="text-xl font-bold text-gray-900 dark:text-white">Bank Management System</span>
+          <span className="text-xl font-bold text-gray-900 dark:text-white">{BRAND.name}</span>
         </div>
         <div className="card p-8">
           {success ? (

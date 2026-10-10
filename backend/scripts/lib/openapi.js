@@ -6,6 +6,7 @@
  * Limits (stated in the document): response bodies beyond the common envelope are not
  * described, and `custom()` validators are flagged rather than translated.
  */
+const brand = require('../../src/config/brand');
 const { MONEY_PATTERN } = require('../../src/utils/money');
 const MONEY_ROUTES = new Set(['POST /api/transactions/deposit', 'POST /api/transactions/withdraw', 'POST /api/transactions/transfer']);
 
@@ -71,7 +72,7 @@ const putField = (root, field, schema, required) => {
   });
 };
 
-const buildOpenApi = (routes, { title = 'Bank Management System API', version = '1.0.0' } = {}) => {
+const buildOpenApi = (routes, { title = `${brand.name} API`, version = '1.0.0' } = {}) => {
   const paths = {};
   const tags = new Set();
 

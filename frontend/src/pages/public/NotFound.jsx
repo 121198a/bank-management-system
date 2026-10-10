@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { titleFor } from '../../config/brand';
 
 const NotFound = () => {
   const { isAuthenticated } = useAuth();
-  useEffect(() => { document.title = 'Page not found — Bank Management System'; }, []);
+  useEffect(() => { document.title = titleFor('Page not found'); }, []);
   return (
     <main className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-banking-dark px-4">
       <div className="max-w-md text-center">

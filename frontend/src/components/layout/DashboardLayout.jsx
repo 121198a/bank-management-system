@@ -3,8 +3,8 @@ import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Navbar from './Navbar';
 import OfflineBanner from '../ui/OfflineBanner';
+import { titleFor } from '../../config/brand';
 
-const APP_NAME = 'Bank Management System';
 
 const DashboardLayout = ({ role }) => {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
@@ -17,7 +17,7 @@ const DashboardLayout = ({ role }) => {
     if (!main) return undefined;
     const sync = () => {
       const heading = main.querySelector('h1');
-      const next = heading && heading.textContent.trim() ? `${heading.textContent.trim()} — ${APP_NAME}` : APP_NAME;
+      const next = titleFor(heading ? heading.textContent.trim() : '');
       if (document.title !== next) document.title = next;
     };
     sync();

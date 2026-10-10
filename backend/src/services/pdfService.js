@@ -1,3 +1,4 @@
+const brand = require('../config/brand');
 const PDFDocument = require('pdfkit');
 const { decimalToString } = require('../utils/money');
 
@@ -7,7 +8,7 @@ const generateStatementPDF = (res, account, user, transactions, dateRange = {}) 
   res.setHeader('Content-Disposition', `attachment; filename=statement_${account.accountNumber}.pdf`);
   doc.pipe(res);
 
-  doc.fillColor('#16a34a').fontSize(22).font('Helvetica-Bold').text('Bank Management System', { align: 'center' });
+  doc.fillColor('#16a34a').fontSize(22).font('Helvetica-Bold').text(brand.name, { align: 'center' });
   doc.fillColor('#000000').fontSize(14).font('Helvetica').text('Account Statement', { align: 'center' });
   doc.moveDown(1);
   doc.fontSize(10).fillColor('#555555').text(`Generated on: ${new Date().toLocaleString()}`, { align: 'center' });

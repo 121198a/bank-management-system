@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useEmployee } from '../../context/EmployeeContext';
+import { BRAND } from '../../config/brand';
 
 const navConfig = {
   customer: [
@@ -124,7 +125,7 @@ const Sidebar = ({ role, mobileOpen = false, onMobileClose = () => {} }) => {
         </div>
         {!collapsed && (
           <div className="overflow-hidden">
-            <p className="text-sm font-bold text-gray-900 dark:text-white leading-none">NexaBank</p>
+            <p className="text-sm font-bold text-gray-900 dark:text-white leading-none">{BRAND.name}</p>
             <p className="text-[11px] text-primary-700 dark:text-primary-400 font-semibold mt-1">Bank Management</p>
           </div>
         )}

@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { titleFor } from '../../config/brand';
 
 const DRAFT_NOTICE =
   'Draft template written from what this application actually stores. Replace every [bracketed] item and have a qualified lawyer review it for your jurisdiction before launch.';
@@ -35,7 +36,7 @@ const PAGES = {
 
 const LegalPage = ({ kind }) => {
   const page = PAGES[kind];
-  useEffect(() => { document.title = `${page.title} — NexaBank`; }, [page.title]);
+  useEffect(() => { document.title = titleFor(page.title); }, [page.title]);
   return (
     <main className="min-h-screen bg-gray-50 dark:bg-banking-dark px-4 py-12">
       <article className="mx-auto max-w-2xl">
