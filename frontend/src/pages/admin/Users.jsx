@@ -207,7 +207,7 @@ const AdminUsers = () => {
                       <td className="table-td">
                         <div className="flex gap-2">
                           <button onClick={() => openEdit(u)}
-                            className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-banking-border text-gray-500 transition-colors" title="Edit Details">
+                            className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-banking-border text-gray-500 dark:text-gray-400 transition-colors" title="Edit Details">
                             <Pencil className="w-4 h-4" />
                           </button>
                           <button onClick={() => openRole(u)}
@@ -215,7 +215,7 @@ const AdminUsers = () => {
                             <UserCog className="w-4 h-4" />
                           </button>
                           <button onClick={() => openStatus(u)}
-                            className={'p-1.5 rounded-lg transition-colors ' + (u.isActive ? 'hover:bg-red-50 dark:hover:bg-red-900/20 text-red-500' : 'hover:bg-green-50 dark:hover:bg-green-900/20 text-green-600')}
+                            className={'p-1.5 rounded-lg transition-colors ' + (u.isActive ? 'hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400' : 'hover:bg-green-50 dark:hover:bg-green-900/20 text-green-600')}
                             title={u.isActive ? 'Deactivate' : 'Activate'}>
                             {u.isActive ? <XCircle className="w-4 h-4" /> : <CheckCircle className="w-4 h-4" />}
                           </button>
@@ -252,7 +252,7 @@ const AdminUsers = () => {
                 onChange={(e) => setCreateForm(f => ({ ...f, password: e.target.value }))} />
               <Button type="button" variant="secondary" icon={Copy} onClick={copyPassword}>Copy</Button>
             </div>
-            {createErrors.password && <p className="mt-1.5 text-xs text-red-500">{createErrors.password}</p>}
+            {createErrors.password && <p className="mt-1.5 text-xs text-red-600 dark:text-red-400">{createErrors.password}</p>}
             <p className="mt-1.5 text-xs text-gray-500 dark:text-gray-400">Share this password with the user securely. They can change it after logging in.</p>
           </div>
           <Input label="Phone (optional)" placeholder="+91 98765 43210"

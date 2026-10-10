@@ -102,7 +102,7 @@ const EmployeeKyc = () => {
                               <CheckCircle className="w-4 h-4" />
                             </button>
                             <button onClick={() => openReview(kyc, 'rejected')}
-                              className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-red-500 transition-colors" title="Reject">
+                              className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400 transition-colors" title="Reject">
                               <XCircle className="w-4 h-4" />
                             </button>
                           </div>
@@ -125,9 +125,9 @@ const EmployeeKyc = () => {
         {selectedKyc && (
           <div className="space-y-4">
             <div className="p-3 rounded-xl bg-gray-50 dark:bg-banking-darker text-sm space-y-1.5">
-              <div className="flex justify-between"><span className="text-gray-500">Customer:</span><span className="font-medium text-gray-800 dark:text-gray-200">{selectedKyc.user?.fullName}</span></div>
-              <div className="flex justify-between"><span className="text-gray-500">Document:</span><span className="text-gray-700 dark:text-gray-300">{docTypeLabel[selectedKyc.documentType]}</span></div>
-              <div className="flex justify-between"><span className="text-gray-500">Number:</span><span className="font-mono text-gray-700 dark:text-gray-300">{selectedKyc.documentNumber}</span></div>
+              <div className="flex justify-between"><span className="text-gray-500 dark:text-gray-400">Customer:</span><span className="font-medium text-gray-800 dark:text-gray-200">{selectedKyc.user?.fullName}</span></div>
+              <div className="flex justify-between"><span className="text-gray-500 dark:text-gray-400">Document:</span><span className="text-gray-700 dark:text-gray-300">{docTypeLabel[selectedKyc.documentType]}</span></div>
+              <div className="flex justify-between"><span className="text-gray-500 dark:text-gray-400">Number:</span><span className="font-mono text-gray-700 dark:text-gray-300">{selectedKyc.documentNumber}</span></div>
             </div>
             <Select label="Decision" value={reviewForm.status}
               onChange={(e) => setReviewForm(f => ({ ...f, status: e.target.value }))}

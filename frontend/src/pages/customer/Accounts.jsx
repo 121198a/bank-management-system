@@ -78,7 +78,7 @@ const CustomerAccounts = () => {
         <div className="card p-12 text-center">
           <CreditCard className="w-12 h-12 mx-auto mb-4 text-gray-300 dark:text-gray-600" />
           <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-1">No accounts yet</h3>
-          <p className="text-gray-500 text-sm mb-4">Open your first bank account to get started</p>
+          <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">Open your first bank account to get started</p>
           <Button icon={Plus} onClick={() => setShowCreate(true)}>Open Account</Button>
         </div>
       ) : (

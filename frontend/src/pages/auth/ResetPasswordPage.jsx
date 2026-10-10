@@ -89,7 +89,7 @@ const ResetPasswordPage = () => {
                         {show[showKey] ? <EyeOff className="w-4 h-4 text-gray-500 dark:text-gray-400" /> : <Eye className="w-4 h-4 text-gray-500 dark:text-gray-400" />}
                       </button>
                     </div>
-                    {errors[key] && <p className="mt-1.5 text-xs text-red-500">{errors[key]}</p>}
+                    {errors[key] && <p className="mt-1.5 text-xs text-red-600 dark:text-red-400">{errors[key]}</p>}
                   </div>
                 ))}
                 <Button type="submit" loading={loading} className="w-full">Reset Password</Button>

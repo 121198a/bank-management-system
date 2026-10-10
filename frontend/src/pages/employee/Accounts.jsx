@@ -118,10 +118,10 @@ const EmployeeAccounts = () => {
         {selectedAccount && (
           <div className="space-y-4">
             <div className="p-3 rounded-xl bg-gray-50 dark:bg-banking-darker space-y-1.5 text-sm">
-              <div className="flex justify-between"><span className="text-gray-500">Customer:</span><span className="font-medium text-gray-800 dark:text-gray-200">{selectedAccount.user?.fullName}</span></div>
-              <div className="flex justify-between"><span className="text-gray-500">Account No:</span><span className="font-mono text-gray-700 dark:text-gray-300">{selectedAccount.accountNumber}</span></div>
-              <div className="flex justify-between"><span className="text-gray-500">Type:</span><span className="capitalize text-gray-700 dark:text-gray-300">{selectedAccount.accountType}</span></div>
-              <div className="flex justify-between"><span className="text-gray-500">KYC Status:</span><Badge value={selectedAccount.user?.kycStatus} /></div>
+              <div className="flex justify-between"><span className="text-gray-500 dark:text-gray-400">Customer:</span><span className="font-medium text-gray-800 dark:text-gray-200">{selectedAccount.user?.fullName}</span></div>
+              <div className="flex justify-between"><span className="text-gray-500 dark:text-gray-400">Account No:</span><span className="font-mono text-gray-700 dark:text-gray-300">{selectedAccount.accountNumber}</span></div>
+              <div className="flex justify-between"><span className="text-gray-500 dark:text-gray-400">Type:</span><span className="capitalize text-gray-700 dark:text-gray-300">{selectedAccount.accountType}</span></div>
+              <div className="flex justify-between"><span className="text-gray-500 dark:text-gray-400">KYC Status:</span><Badge value={selectedAccount.user?.kycStatus} /></div>
             </div>
             {selectedAccount.user?.kycStatus !== 'verified' && (
               <div className="p-3 rounded-xl bg-yellow-50 dark:bg-yellow-900/20 text-xs text-yellow-700 dark:text-yellow-400">

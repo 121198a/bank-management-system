@@ -12,7 +12,7 @@ const ManagementFilterBar = ({
     <div className="flex flex-col lg:flex-row lg:items-center gap-3">
       <div className="w-full lg:w-1/4 lg:min-w-[250px] lg:max-w-[360px] shrink-0">
         <div className="relative">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 dark:text-gray-500 pointer-events-none" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 dark:text-gray-400 pointer-events-none" />
           <input
             className="input-field pl-10 h-12"
             placeholder={placeholder}

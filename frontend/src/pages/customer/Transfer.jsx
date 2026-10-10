@@ -96,7 +96,7 @@ const Transfer = () => {
             onChange={(e) => setForm(f => ({ ...f, amount: e.target.value }))}
             error={errors.amount} />
           {insufficient && (
-            <div className="flex items-center gap-2 text-red-500 text-xs">
+            <div className="flex items-center gap-2 text-red-600 dark:text-red-400 text-xs">
               <AlertTriangle className="w-4 h-4" /> Insufficient balance
             </div>
           )}

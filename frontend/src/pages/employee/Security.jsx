@@ -98,7 +98,7 @@ const EmployeeSecurity = () => {
 
       <Modal isOpen={!!selected && tab === 'alerts'} onClose={() => setSelected(null)} title={selected ? selected.alertId : ''}>
         {selected && <div className="space-y-3">
-          <p className="text-sm text-gray-500">{selected.reason}</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">{selected.reason}</p>
           <Input label="Resolution notes" value={resolution} onChange={(e) => setResolution(e.target.value)} />
           <div className="flex flex-wrap gap-3">
             <Button loading={actionLoading} onClick={() => reviewAlert('confirmed')}>Confirm Fraud</Button>

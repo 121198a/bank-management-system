@@ -90,7 +90,7 @@ const CustomerInsurance = () => {
           <>
             {tab === 'products' && (products.length === 0 ? <p className="text-sm text-gray-500 dark:text-gray-400 py-8 text-center">No products available.</p> : (
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">{products.map((p) => (
-                <div key={p._id} className="card p-4"><p className="font-bold text-sm">{p.name}</p><p className="text-xs text-gray-500 capitalize mt-1">{p.type} insurance</p><p className="text-xs text-gray-500 dark:text-gray-400 mt-2">{p.description}</p><p className="text-sm font-semibold mt-3">{p.annualPremiumRatePercent}% / year</p><p className="text-xs text-gray-500 dark:text-gray-400">Sum insured {formatCurrency(p.minSumInsured)} – {formatCurrency(p.maxSumInsured)}</p></div>
+                <div key={p._id} className="card p-4"><p className="font-bold text-sm">{p.name}</p><p className="text-xs text-gray-500 dark:text-gray-400 capitalize mt-1">{p.type} insurance</p><p className="text-xs text-gray-500 dark:text-gray-400 mt-2">{p.description}</p><p className="text-sm font-semibold mt-3">{p.annualPremiumRatePercent}% / year</p><p className="text-xs text-gray-500 dark:text-gray-400">Sum insured {formatCurrency(p.minSumInsured)} – {formatCurrency(p.maxSumInsured)}</p></div>
               ))}</div>
             ))}
             {tab === 'policies' && (policies.length === 0 ? <p className="text-sm text-gray-500 dark:text-gray-400 py-8 text-center">No policies yet.</p> : (
@@ -138,16 +138,16 @@ const CustomerInsurance = () => {
         {selected && (
           <div className="space-y-5">
             <div className="flex items-center justify-between p-4 rounded-xl bg-gray-50 dark:bg-banking-darker">
-              <div><p className="text-xs text-gray-500">Current status</p><div className="flex items-center gap-2 mt-1"><Icon className="w-4 h-4 text-primary-700 dark:text-primary-400" /><Badge value={selected.status} /></div></div>
-              <div className="text-right"><p className="text-xs text-gray-500">{selectedType === 'policy' ? 'Sum Insured' : 'Claim Amount'}</p><p className="font-bold text-gray-900 dark:text-white">{formatCurrency(selectedType === 'policy' ? selected.sumInsured : selected.claimAmount)}</p></div>
+              <div><p className="text-xs text-gray-500 dark:text-gray-400">Current status</p><div className="flex items-center gap-2 mt-1"><Icon className="w-4 h-4 text-primary-700 dark:text-primary-400" /><Badge value={selected.status} /></div></div>
+              <div className="text-right"><p className="text-xs text-gray-500 dark:text-gray-400">{selectedType === 'policy' ? 'Sum Insured' : 'Claim Amount'}</p><p className="font-bold text-gray-900 dark:text-white">{formatCurrency(selectedType === 'policy' ? selected.sumInsured : selected.claimAmount)}</p></div>
             </div>
             {selectedType === 'policy' && <div className="grid sm:grid-cols-2 gap-3 text-sm">
-              <p><span className="text-gray-500">Annual Premium:</span> {formatCurrency(selected.annualPremium)}</p>
-              <p><span className="text-gray-500">Term:</span> {selected.termMonths} months</p>
-              {selected.startDate && <p><span className="text-gray-500">Valid until:</span> {formatDate(selected.endDate)}</p>}
+              <p><span className="text-gray-500 dark:text-gray-400">Annual Premium:</span> {formatCurrency(selected.annualPremium)}</p>
+              <p><span className="text-gray-500 dark:text-gray-400">Term:</span> {selected.termMonths} months</p>
+              {selected.startDate && <p><span className="text-gray-500 dark:text-gray-400">Valid until:</span> {formatDate(selected.endDate)}</p>}
             </div>}
-            {selectedType === 'claim' && <p className="text-sm"><span className="text-gray-500">Description:</span> {selected.description}</p>}
-            {selectedType === 'claim' && selected.approvedAmount && <p className="text-sm"><span className="text-gray-500">Approved amount:</span> {formatCurrency(selected.approvedAmount)}</p>}
+            {selectedType === 'claim' && <p className="text-sm"><span className="text-gray-500 dark:text-gray-400">Description:</span> {selected.description}</p>}
+            {selectedType === 'claim' && selected.approvedAmount && <p className="text-sm"><span className="text-gray-500 dark:text-gray-400">Approved amount:</span> {formatCurrency(selected.approvedAmount)}</p>}
             {(selected.remarks || []).length > 0 && <div><h4 className="font-semibold text-sm mb-2">Remarks</h4><div className="space-y-2">{selected.remarks.map((r, i) => <div key={i} className="p-3 rounded-xl bg-gray-50 dark:bg-banking-darker text-sm"><p>{r.text}</p><p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{formatDate(r.at)}</p></div>)}</div></div>}
           </div>
         )}

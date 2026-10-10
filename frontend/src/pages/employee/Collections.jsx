@@ -70,12 +70,12 @@ const EmployeeCollections = () => {
       <Modal isOpen={!!selected} onClose={() => setSelected(null)} title={selected ? `Case ${selected.caseNumber}` : ''} size="lg">
         {selected && <div className="space-y-5">
           <div className="grid sm:grid-cols-3 gap-3">
-            <div className="card p-3"><p className="text-xs text-gray-500">Customer</p><p className="font-semibold text-sm">{selected.customer?.fullName}</p></div>
-            <div className="card p-3"><p className="text-xs text-gray-500">Overdue Amount</p><p className="font-semibold">{formatCurrency(selected.overdueAmount)}</p></div>
-            <div className="card p-3"><p className="text-xs text-gray-500">Status</p><Badge value={selected.status} /></div>
+            <div className="card p-3"><p className="text-xs text-gray-500 dark:text-gray-400">Customer</p><p className="font-semibold text-sm">{selected.customer?.fullName}</p></div>
+            <div className="card p-3"><p className="text-xs text-gray-500 dark:text-gray-400">Overdue Amount</p><p className="font-semibold">{formatCurrency(selected.overdueAmount)}</p></div>
+            <div className="card p-3"><p className="text-xs text-gray-500 dark:text-gray-400">Status</p><Badge value={selected.status} /></div>
           </div>
 
-          <p className="text-sm"><span className="text-gray-500">Recovered so far:</span> <span className="font-semibold">{formatCurrency(selected.recoveredAmount)}</span></p>
+          <p className="text-sm"><span className="text-gray-500 dark:text-gray-400">Recovered so far:</span> <span className="font-semibold">{formatCurrency(selected.recoveredAmount)}</span></p>
 
           <div><h4 className="font-semibold text-sm mb-2">Contact Log</h4><div className="space-y-2">{(selected.contactLog || []).map((c, i) => <div key={i} className="p-3 rounded-xl bg-gray-50 dark:bg-banking-darker text-sm"><span className="capitalize font-medium">{c.method}</span>: {c.outcome} <span className="text-xs text-gray-500 dark:text-gray-400 block">{formatDate(c.contactedAt)}</span></div>)}{!selected.contactLog?.length && <p className="text-xs text-gray-500 dark:text-gray-400">No contact logged yet.</p>}</div></div>
 

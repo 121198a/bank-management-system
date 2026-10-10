@@ -8,7 +8,7 @@ import { formatDate, getErrorMessage } from '../../utils/formatters';
 import toast from 'react-hot-toast';
 
 const typeIcon = { info: Info, success: CheckCircle, warning: AlertTriangle, error: XCircle };
-const typeBg = { info: 'bg-blue-100 dark:bg-blue-900/30 text-blue-600', success: 'bg-green-100 dark:bg-green-900/30 text-green-600', warning: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600', error: 'bg-red-100 dark:bg-red-900/30 text-red-500' };
+const typeBg = { info: 'bg-blue-100 dark:bg-blue-900/30 text-blue-600', success: 'bg-green-100 dark:bg-green-900/30 text-green-600', warning: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600', error: 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400' };
 
 const Notifications = () => {
   const [notifications, setNotifications] = useState([]);
@@ -80,7 +80,7 @@ const Notifications = () => {
         {loading ? <NotificationSkeleton count={6} /> : notifications.length === 0 ? (
           <div className="text-center py-12">
             <Bell className="w-10 h-10 mx-auto mb-3 text-gray-300 dark:text-gray-600" />
-            <p className="font-medium text-gray-500">No notifications yet</p>
+            <p className="font-medium text-gray-500 dark:text-gray-400">No notifications yet</p>
           </div>
         ) : (
           <div className="space-y-2">

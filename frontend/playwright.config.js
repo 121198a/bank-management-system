@@ -13,7 +13,16 @@ export default defineConfig({
     screenshot: 'only-on-failure',
     trace: 'retain-on-failure'
   },
-  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
+  projects: [{
+    name: 'chromium',
+    use: {
+      ...devices['Desktop Chrome'],
+      // Optional: use an already-installed Chromium (offline CI, restricted sandboxes).
+      ...(process.env.PW_CHROMIUM_PATH
+        ? { launchOptions: { executablePath: process.env.PW_CHROMIUM_PATH, args: ['--no-sandbox'] } }
+        : {})
+    }
+  }],
   // Public pages render without a backend; failed /api calls are treated as "signed out".
   webServer: {
     command: `npm run build && npm run preview -- --host 127.0.0.1 --port ${PORT} --strictPort`,

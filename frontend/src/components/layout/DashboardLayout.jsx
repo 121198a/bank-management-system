@@ -38,7 +38,7 @@ const DashboardLayout = ({ role }) => {
       <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
         <Navbar role={role} onMenuClick={() => setMobileNavOpen(true)} />
         <OfflineBanner />
-        <main id="main-content" tabIndex={-1} className="flex-1 overflow-y-auto p-3 xs:p-4 sm:p-6 lg:p-7 focus:outline-none" ref={mainRef}>
+        <main id="main-content" tabIndex={0} className="flex-1 overflow-y-auto p-3 xs:p-4 sm:p-6 lg:p-7 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-600" ref={mainRef}>
           <div className="max-w-[1480px] mx-auto page-shell animate-page-enter">
             <Outlet />
           </div>

@@ -59,9 +59,9 @@ const LoginPage = () => {
           <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-slate-300 mb-6">
             <ShieldCheck className="w-4 h-4 text-primary-400" /> Secure digital banking workspace
           </div>
-          <h1 className="text-5xl xl:text-6xl font-bold leading-[1.05] tracking-tight">
+          <p className="text-5xl xl:text-6xl font-bold leading-[1.05] tracking-tight">
             Banking that feels <span className="text-primary-400">simple.</span>
-          </h1>
+          </p>
           <p className="mt-6 text-lg leading-8 text-slate-300 max-w-lg">
             Manage accounts, move money, review transactions and stay in control from one clean banking workspace.
           </p>
@@ -84,12 +84,12 @@ const LoginPage = () => {
         <div className="w-full max-w-md">
           <div className="lg:hidden flex items-center gap-3 mb-8">
             <div className="w-10 h-10 rounded-xl bg-primary-600 flex items-center justify-center"><Building2 className="w-5 h-5 text-white" /></div>
-            <div><p className="font-bold text-gray-900 dark:text-white">NexaBank</p><p className="text-xs text-gray-500">Bank Management System</p></div>
+            <div><p className="font-bold text-gray-900 dark:text-white">NexaBank</p><p className="text-xs text-gray-500 dark:text-gray-400">Bank Management System</p></div>
           </div>
 
           <div className="mb-7">
             <p className="text-sm font-semibold text-primary-700 dark:text-primary-400 mb-2">Welcome back</p>
-            <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Sign in to your account</h2>
+            <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Sign in to your account</h1>
             <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Enter your credentials to continue to your dashboard.</p>
           </div>
 
@@ -104,7 +104,7 @@ const LoginPage = () => {
                   <input type={showPassword ? 'text' : 'password'} className={`input-field pl-10 pr-11 ${errors.password ? 'border-red-400 focus:ring-red-400/20' : ''}`} placeholder="Enter your password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} autoComplete="current-password" />
                   <button type="button" aria-label={showPassword ? 'Hide password' : 'Show password'} onClick={() => setShowPassword((s) => !s)} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400 hover:text-gray-600">{showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}</button>
                 </div>
-                {errors.password && <p className="mt-1.5 text-xs text-red-500">{errors.password}</p>}
+                {errors.password && <p className="mt-1.5 text-xs text-red-600 dark:text-red-400">{errors.password}</p>}
               </div>
               <Button type="submit" loading={loading} className="w-full !py-3.5">Sign in <ArrowRight className="w-4 h-4" /></Button>
             </form>

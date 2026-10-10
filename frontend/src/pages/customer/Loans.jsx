@@ -145,7 +145,7 @@ const CustomerLoans = () => {
           ['Total', counts.total], ['Pending', counts.pending], ['Documents', counts.documents],
           ['Approved', counts.approved], ['Disbursed', counts.disbursed], ['Rejected', counts.rejected]
         ].map(([label, value]) => (
-          <div className="card p-4" key={label}><p className="text-xs text-gray-500">{label}</p><p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">{value}</p></div>
+          <div className="card p-4" key={label}><p className="text-xs text-gray-500 dark:text-gray-400">{label}</p><p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">{value}</p></div>
         ))}
       </div>
 
@@ -199,16 +199,16 @@ const CustomerLoans = () => {
         {selected && (
           <div className="space-y-5">
             <div className="flex items-center justify-between p-4 rounded-xl bg-gray-50 dark:bg-banking-darker">
-              <div><p className="text-xs text-gray-500">Current status</p><div className="flex items-center gap-2 mt-1"><Icon className="w-4 h-4 text-primary-700 dark:text-primary-400" /><Badge value={selected.status} /></div></div>
-              <div className="text-right"><p className="text-xs text-gray-500">Requested</p><p className="font-bold text-gray-900 dark:text-white">{formatCurrency(selected.requestedAmount)}</p></div>
+              <div><p className="text-xs text-gray-500 dark:text-gray-400">Current status</p><div className="flex items-center gap-2 mt-1"><Icon className="w-4 h-4 text-primary-700 dark:text-primary-400" /><Badge value={selected.status} /></div></div>
+              <div className="text-right"><p className="text-xs text-gray-500 dark:text-gray-400">Requested</p><p className="font-bold text-gray-900 dark:text-white">{formatCurrency(selected.requestedAmount)}</p></div>
             </div>
             <div className="grid sm:grid-cols-2 gap-3 text-sm">
-              <p><span className="text-gray-500">Loan type:</span> <span className="capitalize">{selected.loanType}</span></p>
-              <p><span className="text-gray-500">Tenure:</span> {selected.tenureMonths} months</p>
-              <p><span className="text-gray-500">Account:</span> {selected.account?.accountNumber || '—'}</p>
-              <p><span className="text-gray-500">Purpose:</span> {selected.purpose}</p>
-              <p><span className="text-gray-500">Recommendation:</span> {selected.employeeRecommendedAmount ? formatCurrency(selected.employeeRecommendedAmount) : 'Pending'}</p>
-              <p><span className="text-gray-500">Approved:</span> {selected.approvedAmount ? formatCurrency(selected.approvedAmount) : 'Pending'}</p>
+              <p><span className="text-gray-500 dark:text-gray-400">Loan type:</span> <span className="capitalize">{selected.loanType}</span></p>
+              <p><span className="text-gray-500 dark:text-gray-400">Tenure:</span> {selected.tenureMonths} months</p>
+              <p><span className="text-gray-500 dark:text-gray-400">Account:</span> {selected.account?.accountNumber || '—'}</p>
+              <p><span className="text-gray-500 dark:text-gray-400">Purpose:</span> {selected.purpose}</p>
+              <p><span className="text-gray-500 dark:text-gray-400">Recommendation:</span> {selected.employeeRecommendedAmount ? formatCurrency(selected.employeeRecommendedAmount) : 'Pending'}</p>
+              <p><span className="text-gray-500 dark:text-gray-400">Approved:</span> {selected.approvedAmount ? formatCurrency(selected.approvedAmount) : 'Pending'}</p>
             </div>
 
             {selected.documentsRequested?.length > 0 && (
@@ -218,7 +218,7 @@ const CustomerLoans = () => {
             <div>
               <h4 className="font-semibold text-sm mb-2">Documents</h4>
               <div className="space-y-2">
-                {(selected.documents || []).map((doc) => <div key={doc._id} className="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-banking-darker"><div><p className="text-sm">{doc.fileName}</p><p className="text-xs text-gray-500 capitalize">{doc.type.replaceAll('_', ' ')} · {doc.status}</p></div><Badge value={doc.status} /></div>)}
+                {(selected.documents || []).map((doc) => <div key={doc._id} className="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-banking-darker"><div><p className="text-sm">{doc.fileName}</p><p className="text-xs text-gray-500 dark:text-gray-400 capitalize">{doc.type.replaceAll('_', ' ')} · {doc.status}</p></div><Badge value={doc.status} /></div>)}
                 {selected.documents?.length === 0 && <p className="text-xs text-gray-500 dark:text-gray-400">No documents submitted yet.</p>}
               </div>
             </div>

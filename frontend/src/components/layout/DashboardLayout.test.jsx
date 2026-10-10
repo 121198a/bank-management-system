@@ -15,13 +15,13 @@ const renderLayout = (element) => render(
 );
 
 describe('DashboardLayout accessibility', () => {
-  it('offers a skip link that targets a focusable main landmark', () => {
+  it('offers a skip link that targets a keyboard-reachable main landmark', () => {
     renderLayout(<Page title="My Accounts" />);
     const skip = screen.getByRole('link', { name: 'Skip to main content' });
     expect(skip).toHaveAttribute('href', '#main-content');
     const main = screen.getByRole('main');
     expect(main).toHaveAttribute('id', 'main-content');
-    expect(main).toHaveAttribute('tabindex', '-1');
+    expect(main).toHaveAttribute('tabindex', '0'); // scrollable region must be keyboard reachable
   });
 
   it('sizes the app shell to the dynamic viewport so mobile browser toolbars do not clip it', () => {

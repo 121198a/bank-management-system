@@ -9,7 +9,7 @@ const StatsCard = ({ title, value, subtitle, icon: Icon, iconBg = 'bg-primary-10
         <p className="text-2xl font-bold text-gray-900 dark:text-white mb-1">{value}</p>
         {subtitle && <p className="text-xs text-gray-500 dark:text-gray-400">{subtitle}</p>}
         {trend !== undefined && (
-          <div className={`flex items-center gap-1 mt-2 text-xs font-medium ${trend >= 0 ? 'text-green-600' : 'text-red-500'}`}>
+          <div className={`flex items-center gap-1 mt-2 text-xs font-medium ${trend >= 0 ? 'text-green-600' : 'text-red-600 dark:text-red-400'}`}>
             {trend >= 0 ? <TrendingUp className="w-3.5 h-3.5" /> : <TrendingDown className="w-3.5 h-3.5" />}
             <span>{Math.abs(trend)}% {trendLabel || ''}</span>
           </div>

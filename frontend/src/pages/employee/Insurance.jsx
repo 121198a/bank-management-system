@@ -78,13 +78,13 @@ const EmployeeInsurance = () => {
       <Modal isOpen={!!selected} onClose={() => setSelected(null)} title={selected ? (isPolicy ? `Policy ${selected.policyNumber}` : `Claim ${selected.claimNumber}`) : ''} size="lg">
         {selected && <div className="space-y-5">
           <div className="grid sm:grid-cols-3 gap-3">
-            <div className="card p-3"><p className="text-xs text-gray-500">Customer</p><p className="font-semibold text-sm">{selected.customer?.fullName}</p></div>
-            <div className="card p-3"><p className="text-xs text-gray-500">{isPolicy ? 'Sum Insured' : 'Claim Amount'}</p><p className="font-semibold">{formatCurrency(isPolicy ? selected.sumInsured : selected.claimAmount)}</p></div>
-            <div className="card p-3"><p className="text-xs text-gray-500">Status</p><Badge value={selected.status} /></div>
+            <div className="card p-3"><p className="text-xs text-gray-500 dark:text-gray-400">Customer</p><p className="font-semibold text-sm">{selected.customer?.fullName}</p></div>
+            <div className="card p-3"><p className="text-xs text-gray-500 dark:text-gray-400">{isPolicy ? 'Sum Insured' : 'Claim Amount'}</p><p className="font-semibold">{formatCurrency(isPolicy ? selected.sumInsured : selected.claimAmount)}</p></div>
+            <div className="card p-3"><p className="text-xs text-gray-500 dark:text-gray-400">Status</p><Badge value={selected.status} /></div>
           </div>
 
-          {isPolicy && <p className="text-sm"><span className="text-gray-500">Annual premium (server-calculated):</span> <span className="font-semibold">{formatCurrency(selected.annualPremium)}</span></p>}
-          {!isPolicy && <p className="text-sm"><span className="text-gray-500">Description:</span> {selected.description}</p>}
+          {isPolicy && <p className="text-sm"><span className="text-gray-500 dark:text-gray-400">Annual premium (server-calculated):</span> <span className="font-semibold">{formatCurrency(selected.annualPremium)}</span></p>}
+          {!isPolicy && <p className="text-sm"><span className="text-gray-500 dark:text-gray-400">Description:</span> {selected.description}</p>}
 
           {isPolicy && selected.status === 'submitted' && <Button icon={PlayCircle} loading={actionLoading} onClick={() => act(() => insuranceAPI.startPolicyReview(selected._id), 'Review started')}>Start Review</Button>}
           {!isPolicy && selected.status === 'submitted' && <Button icon={PlayCircle} loading={actionLoading} onClick={() => act(() => insuranceAPI.startClaimReview(selected._id), 'Review started')}>Start Review</Button>}

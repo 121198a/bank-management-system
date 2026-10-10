@@ -1,9 +1,9 @@
 # Final report — Bank Management System upgrade (master-kit Phases 0–13)
 
-Branch `upgrade/master-kit` · baseline tag `pre-upgrade-20261006` (= `origin/main` = `9240780`) · 15 commits · 129 files changed
+Branch `upgrade/master-kit` · baseline tag `pre-upgrade-20261006` (= `origin/main` = `9240780`) · 16 commits · 131 files changed
 
 ## Verdict
-**Not "production ready".** The kit allows that phrase only when the documented checks support it, and these do not yet: the end-to-end suite has never run, nothing has been tested in a browser or at any viewport size, the backup/restore CLI has never touched a real database, the KYC encryption migration has not been run, secrets from the uploaded ZIP have not been rotated, and the legal pages are unreviewed drafts. What *has* been done is real and verified (section 9). Section 12 lists what only the owner can do.
+**Not "production ready".** The kit allows that phrase only when the documented checks support it, and these do not yet: the database end-to-end suite has never run, the browser checks cover only public pages and three mocked dashboards in one browser, the backup/restore CLI has never touched a real database, the KYC encryption migration has not been run, secrets from the uploaded ZIP have not been rotated, and the legal pages are unreviewed drafts. What *has* been done is real and verified (section 9). Section 12 lists what only the owner can do.
 
 ## Phase status
 | Phase | Status |
@@ -15,11 +15,11 @@ Branch `upgrade/master-kit` · baseline tag `pre-upgrade-20261006` (= `origin/ma
 | 4 Security | Largely done; open items are owner actions (section 11–12) |
 | 5 UI/UX redesign | **Not done** — needs the owner's direction (kit default is light/neutral; the app is dark-first with translucent surfaces, Inter only, pastel badges) |
 | 6 Anti-vibe checklist | **Done** — scored audit, then the objective items fixed (orbs, hero/logo gradients, sparkle icons, stock copy): now 20 pass · 3 design-taste items left · 5 minor · 2 partial (draft legal pages) — `PHASE6_ANTI_VIBE_AUDIT.md` |
-| 7 Responsive engineering | **Partial** — static code review done (all breakpoints present, all 16 table files scroll, modals scroll, no small tap targets) and one real fix (`dvh` app shell); the kit's 20-viewport browser suite is **written but has never run** (needs a browser; non-blocking CI job) |
+| 7 Responsive engineering | **Done for the screens a browser could reach** — the kit's 20 viewports (240×320 to 3840×2160) × 6 public pages, all passing in headless Chromium 153 (no horizontal overflow, one visible heading); logged-in dashboards (3 roles) checked at phone and desktop sizes against a mocked API. **Not covered:** the other ~30 logged-in pages, real data volumes, WebKit/Firefox, real devices, modal/menu interaction at small sizes, foldables |
 | 8 Performance | Partial — code splitting and caching done; no Lighthouse or load tests |
 | 9 Reliability | **Done** — timeouts, plain-language network/timeout errors, error boundary, offline banner, shared rate limiting, backups |
-| 10 SEO/a11y/public readiness | Partial — contrast, headings, skip link, title sync fixed; source-level only — `PHASE10_PUBLIC_READINESS.md` |
-| 11 Testing | Partial — 90 tests run by default (66 backend + 24 frontend); 5 Redis tests (verified) are opt-in; **never run:** 10 database e2e tests and 146 browser tests (20 viewports + axe) |
+| 10 SEO/a11y/public readiness | **Mostly done** — contrast, heading structure, skip link, title sync and keyboard access fixed and now verified by axe in a real browser (public pages + 3 dashboards, light and dark); contact details, legal review and a screen-reader pass remain — `PHASE10_PUBLIC_READINESS.md` |
+| 11 Testing | **Mostly done** — 90 tests run by default (66 backend + 24 frontend); 5 Redis tests (verified, opt-in); **182 browser checks verified locally** (120 viewport + 26 public-page axe + 36 dashboard); **never run:** the 10 real-database e2e tests; no screen-reader, WebKit/Firefox or real-device testing |
 | 12 Git | Partial — logical commits and `diff --check` clean; **push is yours to do** |
 | 13 Final report | This document |
 
@@ -42,7 +42,7 @@ Safe production error responses with request IDs · API CSP/HSTS/referrer policy
 Real 404 page · error boundary · skeleton on the KYC page · draft privacy/terms pages linked from sign-in · dev label hidden in production · one `h1` per page matching its title · tab title follows the page · skip-to-content link · primary button, links, secondary text, placeholders and focus indicators now meet WCAG contrast (measured). Hero banners made plain (no orbs, no gradients, no sparkle icons, plain copy). **No broader redesign** (Phase 5).
 
 ## 7. Responsive improvements
-Static review only — **no viewport was ever rendered.** Confirmed in code and in the built CSS: all breakpoints (400/640/768/1024/1280) exist; every file with a `<table>` has a horizontal-scroll wrapper; modals can scroll; no small tap-target patterns; no unprefixed wide grids. One fix: the app shell and mobile sidebar used `100vh`, which mobile browsers make taller than the visible area (bottom controls such as sign-out can hide behind the toolbar) — now `100dvh` with a `100vh` fallback. Minor items left: 7 uses of 9–11 px text, 9 fixed `min-w-[…px]` blocks (190–220 px, fine down to ~240 px but unverified), `min-h-screen` on auth/legal pages. A Playwright suite covering the kit's 20 viewports and axe scans is in `frontend/e2e/`; **it has never been run**.
+**Measured in a real browser** (headless Chromium 153, run locally; Playwright suite in `frontend/e2e/`): all 20 kit viewports × 6 public pages pass (no horizontal scrolling, exactly one visible `h1`), and the three role dashboards pass at 375 px and 1280 px in light and dark against a mocked API. Fixes this produced: **sign-in and register had no visible `h1` on phones** (the only heading hid with the desktop hero panel); app shell and sidebar used `100vh` (mobile toolbar clipping) → `100dvh` with fallback. **Not covered:** logged-in pages other than the three dashboards, real data, other browsers/devices, interaction states at small sizes.
 
 ## 8. Performance improvements
 Main JavaScript chunk 288 kB → 37 kB (route-level lazy loading) · nginx: gzip, immutable cache for hashed assets, `no-cache` for the SPA shell · 20 s API timeout · shared Redis rate-limit store. **No Lighthouse, load or concurrency testing was run.**
@@ -54,9 +54,10 @@ Main JavaScript chunk 288 kB → 37 kB (route-level lazy loading) · nginx: gzip
 | Frontend `npm test` | **24 passed** |
 | Frontend lint / build | clean / builds |
 | `npm audit --omit=dev` | backend **0**; frontend **2 moderate** (react-router SSR advisory; app is client-only; upgrade is a breaking v7 move — accepted) |
+| **Browser suite (Playwright, Chromium 153 headless)** | **182 passed, 0 failed**: 120 viewport/overflow · 26 axe on public pages · 36 on mocked dashboards. Run locally with a Chromium binary; CI job `frontend-browser` is still non-blocking until it passes once on GitHub's runner |
 | Dev-dependency audit | 3 high in the `nodemon` chain; only fix is a 2017 downgrade; not shipped (`--omit=dev`) — accepted |
 | OpenAPI | valid 3.0.3, 121 operations, drift-tested |
-| **Never executed** | the 10-step real-database end-to-end suite · the 146-test Playwright suite · backup/restore CLI against MongoDB · KYC encryption migration · real SMTP with nodemailer 10 · any screen-reader test |
+| **Never executed** | the 10-step real-database end-to-end suite · backup/restore CLI against MongoDB · KYC encryption migration · real SMTP with nodemailer 10 · any screen-reader test · any browser other than Chromium |
 
 ## 10. Deployment changes
 Compose adds `redis` (no persistence, 64 MB cap, healthcheck), `NODE_ENV=production`, `TRUST_PROXY=true`, `REDIS_URL`, backend healthcheck, `expose` instead of `ports`. nginx gains security headers and cache rules. CI gains `backend-e2e` (MongoDB 7 replica set), a Redis service, frontend tests and audits. **TLS is not handled here** — terminate HTTPS in front of nginx.
@@ -65,7 +66,7 @@ Compose adds `redis` (no persistence, 64 MB cap, healthcheck), `NODE_ENV=product
 1. End-to-end suite unproven — first CI run may expose test/assumption mismatches.
 2. KYC numbers remain plain text until the key is set and the migration run; key loss would make encrypted data unrecoverable.
 3. Backups are logical, not point-in-time; restore never rehearsed.
-4. No browser, viewport, accessibility-tool or load test has ever run (the suites exist); contrast measured for 13+ pairs only.
+4. Browser tests ran in Chromium only; the logged-in screens beyond the three dashboards have not been scanned; no real-device, screen-reader or load testing.
 5. Plain-text secrets and PII were in the uploaded ZIP; historic hard-coded admin password remains in git history (`SECURITY.md`).
 6. Rate limiter is fixed-window (up to 2× burst at a window edge).
 7. Legal pages are unreviewed drafts; contact details are placeholders.
@@ -75,7 +76,7 @@ Compose adds `redis` (no persistence, 64 MB cap, healthcheck), `NODE_ENV=product
 ## 12. Manual actions required from the owner
 1. **Rotate every secret** that was in `backend/.env` and `backend/backen/.env` (JWT secrets, database credentials, SMTP password). Delete or secure the five `backup-*.json` files (customer data).
 2. **Push**: `git push origin pre-upgrade-20261006` then `git push origin upgrade/master-kit`; open a PR; do not force-push.
-3. **Watch the `backend-e2e` and `frontend-browser` CI jobs** and send/fix failures. `frontend-browser` is non-blocking: once green, delete its `continue-on-error: true` line to make it a gate.
+3. **Watch the `backend-e2e` and `frontend-browser` CI jobs.** The browser suite passes locally (182/182) but CI uses its own browser build and fonts, so it stays non-blocking until it passes once there; then delete its `continue-on-error: true` line.
 4. Decide D1–D6 (`PHASE2_IDENTITY.md`) and the UI direction for Phase 5.
 5. Set `KYC_ENCRYPTION_KEY`, back the key up separately, then on a *copy* of the data run `npm run kyc:encrypt` (dry run) → `--apply`; verify the admin KYC page and an exact-number search. Decide whether reviewers should see full or masked numbers.
 6. Set `BACKUP_ENCRYPTION_KEY`, run `npm run backup`, and rehearse a restore into a scratch database (`BACKUP_RUNBOOK.md`).
@@ -136,13 +137,14 @@ The frontend uses no environment variables; nothing secret reaches the browser b
 - Backend dependency advisories cleared (nodemailer 10, mongoose 8.24.5, morgan 1.12.1, express 4.22.3)
 - Compose: `TRUST_PROXY=true`, backend not published to host, healthchecks, `NODE_ENV=production`
 ### Fixed
+- Found by the browser run: sign-in/register had no visible `h1` on phones (form title promoted, hero text demoted); dark-mode contrast for `text-gray-500`, `dark:text-gray-500` and `text-red-500` text app-wide (95 class strings); `<main>` scroll region now keyboard-reachable with a visible focus ring
 - Money-movement rate limit is now per authenticated user (was effectively per IP); per-IP limiter kept as a coarse backstop
 - Malformed money amounts (`10.`, `.5`, `+5`, `007`) now return a clear **400** instead of a 500 across all modules
 - **Rate limiters no longer share one counter per IP** (first login after ~12 normal API calls returned 429); per-limiter buckets, expiry sweep, configurable limits
 - Frontend `npm ci` failure (Vite 8 peer conflict); ESLint scanning `dist/`; 9 lint errors; unused KYC loading state
 ### Added
 - Offline banner (`role=status`) and plain-language messages for timeouts and unreachable servers; app shell and mobile sidebar use `100dvh` with a `100vh` fallback
-- Playwright suite (`frontend/e2e/`, `npm run test:e2e`): the kit's 20 viewports x 6 public pages (no horizontal overflow, heading visible) + axe WCAG A/AA scans in light and dark; non-blocking `frontend-browser` CI job. **Never run**
+- Playwright suite (`frontend/e2e/`, `npm run test:e2e`): the kit's 20 viewports x 6 public pages (no horizontal overflow, exactly one visible `h1`), axe WCAG A/AA scans (public pages + 3 role dashboards against a mocked API, phone/desktop, light/dark), keyboard and title checks. **182 checks pass locally in Chromium 153**; `PW_CHROMIUM_PATH` lets it use a custom browser; non-blocking `frontend-browser` CI job until first green CI run
 - Encrypted backup/restore tooling (`npm run backup` / `npm run restore`): AES-256-GCM, verify-then-apply, refuses non-empty targets and requires `--confirm=<db>`; 12 tests; `BACKUP_RUNBOOK.md` with restore rehearsal and monitoring checklist
 - `docs/upgrade/openapi.json`: OpenAPI 3.0.3 generated from the live router + validators (`npm run docs:openapi`), validated and drift-tested in `npm test`; `@apidevtools/swagger-parser` added as a devDependency
 - Optional Redis-backed rate limiting (`REDIS_URL`): atomic shared counters across instances, named per-limiter keys, automatic in-memory fallback on Redis failure; `redis` service in Docker Compose and CI; 6 tests against a real Redis

@@ -10,7 +10,7 @@ import { CardSkeleton } from '../../components/skeletons/Skeletons';
 import toast from 'react-hot-toast';
 
 const statusIcon = { approved: CheckCircle, rejected: XCircle, pending: Clock };
-const statusColor = { approved: 'text-green-600', rejected: 'text-red-500', pending: 'text-yellow-500' };
+const statusColor = { approved: 'text-green-600', rejected: 'text-red-600 dark:text-red-400', pending: 'text-yellow-500' };
 
 const CustomerKyc = () => {
   const [requests, setRequests] = useState([]);

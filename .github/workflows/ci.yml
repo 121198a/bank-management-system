@@ -92,8 +92,9 @@ jobs:
         working-directory: frontend
 
   frontend-browser:
-    # 146 browser checks: the kit's 20 viewports x public pages (no horizontal overflow) and axe WCAG scans.
-    # NON-BLOCKING until it has run green once; then remove `continue-on-error` to make it a gate.
+    # 182 browser checks (20 viewports x public pages, axe scans, 3 mocked dashboards). They passed locally in
+    # Chromium 153; GitHub's runner uses its own browser build and fonts, so this stays NON-BLOCKING until it
+    # has run green there once. Then remove `continue-on-error` to make it a gate.
     runs-on: ubuntu-latest
     continue-on-error: true
     needs: frontend

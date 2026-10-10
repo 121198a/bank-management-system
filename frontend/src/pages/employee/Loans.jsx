@@ -106,17 +106,17 @@ const EmployeeLoans = () => {
 
       <Modal isOpen={!!selected} onClose={() => setSelected(null)} title={selected ? `Review ${selected.applicationId}` : 'Loan'} size="lg">
         {selected && <div className="space-y-5">
-          <div className="grid sm:grid-cols-3 gap-3"><div className="card p-3"><p className="text-xs text-gray-500">Customer</p><p className="font-semibold text-sm">{selected.customer?.fullName}</p></div><div className="card p-3"><p className="text-xs text-gray-500">Requested</p><p className="font-semibold">{formatCurrency(selected.requestedAmount)}</p></div><div className="card p-3"><p className="text-xs text-gray-500">Status</p><Badge value={selected.status} /></div></div>
+          <div className="grid sm:grid-cols-3 gap-3"><div className="card p-3"><p className="text-xs text-gray-500 dark:text-gray-400">Customer</p><p className="font-semibold text-sm">{selected.customer?.fullName}</p></div><div className="card p-3"><p className="text-xs text-gray-500 dark:text-gray-400">Requested</p><p className="font-semibold">{formatCurrency(selected.requestedAmount)}</p></div><div className="card p-3"><p className="text-xs text-gray-500 dark:text-gray-400">Status</p><Badge value={selected.status} /></div></div>
 
           <div className="grid sm:grid-cols-2 gap-3 text-sm">
-            <p><span className="text-gray-500">Employment:</span> {selected.employmentType}</p><p><span className="text-gray-500">Income:</span> {formatCurrency(selected.monthlyIncome)}</p>
-            <p><span className="text-gray-500">Tenure:</span> {selected.tenureMonths} months</p><p><span className="text-gray-500">Account:</span> {selected.account?.accountNumber}</p>
-            <p className="sm:col-span-2"><span className="text-gray-500">Purpose:</span> {selected.purpose}</p>
-            {selected.employeeRecommendedAmount && <p><span className="text-gray-500">Employee recommended:</span> {formatCurrency(selected.employeeRecommendedAmount)}</p>}
-            {selected.managerRecommendedAmount && <p><span className="text-gray-500">Manager recommended:</span> {formatCurrency(selected.managerRecommendedAmount)}</p>}
+            <p><span className="text-gray-500 dark:text-gray-400">Employment:</span> {selected.employmentType}</p><p><span className="text-gray-500 dark:text-gray-400">Income:</span> {formatCurrency(selected.monthlyIncome)}</p>
+            <p><span className="text-gray-500 dark:text-gray-400">Tenure:</span> {selected.tenureMonths} months</p><p><span className="text-gray-500 dark:text-gray-400">Account:</span> {selected.account?.accountNumber}</p>
+            <p className="sm:col-span-2"><span className="text-gray-500 dark:text-gray-400">Purpose:</span> {selected.purpose}</p>
+            {selected.employeeRecommendedAmount && <p><span className="text-gray-500 dark:text-gray-400">Employee recommended:</span> {formatCurrency(selected.employeeRecommendedAmount)}</p>}
+            {selected.managerRecommendedAmount && <p><span className="text-gray-500 dark:text-gray-400">Manager recommended:</span> {formatCurrency(selected.managerRecommendedAmount)}</p>}
           </div>
 
-          <div><h4 className="font-semibold text-sm mb-2">Documents</h4><div className="space-y-2">{(selected.documents || []).map(doc => <div key={doc._id} className="flex items-center justify-between gap-3 p-3 rounded-xl bg-gray-50 dark:bg-banking-darker"><div><p className="text-sm">{doc.fileName}</p><p className="text-xs text-gray-500 capitalize">{doc.type.replaceAll('_',' ')} · {doc.status}</p></div><div className="flex items-center gap-2">{doc.status === 'uploaded' && ['under_review','documents_required'].includes(selected.status) && <Button size="sm" icon={BadgeCheck} loading={actionLoading} onClick={() => verify(doc)}>Verify</Button>}<Badge value={doc.status} /></div></div>)}{selected.documents?.length === 0 && <p className="text-xs text-gray-500 dark:text-gray-400">No documents submitted.</p>}</div></div>
+          <div><h4 className="font-semibold text-sm mb-2">Documents</h4><div className="space-y-2">{(selected.documents || []).map(doc => <div key={doc._id} className="flex items-center justify-between gap-3 p-3 rounded-xl bg-gray-50 dark:bg-banking-darker"><div><p className="text-sm">{doc.fileName}</p><p className="text-xs text-gray-500 dark:text-gray-400 capitalize">{doc.type.replaceAll('_',' ')} · {doc.status}</p></div><div className="flex items-center gap-2">{doc.status === 'uploaded' && ['under_review','documents_required'].includes(selected.status) && <Button size="sm" icon={BadgeCheck} loading={actionLoading} onClick={() => verify(doc)}>Verify</Button>}<Badge value={doc.status} /></div></div>)}{selected.documents?.length === 0 && <p className="text-xs text-gray-500 dark:text-gray-400">No documents submitted.</p>}</div></div>
 
           {selected.status === 'submitted' && <Button icon={PlayCircle} loading={actionLoading} onClick={start}>Start Review</Button>}
 

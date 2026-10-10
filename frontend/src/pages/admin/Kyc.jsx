@@ -105,7 +105,7 @@ const AdminKyc = () => {
                               <CheckCircle className="w-4 h-4" />
                             </button>
                             <button onClick={() => openReview(kyc, 'rejected')}
-                              className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-red-500 transition-colors" title="Reject">
+                              className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400 transition-colors" title="Reject">
                               <XCircle className="w-4 h-4" />
                             </button>
                           </div>
@@ -131,9 +131,9 @@ const AdminKyc = () => {
         {selectedKyc && (
           <div className="space-y-4">
             <div className="p-3 rounded-xl bg-gray-50 dark:bg-banking-darker text-sm space-y-1">
-              <p><span className="text-gray-500">Customer:</span> <strong className="text-gray-800 dark:text-gray-200">{selectedKyc.user?.fullName}</strong></p>
-              <p><span className="text-gray-500">Document:</span> <span className="text-gray-700 dark:text-gray-300">{docTypeLabel[selectedKyc.documentType]}</span></p>
-              <p><span className="text-gray-500">Number:</span> <span className="font-mono text-gray-700 dark:text-gray-300">{selectedKyc.documentNumber}</span></p>
+              <p><span className="text-gray-500 dark:text-gray-400">Customer:</span> <strong className="text-gray-800 dark:text-gray-200">{selectedKyc.user?.fullName}</strong></p>
+              <p><span className="text-gray-500 dark:text-gray-400">Document:</span> <span className="text-gray-700 dark:text-gray-300">{docTypeLabel[selectedKyc.documentType]}</span></p>
+              <p><span className="text-gray-500 dark:text-gray-400">Number:</span> <span className="font-mono text-gray-700 dark:text-gray-300">{selectedKyc.documentNumber}</span></p>
             </div>
             <Select label="Decision" value={reviewForm.status}
               onChange={(e) => setReviewForm(f => ({ ...f, status: e.target.value }))}

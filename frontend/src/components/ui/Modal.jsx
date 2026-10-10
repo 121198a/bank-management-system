@@ -45,7 +45,7 @@ const Modal = ({ isOpen, onClose, title, children, size = 'md' }) => {
             aria-label="Close dialog"
             className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-banking-border transition-colors"
           >
-            <X className="w-5 h-5 text-gray-500" />
+            <X className="w-5 h-5 text-gray-500 dark:text-gray-400" />
           </button>
         </div>
         {children}

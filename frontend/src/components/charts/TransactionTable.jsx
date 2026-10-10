@@ -5,7 +5,7 @@ import { formatCurrency, formatDate } from '../../utils/formatters';
 
 const typeConfig = {
   deposit: { label: 'Deposit', icon: ArrowDownToLine, color: 'text-green-500' },
-  withdraw: { label: 'Withdrawal', icon: ArrowUpFromLine, color: 'text-red-500' },
+  withdraw: { label: 'Withdrawal', icon: ArrowUpFromLine, color: 'text-red-600 dark:text-red-400' },
   transfer_in: { label: 'Transfer In', icon: ArrowLeftRight, color: 'text-blue-500' },
   transfer_out: { label: 'Transfer Out', icon: ArrowLeftRight, color: 'text-orange-500' }
 };
@@ -22,7 +22,7 @@ const amountSign = { deposit: '+', transfer_in: '+', withdraw: '-', transfer_out
 const TransactionTable = ({ transactions = [], showAccount = false }) => {
   if (transactions.length === 0) {
     return (
-      <div className="text-center py-12 text-gray-500 dark:text-gray-500">
+      <div className="text-center py-12 text-gray-500 dark:text-gray-400">
         <ArrowLeftRight className="w-10 h-10 mx-auto mb-3 opacity-30" />
         <p className="font-medium">No transactions found</p>
       </div>

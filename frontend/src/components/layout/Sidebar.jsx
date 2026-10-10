@@ -131,7 +131,7 @@ const Sidebar = ({ role, mobileOpen = false, onMobileClose = () => {} }) => {
       </div>
 
       {/* Navigation */}
-      <div className="px-3 pt-4 pb-2">{!collapsed && <p className="text-[10px] uppercase tracking-[0.16em] font-bold text-gray-500 dark:text-gray-500 px-2">Workspace</p>}</div>
+      <div className="px-3 pt-4 pb-2">{!collapsed && <p className="text-[10px] uppercase tracking-[0.16em] font-bold text-gray-500 dark:text-gray-400 px-2">Workspace</p>}</div>
       <nav className="flex-1 overflow-y-auto px-2 pb-4 space-y-1">
         {links.map(({ to, icon: Icon, label }) => (
           <NavLink
@@ -171,8 +171,8 @@ const Sidebar = ({ role, mobileOpen = false, onMobileClose = () => {} }) => {
           className="sidebar-link-inactive w-full"
           title={collapsed ? 'Logout' : undefined}
         >
-          <LogOut className="w-5 h-5 flex-shrink-0 text-red-500" />
-          {!collapsed && <span className="text-red-500">Logout</span>}
+          <LogOut className="w-5 h-5 flex-shrink-0 text-red-600 dark:text-red-400" />
+          {!collapsed && <span className="text-red-600 dark:text-red-400">Logout</span>}
         </button>
       </div>
 
@@ -185,9 +185,9 @@ const Sidebar = ({ role, mobileOpen = false, onMobileClose = () => {} }) => {
         style={{ position: 'fixed', left: collapsed ? '52px' : '228px', top: '80px', zIndex: 50 }}
       >
         {collapsed ? (
-          <ChevronRight className="w-3.5 h-3.5 text-gray-500" />
+          <ChevronRight className="w-3.5 h-3.5 text-gray-500 dark:text-gray-400" />
         ) : (
-          <ChevronLeft className="w-3.5 h-3.5 text-gray-500" />
+          <ChevronLeft className="w-3.5 h-3.5 text-gray-500 dark:text-gray-400" />
         )}
       </button>
       </aside>

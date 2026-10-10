@@ -17,7 +17,7 @@ for (const size of SIZES) {
       for (const pg of PUBLIC_PAGES) {
         test(`${pg.name} has no WCAG 2.x A/AA violations`, async ({ page }) => {
           await page.goto(pg.path);
-          await expect(page.locator('h1').first()).toBeVisible();
+          await expect(page.locator('h1:visible')).toHaveCount(1);
           const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze();
           const summary = results.violations.map((v) => `${v.id} (${v.impact}): ${v.nodes.length} node(s) — ${v.help}`);
           expect(summary, summary.join('\n')).toEqual([]);
@@ -29,9 +29,11 @@ for (const size of SIZES) {
 
 test('keyboard: first Tab on the sign-in page lands on a visible, focusable control', async ({ page }) => {
   await page.goto('/login');
+  await expect(page.locator('h1:visible')).toHaveCount(1); // wait for the form, not just the shell
   await page.keyboard.press('Tab');
   const focused = page.locator(':focus');
   await expect(focused).toBeVisible();
+  await expect(focused).toHaveAttribute('type', 'email'); // first stop is the first form field
 });
 
 test('document title is set on public pages', async ({ page }) => {

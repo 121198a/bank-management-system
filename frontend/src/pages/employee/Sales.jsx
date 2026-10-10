@@ -112,9 +112,9 @@ const EmployeeSales = () => {
       <Modal isOpen={!!selected} onClose={() => setSelected(null)} title={selected ? selected.leadId : ''} size="lg">
         {selected && <div className="space-y-5">
           <div className="grid sm:grid-cols-3 gap-3">
-            <div className="card p-3"><p className="text-xs text-gray-500">Name</p><p className="font-semibold text-sm">{selected.fullName}</p></div>
-            <div className="card p-3"><p className="text-xs text-gray-500">Phone</p><p className="font-semibold text-sm">{selected.phone}</p></div>
-            <div className="card p-3"><p className="text-xs text-gray-500">Status</p><Badge value={selected.status} /></div>
+            <div className="card p-3"><p className="text-xs text-gray-500 dark:text-gray-400">Name</p><p className="font-semibold text-sm">{selected.fullName}</p></div>
+            <div className="card p-3"><p className="text-xs text-gray-500 dark:text-gray-400">Phone</p><p className="font-semibold text-sm">{selected.phone}</p></div>
+            <div className="card p-3"><p className="text-xs text-gray-500 dark:text-gray-400">Status</p><Badge value={selected.status} /></div>
           </div>
 
           <div><h4 className="font-semibold text-sm mb-2">Remarks</h4><div className="space-y-2">{(selected.remarks || []).map((r, i) => <div key={i} className="p-3 rounded-xl bg-gray-50 dark:bg-banking-darker text-sm">{r.text}<span className="text-xs text-gray-500 dark:text-gray-400 block">{formatDate(r.at)}</span></div>)}{!selected.remarks?.length && <p className="text-xs text-gray-500 dark:text-gray-400">No remarks yet.</p>}</div></div>

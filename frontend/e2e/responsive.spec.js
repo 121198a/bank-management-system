@@ -10,8 +10,10 @@ for (const vp of VIEWPORTS) {
     for (const pg of PUBLIC_PAGES) {
       test(`${pg.name}: no horizontal overflow, heading visible`, async ({ page }) => {
         await page.goto(pg.path);
-        const h1 = page.locator('h1').first();
-        await expect(h1).toBeVisible();
+        // Exactly one *visible* top-level heading (WCAG 1.3.1 / 2.4.6): hidden desktop-only
+        // headings do not count, so a page cannot pass here while having no h1 on phones.
+        const h1 = page.locator('h1:visible');
+        await expect(h1).toHaveCount(1);
 
         const { scrollWidth, innerWidth } = await page.evaluate(() => ({
           scrollWidth: document.documentElement.scrollWidth,
@@ -19,7 +21,7 @@ for (const vp of VIEWPORTS) {
         }));
         expect(scrollWidth, `page scrolls horizontally (${scrollWidth}px > ${innerWidth}px)`).toBeLessThanOrEqual(innerWidth + 1);
 
-        const box = await h1.boundingBox();
+        const box = await h1.first().boundingBox();
         expect(box.x, 'heading starts off-screen').toBeGreaterThanOrEqual(-1);
         expect(box.x + box.width, 'heading is clipped on the right').toBeLessThanOrEqual(vp.width + 1);
       });
