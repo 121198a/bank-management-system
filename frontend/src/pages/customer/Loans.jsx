@@ -150,7 +150,7 @@ const CustomerLoans = () => {
       </div>
 
       <div className="card p-5">
-        <h3 className="font-semibold text-gray-900 dark:text-white mb-4">My Applications</h3>
+        <h2 className="font-semibold text-gray-900 dark:text-white mb-4">My Applications</h2>
         {loading ? <p className="text-sm text-gray-500 dark:text-gray-400 py-8 text-center">Loading loans…</p> : loans.length === 0 ? (
           <div className="py-12 text-center text-gray-500 dark:text-gray-400">No loan applications yet.</div>
         ) : (
@@ -166,7 +166,7 @@ const CustomerLoans = () => {
                     <td className="table-td text-sm">{loan.tenureMonths} mo.</td>
                     <td className="table-td"><Badge value={statusTone(loan.status)} /></td>
                     <td className="table-td text-xs text-gray-500 dark:text-gray-400">{formatDate(loan.createdAt, { year: 'numeric', month: 'short', day: '2-digit' })}</td>
-                    <td className="table-td"><button onClick={() => openLoan(loan)} className="p-2 rounded-lg hover:bg-primary-50 dark:hover:bg-primary-900/20 text-primary-700 dark:text-primary-400" title="View"><Eye className="w-4 h-4" /></button></td>
+                    <td className="table-td"><button onClick={() => openLoan(loan)} aria-label="View loan" className="p-2 rounded-lg hover:bg-primary-50 dark:hover:bg-primary-900/20 text-primary-700 dark:text-primary-400" title="View"><Eye className="w-4 h-4" /></button></td>
                   </tr>
                 ))}
               </tbody>
@@ -216,7 +216,7 @@ const CustomerLoans = () => {
             )}
 
             <div>
-              <h4 className="font-semibold text-sm mb-2">Documents</h4>
+              <h3 className="font-semibold text-sm mb-2">Documents</h3>
               <div className="space-y-2">
                 {(selected.documents || []).map((doc) => <div key={doc._id} className="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-banking-darker"><div><p className="text-sm">{doc.fileName}</p><p className="text-xs text-gray-500 dark:text-gray-400 capitalize">{doc.type.replaceAll('_', ' ')} · {doc.status}</p></div><Badge value={doc.status} /></div>)}
                 {selected.documents?.length === 0 && <p className="text-xs text-gray-500 dark:text-gray-400">No documents submitted yet.</p>}
@@ -225,7 +225,7 @@ const CustomerLoans = () => {
 
             {selected.status === 'documents_required' && (
               <div className="border-t border-gray-100 dark:border-banking-border pt-4 space-y-3">
-                <h4 className="font-semibold text-sm">Upload requested document</h4>
+                <h3 className="font-semibold text-sm">Upload requested document</h3>
                 <div className="grid sm:grid-cols-2 gap-3">
                   <Select value={uploadType} onChange={(e) => setUploadType(e.target.value)} options={documentTypes} />
                   <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" onChange={(e) => setFile(e.target.files?.[0] || null)} className="input-field pt-2" />
@@ -234,7 +234,7 @@ const CustomerLoans = () => {
               </div>
             )}
 
-            {(selected.remarks || []).length > 0 && <div><h4 className="font-semibold text-sm mb-2">Remarks</h4><div className="space-y-2">{selected.remarks.map((r, i) => <div key={i} className="p-3 rounded-xl bg-gray-50 dark:bg-banking-darker text-sm"><p>{r.text}</p><p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{r.by?.fullName || 'Bank'} · {formatDate(r.at)}</p></div>)}</div></div>}
+            {(selected.remarks || []).length > 0 && <div><h3 className="font-semibold text-sm mb-2">Remarks</h3><div className="space-y-2">{selected.remarks.map((r, i) => <div key={i} className="p-3 rounded-xl bg-gray-50 dark:bg-banking-darker text-sm"><p>{r.text}</p><p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{r.by?.fullName || 'Bank'} · {formatDate(r.at)}</p></div>)}</div></div>}
           </div>
         )}
       </Modal>

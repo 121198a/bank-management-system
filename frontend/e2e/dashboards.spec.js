@@ -64,7 +64,7 @@ for (const [role, who] of Object.entries(USERS)) {
 
         test('has no WCAG 2.x A/AA violations', async ({ page }) => {
           await page.waitForLoadState('networkidle');
-          const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze();
+          const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'best-practice']).analyze();
           const describe = (n) => {
             const d = n.any[0] && n.any[0].data ? n.any[0].data : {};
             const colors = d.fgColor ? ` [fg ${d.fgColor} on bg ${d.bgColor} = ${d.contrastRatio}:1, needs ${d.expectedContrastRatio}]` : '';

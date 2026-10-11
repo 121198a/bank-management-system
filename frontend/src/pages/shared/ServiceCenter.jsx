@@ -41,7 +41,7 @@ const ServiceCard = ({ service, base }) => {
       </div>
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h3 className="font-bold text-gray-900 dark:text-white">{service.title}</h3>
+          <h2 className="font-bold text-gray-900 dark:text-white">{service.title}</h2>
           <p className="text-xs leading-5 text-gray-500 dark:text-gray-400 mt-1.5">{service.description}</p>
         </div>
         <span className="text-primary-700 dark:text-primary-400 opacity-0 group-hover:opacity-100 transition-opacity">→</span>
@@ -59,19 +59,19 @@ const ServiceCenter = () => {
 
   return (
     <div className="space-y-6">
-      <section className="premium-card surface-glow p-6 sm:p-8 bg-slate-900 text-white border-0 shadow-xl shadow-slate-300/30 dark:shadow-black/30">
+      <section className="premium-card surface-glow p-6 sm:p-8 bg-white dark:bg-slate-900 text-gray-900 dark:text-white border border-gray-200 dark:border-slate-800 shadow-sm dark:shadow-black/30">
         <div className="relative flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/10 px-3 py-1.5 text-xs text-slate-300">
-              <LifeBuoy className="w-3.5 h-3.5 text-primary-300" /> Help and services
+            <div className="inline-flex items-center gap-2 rounded-full bg-gray-100 dark:bg-white/10 border border-gray-200 dark:border-white/10 px-3 py-1.5 text-xs text-gray-600 dark:text-slate-300">
+              <LifeBuoy className="w-3.5 h-3.5 text-primary-700 dark:text-primary-300" /> Help and services
             </div>
             <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mt-4">Service Center</h1>
-            <p className="text-slate-300 mt-2 max-w-2xl">{isCustomer ? 'Apply for loans and insurance, complete identity verification and manage your account security.' : 'Review the applications, collections, verification requests and security events you are authorised to handle.'}</p>
+            <p className="text-gray-600 dark:text-slate-300 mt-2 max-w-2xl">{isCustomer ? 'Apply for loans and insurance, complete identity verification and manage your account security.' : 'Review the applications, collections, verification requests and security events you are authorised to handle.'}</p>
           </div>
-          <div className="rounded-2xl bg-white/10 border border-white/10 backdrop-blur px-5 py-4 min-w-[190px]">
-            <p className="text-xs text-slate-400">Workspace</p>
+          <div className="rounded-2xl bg-gray-100 dark:bg-white/10 border border-gray-200 dark:border-white/10 px-5 py-4 min-w-[190px]">
+            <p className="text-xs text-gray-600 dark:text-slate-400">Workspace</p>
             <p className="text-lg font-bold mt-1 capitalize">{role}</p>
-            <p className="text-xs text-primary-300 mt-1 flex items-center gap-1"><Building2 className="w-3.5 h-3.5" /> Signed in</p>
+            <p className="text-xs text-primary-700 dark:text-primary-300 mt-1 flex items-center gap-1"><Building2 className="w-3.5 h-3.5" /> Signed in</p>
           </div>
         </div>
       </section>

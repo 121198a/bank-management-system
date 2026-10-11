@@ -67,7 +67,7 @@ const Profile = () => {
           {user?.fullName?.charAt(0).toUpperCase()}
         </div>
         <div>
-          <h3 className="text-lg font-bold text-gray-900 dark:text-white">{user?.fullName}</h3>
+          <h2 className="text-lg font-bold text-gray-900 dark:text-white">{user?.fullName}</h2>
           <p className="text-sm text-gray-500 dark:text-gray-400">{user?.email}</p>
           <div className="flex gap-2 mt-2">
             <Badge value={user?.role} />
@@ -82,7 +82,7 @@ const Profile = () => {
 
       {/* Profile form */}
       <div className="card p-6">
-        <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-5">Personal Information</h3>
+        <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-5">Personal Information</h2>
         <form onSubmit={handleProfileSave} className="space-y-4">
           <Input label="Full Name" icon={User} value={profile.fullName}
             onChange={(e) => setProfile(p => ({ ...p, fullName: e.target.value }))} />
@@ -98,7 +98,7 @@ const Profile = () => {
 
       {/* Password form */}
       <div className="card p-6">
-        <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-5">Change Password</h3>
+        <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-5">Change Password</h2>
         <form onSubmit={handlePasswordSave} className="space-y-4">
           <Input label="Current Password" type="password" icon={Lock}
             value={password.currentPassword}

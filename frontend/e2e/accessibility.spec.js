@@ -18,7 +18,8 @@ for (const size of SIZES) {
         test(`${pg.name} has no WCAG 2.x A/AA violations`, async ({ page }) => {
           await page.goto(pg.path);
           await expect(page.locator('h1:visible')).toHaveCount(1);
-          const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze();
+          await expect(page.locator('main')).toHaveCount(1); // one main landmark per page
+          const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'best-practice']).analyze();
           const summary = results.violations.map((v) => `${v.id} (${v.impact}): ${v.nodes.length} node(s) — ${v.help}`);
           expect(summary, summary.join('\n')).toEqual([]);
         });

@@ -1,6 +1,6 @@
 # Phase 2 — Product identity audit and migration plan
 
-Status: **audit complete; no renaming performed** (the kit requires approval first, and it forbids inventing brand claims).
+Status: **audit complete; names unified on a provisional basis.** The kit asks for approval before renaming. The owner then instructed that the remaining phases be completed without answering D1–D6, so I did *not* invent a brand: I kept the lockup the app already shows on its sign-in screen (name **NexaBank**, descriptor **Bank Management System**) and applied it everywhere, centralised so any later decision is a one-line edit. D1–D4 below are therefore still open questions, not settled ones.
 
 ## 1. Current identity (as found)
 | Item | Finding |
@@ -28,11 +28,11 @@ Status: **audit complete; no renaming performed** (the kit requires approval fir
 | D5 | Copyright holder for a `LICENSE` file (or remove `license: MIT`) | A declared license with no file is ambiguous |
 | D6 | Whether to commission a real logo | The current glyph is generic; I will not invent a brand mark |
 
-## 4. Migration plan (execute only after D1–D6)
-Files that carry the name, so the change is mechanical and reviewable:
-- Frontend: `index.html` (title, description, og:title), `Sidebar.jsx`, `LoginPage.jsx`, `RegisterPage.jsx`, `ForgotPasswordPage.jsx`, `ResetPasswordPage.jsx`, `LegalPage.jsx`, `NotFound.jsx`, `LoadingScreen.jsx`
-- Backend: `emailService.js` (subjects and headings), `pdfService.js`, `authController.js` and `userController.js` (welcome notifications), `config/env.js` (sender), `scripts/lib/openapi.js` (API title), `package.json` description
-- Docs/ops: `README.md`, `.env.example`, `docs/upgrade/*`
-Order of work: (1) centralise the name in one constants file per side (`frontend/src/config/brand.js`, `backend/src/config/brand.js`) with the current visible text preserved, so a rename becomes a one-line edit; (2) apply D1–D4; (3) update tests that assert titles; (4) regenerate `openapi.json`; (5) rebuild and re-run all suites.
-
-**Deliberately not renamed even after approval unless required:** the git repository, npm package names, Docker service names and the MongoDB database name. Renaming the database would orphan existing data; if wanted it needs a migration plan of its own. No route paths contain the brand, so no redirects are needed.
+## 4. What was executed, and how to change it later
+- **One source of truth per side:** `frontend/src/config/brand.js` and `backend/src/config/brand.js` (`name`, `descriptor`; the frontend also builds document titles).
+- Replaced 34 hard-coded occurrences: sign-in, register, forgot/reset password, sidebar, loading screen, 404, legal pages, tab titles, welcome notifications, email subjects and headings, PDF header, default email sender, OpenAPI title, `index.html` title/description/Open Graph.
+- Conventions now consistent: product name = **NexaBank**; tab title = `<page heading> — NexaBank`; default title = `NexaBank — Bank Management System`; sender = `NexaBank <no-reply@example.com>`.
+- **Guard tests** fail if a literal name appears in source outside the brand files (frontend and backend) or if the static `index.html` drifts from the config.
+- **To rename:** edit the two `brand.js` files, then the static values in `frontend/index.html` (a test tells you if you miss one), `backend/.env.example` (`SMTP_FROM`) and `README.md`; run both test suites and `npm run docs:openapi`.
+- **Deliberately not renamed:** git repository, npm package names, Docker service names, the MongoDB database name (renaming it would orphan data and needs its own migration). No route contains the brand, so no redirects are needed.
+- **Still open (owner):** D1 final name, D2 trademark/domain check (I cannot do this), D3 legal entity for the footer and legal pages, D4 sender domain and contact addresses, D5 license holder, D6 logo (the current glyph is generic; I did not invent a brand mark).

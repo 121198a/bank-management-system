@@ -44,7 +44,7 @@ const ResetPasswordPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-gray-50 dark:bg-banking-dark">
+    <main className="min-h-screen flex items-center justify-center p-6 bg-gray-50 dark:bg-banking-dark">
       <div className="w-full max-w-md">
         <div className="flex items-center gap-2 mb-10">
           <div className="w-9 h-9 rounded-xl bg-primary-600 flex items-center justify-center">
@@ -86,7 +86,8 @@ const ResetPasswordPage = () => {
                         onChange={(e) => setForm(f => ({ ...f, [key]: e.target.value }))}
                       />
                       <button type="button" onClick={() => setShow(s => ({ ...s, [showKey]: !s[showKey] }))}
-                        className="absolute inset-y-0 right-0 pr-3.5 flex items-center">
+                        aria-label={show[showKey] ? 'Hide password' : 'Show password'}
+                        className="absolute inset-y-0 right-0 px-3.5 flex items-center">
                         {show[showKey] ? <EyeOff className="w-4 h-4 text-gray-500 dark:text-gray-400" /> : <Eye className="w-4 h-4 text-gray-500 dark:text-gray-400" />}
                       </button>
                     </div>
@@ -99,7 +100,7 @@ const ResetPasswordPage = () => {
           )}
         </div>
       </div>
-    </div>
+    </main>
   );
 };
 

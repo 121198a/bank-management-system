@@ -72,7 +72,7 @@ const EmployeeSales = () => {
       </div>
 
       {performance.length > 0 && <div className="card p-5">
-        <h3 className="font-bold text-sm mb-3 flex items-center gap-2"><TrendingUp className="w-4 h-4" /> Team Performance</h3>
+        <h2 className="font-bold text-sm mb-3 flex items-center gap-2"><TrendingUp className="w-4 h-4" /> Team Performance</h2>
         <div className="table-container"><table className="table"><thead><tr>{['Employee','Total Leads','Converted','Lost','Conversion Rate'].map(h => <th key={h} className="table-th">{h}</th>)}</tr></thead>
           <tbody className="divide-y divide-gray-100 dark:divide-banking-border">{performance.map((p) => <tr key={p.employeeId || 'unassigned'} className="table-row"><td className="table-td text-sm">{p.employeeName || 'Unassigned'}</td><td className="table-td">{p.totalLeads}</td><td className="table-td">{p.converted}</td><td className="table-td">{p.lost}</td><td className="table-td font-semibold">{p.conversionRate}%</td></tr>)}</tbody></table></div>
       </div>}
@@ -117,10 +117,10 @@ const EmployeeSales = () => {
             <div className="card p-3"><p className="text-xs text-gray-500 dark:text-gray-400">Status</p><Badge value={selected.status} /></div>
           </div>
 
-          <div><h4 className="font-semibold text-sm mb-2">Remarks</h4><div className="space-y-2">{(selected.remarks || []).map((r, i) => <div key={i} className="p-3 rounded-xl bg-gray-50 dark:bg-banking-darker text-sm">{r.text}<span className="text-xs text-gray-500 dark:text-gray-400 block">{formatDate(r.at)}</span></div>)}{!selected.remarks?.length && <p className="text-xs text-gray-500 dark:text-gray-400">No remarks yet.</p>}</div></div>
+          <div><h3 className="font-semibold text-sm mb-2">Remarks</h3><div className="space-y-2">{(selected.remarks || []).map((r, i) => <div key={i} className="p-3 rounded-xl bg-gray-50 dark:bg-banking-darker text-sm">{r.text}<span className="text-xs text-gray-500 dark:text-gray-400 block">{formatDate(r.at)}</span></div>)}{!selected.remarks?.length && <p className="text-xs text-gray-500 dark:text-gray-400">No remarks yet.</p>}</div></div>
 
           {NEXT_STATUSES[selected.status]?.length > 0 && <div className="border-t border-gray-100 dark:border-banking-border pt-4 space-y-3">
-            <h4 className="font-semibold text-sm">Update Status</h4>
+            <h3 className="font-semibold text-sm">Update Status</h3>
             <Select value={nextStatus} onChange={(e) => setNextStatus(e.target.value)} options={[{ value: '', label: 'Select next status' }, ...NEXT_STATUSES[selected.status].map(s => ({ value: s, label: s.replaceAll('_',' ') }))]} />
             {nextStatus === 'lost' && <Input value={lostReason} onChange={(e) => setLostReason(e.target.value)} placeholder="Reason lead was lost" />}
             <Button loading={actionLoading} onClick={updateStatus}>Update Status</Button>

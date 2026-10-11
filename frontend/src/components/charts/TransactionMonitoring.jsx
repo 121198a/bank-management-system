@@ -164,7 +164,7 @@ const TransactionMonitoring = ({ role = 'customer' }) => {
       <div className="card overflow-hidden">
         <div className="px-5 py-4 border-b border-gray-100 dark:border-banking-border flex items-center justify-between gap-3">
           <div>
-            <h3 className="font-bold text-gray-900 dark:text-white">Transaction filters</h3>
+            <h2 className="font-bold text-gray-900 dark:text-white">Transaction filters</h2>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
               Refine the transaction list using account, type, status or date.
             </p>
@@ -237,7 +237,7 @@ const TransactionMonitoring = ({ role = 'customer' }) => {
 
         <div className="px-5 py-4 flex items-center justify-between gap-3 border-b border-gray-100 dark:border-banking-border">
           <div>
-            <h3 className="font-bold text-gray-900 dark:text-white">Transactions</h3>
+            <h2 className="font-bold text-gray-900 dark:text-white">Transactions</h2>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
               {meta.total ?? 0} {meta.total === 1 ? 'transaction' : 'transactions'} found
             </p>

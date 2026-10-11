@@ -24,6 +24,10 @@
 - Draft `/privacy` and `/terms` pages (placeholders require legal review), linked from sign-in
 - 16 backend tests (error handler, rate limit, RBAC, HTTP integration); 404 page; error boundary; robots/OG/noindex meta; axios timeout; CI `npm audit` + least-privilege permissions
 ### Changed
+- **Phase 2:** product name unified on the existing NexaBank / Bank Management System lockup and centralised in `brand.js` config files (frontend + backend) with guard tests; provisional until owner decisions D1–D6
+- **Phase 5:** light, neutral direction — light sign-in/register panels and dashboard hero cards with plain copy, single accent colour, solid surfaces, emoji removed, self-hosted IBM Plex Sans (Google Fonts and its CSP hosts removed); stat-card icon clipping bug fixed
+- **Phase 8:** chunking fixed with Rolldown `advancedChunks` (charts no longer loaded outside dashboards), fonts preloaded (layout shift 0.181 → 0); Lighthouse mobile performance 84 → 92–94
+- Heading hierarchy re-levelled across pages; `<main>` on all auth pages; larger/labelled password toggles
 - UI de-vibe pass: removed 7 decorative blurred orbs and 10 gradients (hero banners, logo/avatar tiles, account card, active sidebar link) in favour of solid colours; replaced sparkle icons; replaced stock marketing copy with plain statements; Service Center heading is now "Service Center"
 - **Behaviour change when encryption is enabled:** admin/employee KYC search matches a document number by exact value only (partial-number search is impossible on encrypted data); name/email search is unchanged
 - Pages lazy-loaded (entry chunk 288 kB → 37 kB); nginx caches only hashed assets, revalidates the SPA shell

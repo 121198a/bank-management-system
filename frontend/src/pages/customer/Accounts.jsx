@@ -77,7 +77,7 @@ const CustomerAccounts = () => {
       {loading ? <TableSkeleton rows={4} cols={5} /> : accounts.length === 0 ? (
         <div className="card p-12 text-center">
           <CreditCard className="w-12 h-12 mx-auto mb-4 text-gray-300 dark:text-gray-600" />
-          <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-1">No accounts yet</h3>
+          <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-1">No accounts yet</h2>
           <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">Open your first bank account to get started</p>
           <Button icon={Plus} onClick={() => setShowCreate(true)}>Open Account</Button>
         </div>

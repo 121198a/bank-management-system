@@ -77,7 +77,7 @@ const CustomerKyc = () => {
               <Upload className="w-5 h-5 text-primary-700 dark:text-primary-400" />
             </div>
             <div>
-              <h3 className="font-semibold text-gray-900 dark:text-white">Submit KYC Documents</h3>
+              <h2 className="font-semibold text-gray-900 dark:text-white">Submit KYC Documents</h2>
               <p className="text-xs text-gray-500 dark:text-gray-400">Provide your identity document details below</p>
             </div>
           </div>
@@ -120,7 +120,7 @@ const CustomerKyc = () => {
 
       {!loading && requests.length > 0 && (
         <div className="card p-5">
-          <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-4">Submission History</h3>
+          <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-4">Submission History</h2>
           <div className="space-y-3">
             {requests.map((req) => {
               const Icon = statusIcon[req.status] || Clock;

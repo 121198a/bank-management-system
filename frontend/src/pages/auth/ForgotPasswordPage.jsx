@@ -28,7 +28,7 @@ const ForgotPasswordPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-gray-50 dark:bg-banking-dark">
+    <main className="min-h-screen flex items-center justify-center p-6 bg-gray-50 dark:bg-banking-dark">
       <div className="w-full max-w-md">
         <div className="flex items-center gap-2 mb-10">
           <div className="w-9 h-9 rounded-xl bg-primary-600 flex items-center justify-center">
@@ -73,7 +73,7 @@ const ForgotPasswordPage = () => {
           )}
         </div>
       </div>
-    </div>
+    </main>
   );
 };
 

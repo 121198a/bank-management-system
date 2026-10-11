@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Mail, Lock, Eye, EyeOff, Building2, ShieldCheck, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, Building2, ArrowRight } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import Input from '../../components/ui/Input';
 import Button from '../../components/ui/Button';
@@ -44,44 +44,32 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex items-stretch">
-      <section className="hidden lg:flex lg:w-[52%] relative overflow-hidden bg-slate-900 p-12 xl:p-16 flex-col justify-between text-white">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-stretch">
+      <aside aria-label="About this service" className="hidden lg:flex lg:w-[52%] relative overflow-hidden bg-white dark:bg-slate-900 border-r border-gray-200 dark:border-slate-800 p-12 xl:p-16 flex-col justify-between text-gray-900 dark:text-white">
         <div className="relative z-10 flex items-center gap-3">
-          <div className="w-11 h-11 rounded-2xl bg-primary-700 flex items-center justify-center shadow-lg shadow-primary-500/20">
+          <div className="w-11 h-11 rounded-2xl bg-primary-700 text-white flex items-center justify-center">
             <Building2 className="w-6 h-6" />
           </div>
           <div>
             <p className="font-bold text-lg leading-none">{BRAND.name}</p>
-            <p className="text-xs text-slate-400 mt-1">{BRAND.descriptor}</p>
+            <p className="text-xs text-gray-600 dark:text-slate-400 mt-1">{BRAND.descriptor}</p>
           </div>
         </div>
 
         <div className="relative z-10 max-w-xl">
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-slate-300 mb-6">
-            <ShieldCheck className="w-4 h-4 text-primary-400" /> Secure digital banking workspace
-          </div>
-          <p className="text-5xl xl:text-6xl font-bold leading-[1.05] tracking-tight">
-            Banking that feels <span className="text-primary-400">simple.</span>
+          <p className="text-4xl xl:text-5xl font-bold leading-[1.1] tracking-tight">Accounts, transfers, loans and insurance.</p>
+          <p className="mt-5 text-lg leading-8 text-gray-600 dark:text-slate-300 max-w-lg">
+            Customers manage their own accounts. Staff handle requests, KYC and security events according to their role.
           </p>
-          <p className="mt-6 text-lg leading-8 text-slate-300 max-w-lg">
-            Manage accounts, move money, review transactions and stay in control from one clean banking workspace.
-          </p>
-          <div className="mt-10 grid grid-cols-2 gap-3 max-w-md">
-            {['Secure authentication', 'Real-time account overview', 'Transaction history', 'Role-based access'].map((item) => (
-              <div key={item} className="flex items-center gap-2 text-sm text-slate-300">
-                <CheckCircle2 className="w-4 h-4 text-primary-400 flex-shrink-0" /> {item}
-              </div>
-            ))}
-          </div>
         </div>
 
-        <div className="relative z-10 flex items-end justify-between text-xs text-slate-400">
+        <div className="relative z-10 flex items-end justify-between text-xs text-gray-600 dark:text-slate-400">
           <span>© {new Date().getFullYear()} {BRAND.name}</span>
           {import.meta.env.DEV ? <span>Local development environment</span> : <span aria-hidden="true" />}
         </div>
-      </section>
+      </aside>
 
-      <section className="flex-1 flex items-center justify-center p-5 sm:p-8 bg-slate-50 dark:bg-banking-dark">
+      <main className="flex-1 flex items-center justify-center p-5 sm:p-8 bg-slate-50 dark:bg-banking-dark">
         <div className="w-full max-w-md">
           <div className="lg:hidden flex items-center gap-3 mb-8">
             <div className="w-10 h-10 rounded-xl bg-primary-600 flex items-center justify-center"><Building2 className="w-5 h-5 text-white" /></div>
@@ -103,7 +91,7 @@ const LoginPage = () => {
                 <div className="relative">
                   <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 dark:text-gray-400" />
                   <input type={showPassword ? 'text' : 'password'} className={`input-field pl-10 pr-11 ${errors.password ? 'border-red-400 focus:ring-red-400/20' : ''}`} placeholder="Enter your password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} autoComplete="current-password" />
-                  <button type="button" aria-label={showPassword ? 'Hide password' : 'Show password'} onClick={() => setShowPassword((s) => !s)} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400 hover:text-gray-600">{showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}</button>
+                  <button type="button" aria-label={showPassword ? 'Hide password' : 'Show password'} onClick={() => setShowPassword((s) => !s)} className="absolute right-1 top-1/2 -translate-y-1/2 p-3 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">{showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}</button>
                 </div>
                 {errors.password && <p className="mt-1.5 text-xs text-red-600 dark:text-red-400">{errors.password}</p>}
               </div>
@@ -115,7 +103,7 @@ const LoginPage = () => {
           </div>
           <p className="text-center text-xs text-gray-500 dark:text-gray-400 mt-5">Your session is protected by secure authentication controls. <Link to="/privacy" className="underline">Privacy</Link> · <Link to="/terms" className="underline">Terms</Link></p>
         </div>
-      </section>
+      </main>
     </div>
   );
 };

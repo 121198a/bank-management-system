@@ -102,7 +102,7 @@ const Sidebar = ({ role, mobileOpen = false, onMobileClose = () => {} }) => {
       {/* Mobile backdrop — only rendered/interactive below lg, closes on tap */}
       {mobileOpen && (
         <div
-          className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-40 lg:hidden animate-fade-in"
+          className="fixed inset-0 bg-slate-950 z-40 lg:hidden animate-fade-in"
           onClick={onMobileClose}
           aria-hidden="true"
         />
@@ -156,7 +156,7 @@ const Sidebar = ({ role, mobileOpen = false, onMobileClose = () => {} }) => {
           <div className="flex items-center gap-2.5 px-3 py-2 mb-1 rounded-xl">
             <div
               className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0"
-              style={{ backgroundColor: user.avatarColor }}
+              style={{ backgroundColor: user.avatarColor || '#15803d' }}
             >
               {user.fullName?.charAt(0).toUpperCase()}
             </div>

@@ -116,19 +116,19 @@ const EmployeeLoans = () => {
             {selected.managerRecommendedAmount && <p><span className="text-gray-500 dark:text-gray-400">Manager recommended:</span> {formatCurrency(selected.managerRecommendedAmount)}</p>}
           </div>
 
-          <div><h4 className="font-semibold text-sm mb-2">Documents</h4><div className="space-y-2">{(selected.documents || []).map(doc => <div key={doc._id} className="flex items-center justify-between gap-3 p-3 rounded-xl bg-gray-50 dark:bg-banking-darker"><div><p className="text-sm">{doc.fileName}</p><p className="text-xs text-gray-500 dark:text-gray-400 capitalize">{doc.type.replaceAll('_',' ')} · {doc.status}</p></div><div className="flex items-center gap-2">{doc.status === 'uploaded' && ['under_review','documents_required'].includes(selected.status) && <Button size="sm" icon={BadgeCheck} loading={actionLoading} onClick={() => verify(doc)}>Verify</Button>}<Badge value={doc.status} /></div></div>)}{selected.documents?.length === 0 && <p className="text-xs text-gray-500 dark:text-gray-400">No documents submitted.</p>}</div></div>
+          <div><h3 className="font-semibold text-sm mb-2">Documents</h3><div className="space-y-2">{(selected.documents || []).map(doc => <div key={doc._id} className="flex items-center justify-between gap-3 p-3 rounded-xl bg-gray-50 dark:bg-banking-darker"><div><p className="text-sm">{doc.fileName}</p><p className="text-xs text-gray-500 dark:text-gray-400 capitalize">{doc.type.replaceAll('_',' ')} · {doc.status}</p></div><div className="flex items-center gap-2">{doc.status === 'uploaded' && ['under_review','documents_required'].includes(selected.status) && <Button size="sm" icon={BadgeCheck} loading={actionLoading} onClick={() => verify(doc)}>Verify</Button>}<Badge value={doc.status} /></div></div>)}{selected.documents?.length === 0 && <p className="text-xs text-gray-500 dark:text-gray-400">No documents submitted.</p>}</div></div>
 
           {selected.status === 'submitted' && <Button icon={PlayCircle} loading={actionLoading} onClick={start}>Start Review</Button>}
 
           {selected.status === 'under_review' && <div className="grid md:grid-cols-2 gap-4 border-t border-gray-100 dark:border-banking-border pt-4">
-            <div className="space-y-3"><h4 className="font-semibold text-sm">Request Documents</h4>{docTypes.map(d => <label key={d.value} className="flex gap-2 text-sm"><input type="checkbox" checked={requestedDocs.includes(d.value)} onChange={(e) => setRequestedDocs(v => e.target.checked ? [...new Set([...v,d.value])] : v.filter(x => x !== d.value))} />{d.label}</label>)}<Button variant="secondary" icon={FileWarning} loading={actionLoading} onClick={request}>Request Selected</Button></div>
-            <div className="space-y-3"><h4 className="font-semibold text-sm">Employee Recommendation</h4><Input label="Recommended Amount (INR)" type="number" min="0.01" step="0.01" value={recommendation} onChange={(e) => setRecommendation(e.target.value)} /><Button icon={BadgeCheck} loading={actionLoading} onClick={recommend}>Save Recommendation</Button>{selected.employeeRecommendedAmount && <Button variant="secondary" icon={Send} loading={actionLoading} onClick={forwardToManager}>Forward to Manager</Button>}</div>
+            <div className="space-y-3"><h3 className="font-semibold text-sm">Request Documents</h3>{docTypes.map(d => <label key={d.value} className="flex gap-2 text-sm"><input type="checkbox" checked={requestedDocs.includes(d.value)} onChange={(e) => setRequestedDocs(v => e.target.checked ? [...new Set([...v,d.value])] : v.filter(x => x !== d.value))} />{d.label}</label>)}<Button variant="secondary" icon={FileWarning} loading={actionLoading} onClick={request}>Request Selected</Button></div>
+            <div className="space-y-3"><h3 className="font-semibold text-sm">Employee Recommendation</h3><Input label="Recommended Amount (INR)" type="number" min="0.01" step="0.01" value={recommendation} onChange={(e) => setRecommendation(e.target.value)} /><Button icon={BadgeCheck} loading={actionLoading} onClick={recommend}>Save Recommendation</Button>{selected.employeeRecommendedAmount && <Button variant="secondary" icon={Send} loading={actionLoading} onClick={forwardToManager}>Forward to Manager</Button>}</div>
           </div>}
 
-          {['under_review','documents_required'].includes(selected.status) && <div className="border-t border-gray-100 dark:border-banking-border pt-4 space-y-3"><h4 className="font-semibold text-sm">Review Remark</h4><Input value={remark} onChange={(e) => setRemark(e.target.value)} placeholder="Add a review note" /><Button variant="secondary" icon={MessageSquare} loading={actionLoading} onClick={addRemark}>Add Remark</Button></div>}
+          {['under_review','documents_required'].includes(selected.status) && <div className="border-t border-gray-100 dark:border-banking-border pt-4 space-y-3"><h3 className="font-semibold text-sm">Review Remark</h3><Input value={remark} onChange={(e) => setRemark(e.target.value)} placeholder="Add a review note" /><Button variant="secondary" icon={MessageSquare} loading={actionLoading} onClick={addRemark}>Add Remark</Button></div>}
 
           {selected.status === 'manager_review' && canManagerReview && <div className="border-t border-gray-100 dark:border-banking-border pt-4 space-y-3">
-            <h4 className="font-semibold text-sm flex items-center gap-2"><Users2 className="w-4 h-4" /> Manager Review</h4>
+            <h3 className="font-semibold text-sm flex items-center gap-2"><Users2 className="w-4 h-4" /> Manager Review</h3>
             <p className="text-xs text-gray-500 dark:text-gray-400">Employee recommended {formatCurrency(selected.employeeRecommendedAmount)}. Your recommendation cannot exceed this.</p>
             <Input label="Manager Recommended Amount (INR)" type="number" min="0.01" step="0.01" value={managerAmount} onChange={(e) => setManagerAmount(e.target.value)} />
             <div className="flex flex-wrap gap-3">
@@ -139,7 +139,7 @@ const EmployeeLoans = () => {
           </div>}
 
           {selected.status === 'manager_review' && canApprove && <div className="border-t border-gray-100 dark:border-banking-border pt-4 space-y-3">
-            <h4 className="font-semibold text-sm">Final Approval</h4>
+            <h3 className="font-semibold text-sm">Final Approval</h3>
             {selected.managerRecommendedAmount
               ? <div className="flex flex-wrap gap-3 items-center">
                   <Button icon={BadgeCheck} loading={actionLoading} onClick={finalApprove}>Approve {formatCurrency(selected.managerRecommendedAmount)}</Button>

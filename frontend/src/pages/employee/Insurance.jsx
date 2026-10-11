@@ -96,7 +96,7 @@ const EmployeeInsurance = () => {
           </div>}
 
           {selected.status === 'manager_review' && canManagerReview && <div className="border-t border-gray-100 dark:border-banking-border pt-4 space-y-3">
-            <h4 className="font-semibold text-sm flex items-center gap-2"><Users2 className="w-4 h-4" /> Manager Review</h4>
+            <h3 className="font-semibold text-sm flex items-center gap-2"><Users2 className="w-4 h-4" /> Manager Review</h3>
             <div className="flex flex-wrap gap-3">
               <Button icon={CheckCircle2} loading={actionLoading} onClick={() => act(() => (isPolicy ? insuranceAPI.managerReviewPolicy(selected._id, 'forward') : insuranceAPI.managerReviewClaim(selected._id, 'forward')), 'Recommended forward')}>Recommend Forward</Button>
               <Input value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Rejection reason" containerClass="flex-1 min-w-[180px]" />
@@ -105,7 +105,7 @@ const EmployeeInsurance = () => {
           </div>}
 
           {selected.status === 'manager_review' && canApprove && <div className="border-t border-gray-100 dark:border-banking-border pt-4 space-y-3">
-            <h4 className="font-semibold text-sm">Final Approval</h4>
+            <h3 className="font-semibold text-sm">Final Approval</h3>
             {!isPolicy && <Input label="Approved Amount (INR)" type="number" min="0.01" step="0.01" value={amount} onChange={(e) => setAmount(e.target.value)} />}
             <div className="flex flex-wrap gap-3">
               <Button icon={BadgeCheck} loading={actionLoading} onClick={() => act(() => (isPolicy ? insuranceAPI.approvePolicy(selected._id) : insuranceAPI.approveClaim(selected._id, amount)), isPolicy ? 'Policy issued' : 'Claim approved')}>{isPolicy ? 'Issue Policy' : 'Approve Claim'}</Button>

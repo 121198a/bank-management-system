@@ -148,7 +148,7 @@ const CustomerInsurance = () => {
             </div>}
             {selectedType === 'claim' && <p className="text-sm"><span className="text-gray-500 dark:text-gray-400">Description:</span> {selected.description}</p>}
             {selectedType === 'claim' && selected.approvedAmount && <p className="text-sm"><span className="text-gray-500 dark:text-gray-400">Approved amount:</span> {formatCurrency(selected.approvedAmount)}</p>}
-            {(selected.remarks || []).length > 0 && <div><h4 className="font-semibold text-sm mb-2">Remarks</h4><div className="space-y-2">{selected.remarks.map((r, i) => <div key={i} className="p-3 rounded-xl bg-gray-50 dark:bg-banking-darker text-sm"><p>{r.text}</p><p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{formatDate(r.at)}</p></div>)}</div></div>}
+            {(selected.remarks || []).length > 0 && <div><h3 className="font-semibold text-sm mb-2">Remarks</h3><div className="space-y-2">{selected.remarks.map((r, i) => <div key={i} className="p-3 rounded-xl bg-gray-50 dark:bg-banking-darker text-sm"><p>{r.text}</p><p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{formatDate(r.at)}</p></div>)}</div></div>}
           </div>
         )}
       </Modal>

@@ -47,7 +47,7 @@ const VolumeChart = ({ data = [], title = 'Transaction Volume' }) => {
 
   return (
     <div className="card p-5">
-      <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-4">{title}</h3>
+      <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-4">{title}</h2>
       <ResponsiveContainer width="100%" height={260}>
         <AreaChart data={chartData} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
           <defs>

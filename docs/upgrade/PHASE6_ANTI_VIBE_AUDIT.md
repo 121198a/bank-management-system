@@ -8,13 +8,13 @@
 | 1 | Harsh gradients | **Pass (fixed)** | Was 49 uses in 10 files. All hero banners, logo/avatar tiles, the account card, the active sidebar link and the primary button are now solid colours. One subtle `primary-50 → transparent` tint behind the sidebar header remains |
 | 2 | Default icon library | Minor | `lucide-react` in 40 files, 67 distinct icons. Normal for a back-office app; no custom iconography |
 | 3 | Pure-white canvas | Pass | App canvas is `slate-50` / dark navy; white is used for cards |
-| 4 | Rainbow colouring | Minor | Green 111, red 73, yellow/amber 71, blue 48, orange 21, purple/violet 21. Mostly semantic status colours; purple/violet appears in 4 files as decoration |
+| 4 | Rainbow colouring | **Pass (fixed)** | Stat cards and quick-action tiles used 5 different hues; now one accent (green) for all decorative tiles. Remaining colour is semantic only (status, warnings, errors) |
 | 5 | Shadows on everything | Pass | 40 uses in 14 of 63 files |
 | 6 | Identical 3-card rows | Minor | 10 uses; these are KPI stat grids, which suit dashboards |
-| 7 | Emojis as design assets | Pass | none |
-| 8 | Glassmorphism everywhere | **Recommend change** | `backdrop-blur` in 7 files plus a `.glass-panel` utility (navbar, hero chips). Limited, not everywhere |
+| 7 | Emojis as design assets | **Pass (corrected and fixed)** | **My first audit said "none" and was wrong** (the grep could not match emoji). A Unicode-aware scan found a waving-hand emoji in the customer and employee dashboard headings and a warning sign in employee accounts; all removed |
+| 8 | Glassmorphism everywhere | **Pass (fixed)** | Translucent/blurred surfaces (navbar, chips, sidebar) are now solid; the unused `.glass-panel` utility was deleted |
 | 9 | Formulaic AI-style copy | **Pass (fixed)** | Replaced "Everything banking, in one place.", "Everything important about your money, in one place." and "Built for secure banking operations" with plain statements; the Service Center `<h1>` is now "Service Center" (it also feeds the browser tab title). "Secure session" → "Signed in" |
-| 10 | Default trendy font | **Recommend change** | Inter via Google Fonts, no display face or art direction |
+| 10 | Default trendy font | **Pass (changed)** | Inter replaced with self-hosted IBM Plex Sans (a more distinctive, banking-appropriate face; not a bespoke brand typeface) |
 | 11 | Repeated coloured left stripes | Pass | 2 uses |
 | 12 | Fake testimonials | Pass | none |
 | 13 | Bento grids | Pass | none |
@@ -34,11 +34,11 @@
 | 27 | No privacy information | **Partial** | `/privacy` exists but is a **draft template** needing legal review |
 | 28 | Hover animation on everything | Minor | 16 lift/scale hovers, e.g. navbar icon actions |
 | 29 | Neon colours as identity | Pass | none |
-| 30 | Generic pastel blocks | **Recommend change** | 139 uses of `bg-*-50/100`: the heaviest pattern, mostly status badges and icon tiles |
+| 30 | Generic pastel blocks | **Minor** | Tinted icon tiles are now a single accent and status badges keep semantic tints; no pastel rainbow remains. Not removed because badges are functional |
 
-**Totals (after this round): 20 pass · 3 recommend change (8 glass surfaces, 10 default font, 30 pastel status/icon blocks) · 5 minor/justified · 2 partial (draft legal pages).**
+**Totals (after the Phase 5 pass): 23 pass · 5 minor/justified (2 icon library, 6 KPI grids, 25 arrows, 28 hover motion, 30 status badges) · 2 partial (26, 27: draft legal pages) · 0 recommend-change.**
 
-The three remaining items are design taste rather than defects: translucent navbar/chips (check 8), Inter as the only typeface (10), and pastel badge/icon tiles (30). They are left for the Phase 5 direction decision, since changing them alters the look of every screen.
+Everything the checklist flags objectively has now been addressed; what remains is functional (status badges, KPI grids) or waiting on legal review.
 
 ## Changed (Phase 6 pass, plus accessibility fixes found while doing it)
 - Removed the repeated dark "premium hero" decoration: 7 blurred orbs, 6 hero gradients (now solid `slate-900`), 4 logo/avatar/card gradients (now solid `primary-700`).
@@ -46,3 +46,11 @@ The three remaining items are design taste rather than defects: translucent navb
 - **Contrast defects found by this scan and fixed:** the active sidebar link (white on a green→emerald gradient, 3.3–3.8:1) is now solid `primary-700` (5.0:1); avatar initials and logo tiles that sat on `primary-500` (2.3:1) are now `primary-700`.
 - Earlier: primary button gradient → solid (3.3:1 → 5.0:1).
 - **Not changed:** glass/translucent surfaces, typeface, pastel status/icon blocks, layout, spacing. No browser was available, so none of this was looked at visually; the banners are simply plainer than before.
+
+## Phase 5 pass (visual direction), verified in a browser
+Direction taken: the kit's stated default — **light and neutral unless dark is genuinely required**. The app keeps its dark theme as a user choice; light is the default look.
+- Sign-in and register: the large dark hero panel became a light panel with plain, factual copy ("Accounts, transfers, loans and insurance."); the stock headline, "Secure digital banking workspace" chip and four-item checkmark grid were removed.
+- Dashboards and Service Center: dark navy banners became light cards in light mode (still dark in dark mode); wave emoji removed.
+- **Layout bug found by looking at the real screen:** on the customer dashboard the first stat card's icon was clipped at 1280 px because the text column had no `min-width: 0`, so a long balance pushed it out of the card. Stat cards now put the icon beside the title and give the value the full width; verified at 375 and 1280 px.
+- Removed a hover-rotate animation, the "Secure" label next to the page title, and an unsupported "at a glance" phrase.
+- Screens were reviewed as screenshots at 1280 px light, 1280 px dark and 375 px light (customer dashboard) and 1280 px light (sign-in). **Other pages were not visually reviewed.**

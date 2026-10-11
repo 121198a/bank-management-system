@@ -1,26 +1,26 @@
 # Final report — Bank Management System upgrade (master-kit Phases 0–13)
 
-Branch `upgrade/master-kit` · baseline tag `pre-upgrade-20261006` (= `origin/main` = `9240780`) · 16 commits · 131 files changed
+Branch `upgrade/master-kit` · baseline tag `pre-upgrade-20261006` (= `origin/main` = `9240780`) · 18 commits · 144 files changed
 
 ## Verdict
-**Not "production ready".** The kit allows that phrase only when the documented checks support it, and these do not yet: the database end-to-end suite has never run, the browser checks cover only public pages and three mocked dashboards in one browser, the backup/restore CLI has never touched a real database, the KYC encryption migration has not been run, secrets from the uploaded ZIP have not been rotated, and the legal pages are unreviewed drafts. What *has* been done is real and verified (section 9). Section 12 lists what only the owner can do.
+**Not "production ready".** The kit allows that phrase only when the documented checks support it, and these do not yet: the database end-to-end suite has never run, the backup/restore CLI has never touched a real database, the KYC encryption migration has not been run, the browser checks cover Chromium and a subset of screens, secrets from the uploaded ZIP have not been rotated, and the legal pages are unreviewed drafts. What *has* been done is real and verified (section 9). Section 12 lists what only the owner can do.
 
 ## Phase status
 | Phase | Status |
 |---|---|
 | 0 Safety and baseline | Done (tag + branch local; **not pushed**; `git fetch --all --prune` ran clean and `origin/main` still equals the baseline) |
 | 1 Gap analysis | Done — `CURRENT_STATE_AUDIT.md` |
-| 2 Product identity | Audit done, 3 safe fixes made, **rename awaits owner decisions D1–D6** — `PHASE2_IDENTITY.md` |
+| 2 Product identity | **Done, provisionally** — one name applied everywhere (NexaBank / Bank Management System, the lockup the app already used) and centralised in `brand.js` files with guard tests; owner questions D1–D6 (final name, trademark check, legal entity, sender domain, license, logo) remain open — `PHASE2_IDENTITY.md` |
 | 3 Architecture | Done where needed (layering was already sound; limiter factory extracted, tooling added under `scripts/`) |
 | 4 Security | Largely done; open items are owner actions (section 11–12) |
-| 5 UI/UX redesign | **Not done** — needs the owner's direction (kit default is light/neutral; the app is dark-first with translucent surfaces, Inter only, pastel badges) |
-| 6 Anti-vibe checklist | **Done** — scored audit, then the objective items fixed (orbs, hero/logo gradients, sparkle icons, stock copy): now 20 pass · 3 design-taste items left · 5 minor · 2 partial (draft legal pages) — `PHASE6_ANTI_VIBE_AUDIT.md` |
-| 7 Responsive engineering | **Done for the screens a browser could reach** — the kit's 20 viewports (240×320 to 3840×2160) × 6 public pages, all passing in headless Chromium 153 (no horizontal overflow, one visible heading); logged-in dashboards (3 roles) checked at phone and desktop sizes against a mocked API. **Not covered:** the other ~30 logged-in pages, real data volumes, WebKit/Firefox, real devices, modal/menu interaction at small sizes, foldables |
-| 8 Performance | Partial — code splitting and caching done; no Lighthouse or load tests |
+| 5 UI/UX redesign | **Done to the kit's default direction (light, neutral)** — light panels and hero cards, plain copy, one accent colour, solid surfaces, self-hosted IBM Plex Sans, a real layout bug fixed; reviewed as screenshots for the sign-in page and the customer dashboard (3 viewports/themes) only — `PHASE6_ANTI_VIBE_AUDIT.md` |
+| 6 Anti-vibe checklist | **Done** — 23 pass · 5 minor · 2 partial (draft legal pages) · 0 recommend-change. An earlier error was found and corrected (emoji check) — `PHASE6_ANTI_VIBE_AUDIT.md` |
+| 7 Responsive engineering | **Done for the screens a browser could reach** — the kit's 20 viewports (240×320 to 3840×2160) × 6 public pages and 3 role dashboards (phone + desktop, light + dark), all passing in headless Chromium 153. **Not covered:** ~30 other logged-in pages, modal/menu interaction at small sizes, real data volumes, WebKit/Firefox, real devices, foldables |
+| 8 Performance | **Done and measured** — Lighthouse (mobile, simulated, sign-in page): performance 84 → 92–94, layout shift 0.181 → 0, transfer 303 → 205 KB; a chunking bug that loaded the charting library on every page was fixed — `PHASE8_PERFORMANCE.md`. Dashboards, real devices and load tests not measured |
 | 9 Reliability | **Done** — timeouts, plain-language network/timeout errors, error boundary, offline banner, shared rate limiting, backups |
-| 10 SEO/a11y/public readiness | **Mostly done** — contrast, heading structure, skip link, title sync and keyboard access fixed and now verified by axe in a real browser (public pages + 3 dashboards, light and dark); contact details, legal review and a screen-reader pass remain — `PHASE10_PUBLIC_READINESS.md` |
-| 11 Testing | **Mostly done** — 90 tests run by default (66 backend + 24 frontend); 5 Redis tests (verified, opt-in); **182 browser checks verified locally** (120 viewport + 26 public-page axe + 36 dashboard); **never run:** the 10 real-database e2e tests; no screen-reader, WebKit/Firefox or real-device testing |
-| 12 Git | Partial — logical commits and `diff --check` clean; **push is yours to do** |
+| 10 SEO/a11y/public readiness | **Mostly done** — Lighthouse accessibility 100 on sign-in; axe (WCAG A/AA + best-practice) clean on public pages and the 3 dashboards, light and dark; remaining: contact details, legal review, screen-reader pass, ~30 unscanned logged-in pages — `PHASE10_PUBLIC_READINESS.md` |
+| 11 Testing | **Mostly done** — 95 tests run by default (68 backend + 27 frontend); 5 Redis tests (verified, opt-in); **182 browser checks passing** (120 viewport + 26 public-page axe + 36 dashboard); **never run:** the 10 real-database e2e tests; no screen-reader, WebKit/Firefox or real-device testing |
+| 12 Git | **Partial — push not done.** Logical commits, clean `git diff --check`, local checkpoint tag, `git fetch --all --prune` clean (`origin/main` unchanged). A non-forced push of the tag and branch was **attempted and rejected** (GitHub: no anonymous write access; this environment holds no credentials for your account). Push from your machine — commands in section 12; a verified `upgrade-master-kit.bundle` is provided as a backup route |
 | 13 Final report | This document |
 
 ## 1. What was discovered
@@ -39,24 +39,29 @@ Root `.npmrc` (legacy-peer-deps workaround that CI never read) · `backend/backe
 Safe production error responses with request IDs · API CSP/HSTS/referrer policy and nginx CSP and security headers · all backend advisories cleared (production audit: 0) · isolated, expiring, configurable rate limiters; optional Redis-backed shared limits with in-memory fallback; per-user money-movement cap · malformed amounts → 400 · opt-in AES-256-GCM encryption of KYC document numbers with blind-index search and a dry-run/rollback migration · compose: `TRUST_PROXY`, backend port not published, healthchecks, Redis unpublished · CI: least-privilege token, `npm audit` · route-guard tests that fail if any non-intended route becomes public · encrypted verify-then-apply backups.
 
 ## 6. UI/UX improvements
-Real 404 page · error boundary · skeleton on the KYC page · draft privacy/terms pages linked from sign-in · dev label hidden in production · one `h1` per page matching its title · tab title follows the page · skip-to-content link · primary button, links, secondary text, placeholders and focus indicators now meet WCAG contrast (measured). Hero banners made plain (no orbs, no gradients, no sparkle icons, plain copy). **No broader redesign** (Phase 5).
+Direction: the kit's default (light, neutral); dark remains a user-selectable theme. Verified by screenshots of the sign-in page and customer dashboard (see `PHASE6_ANTI_VIBE_AUDIT.md`).
+- Light sign-in/register panels and dashboard hero cards with plain, factual copy; stock headlines, chips, checklist, emoji, blurred orbs, gradients and sparkle icons removed; one accent colour instead of five; solid instead of translucent surfaces; self-hosted IBM Plex Sans.
+- A clipped stat-card icon (layout bug at 1280 px) fixed.
+- Real 404 page · error boundary · offline banner · plain network/timeout messages · KYC skeleton · draft privacy/terms · dev label hidden in production.
+- Accessibility: one `h1` per page matching its title with a consistent heading hierarchy, `<main>` on every page, skip link, tab title follows the page, keyboard-reachable scroll area, labelled controls, WCAG-AA contrast (measured and axe-verified).
 
 ## 7. Responsive improvements
 **Measured in a real browser** (headless Chromium 153, run locally; Playwright suite in `frontend/e2e/`): all 20 kit viewports × 6 public pages pass (no horizontal scrolling, exactly one visible `h1`), and the three role dashboards pass at 375 px and 1280 px in light and dark against a mocked API. Fixes this produced: **sign-in and register had no visible `h1` on phones** (the only heading hid with the desktop hero panel); app shell and sidebar used `100vh` (mobile toolbar clipping) → `100dvh` with fallback. **Not covered:** logged-in pages other than the three dashboards, real data, other browsers/devices, interaction states at small sizes.
 
 ## 8. Performance improvements
-Main JavaScript chunk 288 kB → 37 kB (route-level lazy loading) · nginx: gzip, immutable cache for hashed assets, `no-cache` for the SPA shell · 20 s API timeout · shared Redis rate-limit store. **No Lighthouse, load or concurrency testing was run.**
+Measured with Lighthouse (details and limits in `PHASE8_PERFORMANCE.md`): performance 84 → 92–94, layout shift 0.181 → 0, sign-in transfer 303 → 205 KB. Causes fixed: charts library bundled with React and loaded on every page (chunking bug); late font swap shifting the sign-in form. Also: route-level lazy loading, nginx gzip and immutable asset caching, 20 s API timeout, optional shared Redis rate limiting. **Not measured:** dashboards, real devices/networks, load.
 
 ## 9. Test results (final, from clean installs)
 | Suite | Result |
 |---|---|
-| Backend `npm test` | **66 passed, 0 failed, 15 skipped** (10 e2e need MongoDB; 5 need Redis). With `TEST_REDIS_URL`: 71 passed — verified against a real Redis 7 |
-| Frontend `npm test` | **24 passed** |
+| Backend `npm test` | **68 passed, 0 failed, 15 skipped** (10 e2e need MongoDB; 5 need Redis). With `TEST_REDIS_URL`: 73 passed — verified against a real Redis 7 |
+| Frontend `npm test` | **27 passed** (includes guard tests for the brand name) |
 | Frontend lint / build | clean / builds |
 | `npm audit --omit=dev` | backend **0**; frontend **2 moderate** (react-router SSR advisory; app is client-only; upgrade is a breaking v7 move — accepted) |
-| **Browser suite (Playwright, Chromium 153 headless)** | **182 passed, 0 failed**: 120 viewport/overflow · 26 axe on public pages · 36 on mocked dashboards. Run locally with a Chromium binary; CI job `frontend-browser` is still non-blocking until it passes once on GitHub's runner |
+| **Browser suite (Playwright, Chromium 153 headless)** | **182 passed, 0 failed** on the final build: 120 viewport/overflow · 26 axe on public pages · 36 on mocked dashboards (axe includes best-practice rules). Run locally with a Chromium binary (`PW_CHROMIUM_PATH`); CI job `frontend-browser` stays non-blocking until it passes once on GitHub's runner |
 | Dev-dependency audit | 3 high in the `nodemon` chain; only fix is a 2017 downgrade; not shipped (`--omit=dev`) — accepted |
 | OpenAPI | valid 3.0.3, 121 operations, drift-tested |
+| Lighthouse (sign-in, mobile, simulated) | performance 92–94 · accessibility 100 · best practices 96 · SEO 63 (deliberate `noindex`) — `PHASE8_PERFORMANCE.md` |
 | **Never executed** | the 10-step real-database end-to-end suite · backup/restore CLI against MongoDB · KYC encryption migration · real SMTP with nodemailer 10 · any screen-reader test · any browser other than Chromium |
 
 ## 10. Deployment changes
@@ -66,16 +71,16 @@ Compose adds `redis` (no persistence, 64 MB cap, healthcheck), `NODE_ENV=product
 1. End-to-end suite unproven — first CI run may expose test/assumption mismatches.
 2. KYC numbers remain plain text until the key is set and the migration run; key loss would make encrypted data unrecoverable.
 3. Backups are logical, not point-in-time; restore never rehearsed.
-4. Browser tests ran in Chromium only; the logged-in screens beyond the three dashboards have not been scanned; no real-device, screen-reader or load testing.
+4. Browser tests ran in Chromium only; logged-in screens beyond the three dashboards and all modal dialogs are unscanned; names are provisional (D1–D6); no real-device, screen-reader or load testing.
 5. Plain-text secrets and PII were in the uploaded ZIP; historic hard-coded admin password remains in git history (`SECURITY.md`).
 6. Rate limiter is fixed-window (up to 2× burst at a window edge).
 7. Legal pages are unreviewed drafts; contact details are placeholders.
-8. Three names in use until D1 is decided.
+8. The product name is provisional until D1–D4 are answered (trademark and domain checks are not something I can do).
 9. Charts have no text alternative; focus visibility unverified in a browser.
 
 ## 12. Manual actions required from the owner
 1. **Rotate every secret** that was in `backend/.env` and `backend/backen/.env` (JWT secrets, database credentials, SMTP password). Delete or secure the five `backup-*.json` files (customer data).
-2. **Push**: `git push origin pre-upgrade-20261006` then `git push origin upgrade/master-kit`; open a PR; do not force-push.
+2. **Push** (I could not — no credentials here): from the unzipped repo run `git push origin pre-upgrade-20261006` then `git push origin upgrade/master-kit`, open a pull request, and do not force-push. Alternative from the bundle: `git fetch upgrade-master-kit.bundle upgrade/master-kit:upgrade/master-kit` and `git fetch upgrade-master-kit.bundle tag pre-upgrade-20261006`.
 3. **Watch the `backend-e2e` and `frontend-browser` CI jobs.** The browser suite passes locally (182/182) but CI uses its own browser build and fonts, so it stays non-blocking until it passes once there; then delete its `continue-on-error: true` line.
 4. Decide D1–D6 (`PHASE2_IDENTITY.md`) and the UI direction for Phase 5.
 5. Set `KYC_ENCRYPTION_KEY`, back the key up separately, then on a *copy* of the data run `npm run kyc:encrypt` (dry run) → `--apply`; verify the admin KYC page and an exact-number search. Decide whether reviewers should see full or masked numbers.
@@ -94,10 +99,11 @@ backend/
   src/{config,controllers,middleware,models,routes,services,utils,validators}
   test/  test/e2e/  test-support/
 deployment/                     docker-compose.yml, nginx.conf, *.Dockerfile
-docs/upgrade/                   audit, phase reports, API_ENDPOINTS.md, openapi.json, runbook, ADRs, changelog
+docs/upgrade/                   audit, phase 2/6/8/10 reports, API_ENDPOINTS.md, openapi.json, runbook, ADRs, changelog
 frontend/
+  e2e/                          Playwright: viewports, accessibility, mocked dashboards
   public/                       favicon.svg, robots.txt
-  src/{api,components,context,pages,routes,test,utils}
+  src/{api,components,config,context,hooks,pages,routes,test,utils}
 ```
 
 ## 14. Final route map
@@ -156,6 +162,10 @@ The frontend uses no environment variables; nothing secret reaches the browser b
 - Draft `/privacy` and `/terms` pages (placeholders require legal review), linked from sign-in
 - 16 backend tests (error handler, rate limit, RBAC, HTTP integration); 404 page; error boundary; robots/OG/noindex meta; axios timeout; CI `npm audit` + least-privilege permissions
 ### Changed
+- **Phase 2:** product name unified on the existing NexaBank / Bank Management System lockup and centralised in `brand.js` config files (frontend + backend) with guard tests; provisional until owner decisions D1–D6
+- **Phase 5:** light, neutral direction — light sign-in/register panels and dashboard hero cards with plain copy, single accent colour, solid surfaces, emoji removed, self-hosted IBM Plex Sans (Google Fonts and its CSP hosts removed); stat-card icon clipping bug fixed
+- **Phase 8:** chunking fixed with Rolldown `advancedChunks` (charts no longer loaded outside dashboards), fonts preloaded (layout shift 0.181 → 0); Lighthouse mobile performance 84 → 92–94
+- Heading hierarchy re-levelled across pages; `<main>` on all auth pages; larger/labelled password toggles
 - UI de-vibe pass: removed 7 decorative blurred orbs and 10 gradients (hero banners, logo/avatar tiles, account card, active sidebar link) in favour of solid colours; replaced sparkle icons; replaced stock marketing copy with plain statements; Service Center heading is now "Service Center"
 - **Behaviour change when encryption is enabled:** admin/employee KYC search matches a document number by exact value only (partial-number search is impossible on encrypted data); name/email search is unchanged
 - Pages lazy-loaded (entry chunk 288 kB → 37 kB); nginx caches only hashed assets, revalidates the SPA shell

@@ -77,10 +77,10 @@ const EmployeeCollections = () => {
 
           <p className="text-sm"><span className="text-gray-500 dark:text-gray-400">Recovered so far:</span> <span className="font-semibold">{formatCurrency(selected.recoveredAmount)}</span></p>
 
-          <div><h4 className="font-semibold text-sm mb-2">Contact Log</h4><div className="space-y-2">{(selected.contactLog || []).map((c, i) => <div key={i} className="p-3 rounded-xl bg-gray-50 dark:bg-banking-darker text-sm"><span className="capitalize font-medium">{c.method}</span>: {c.outcome} <span className="text-xs text-gray-500 dark:text-gray-400 block">{formatDate(c.contactedAt)}</span></div>)}{!selected.contactLog?.length && <p className="text-xs text-gray-500 dark:text-gray-400">No contact logged yet.</p>}</div></div>
+          <div><h3 className="font-semibold text-sm mb-2">Contact Log</h3><div className="space-y-2">{(selected.contactLog || []).map((c, i) => <div key={i} className="p-3 rounded-xl bg-gray-50 dark:bg-banking-darker text-sm"><span className="capitalize font-medium">{c.method}</span>: {c.outcome} <span className="text-xs text-gray-500 dark:text-gray-400 block">{formatDate(c.contactedAt)}</span></div>)}{!selected.contactLog?.length && <p className="text-xs text-gray-500 dark:text-gray-400">No contact logged yet.</p>}</div></div>
 
           {!closed && <div className="border-t border-gray-100 dark:border-banking-border pt-4 space-y-3">
-            <h4 className="font-semibold text-sm">Log Contact</h4>
+            <h3 className="font-semibold text-sm">Log Contact</h3>
             <div className="grid sm:grid-cols-2 gap-3">
               <Select value={method} onChange={(e) => setMethod(e.target.value)} options={CONTACT_METHODS.map(m => ({ value: m, label: m }))} />
               <Input value={outcome} onChange={(e) => setOutcome(e.target.value)} placeholder="Outcome / notes" />
@@ -89,7 +89,7 @@ const EmployeeCollections = () => {
           </div>}
 
           {!closed && <div className="border-t border-gray-100 dark:border-banking-border pt-4 space-y-3">
-            <h4 className="font-semibold text-sm">Promise to Pay</h4>
+            <h3 className="font-semibold text-sm">Promise to Pay</h3>
             <div className="grid sm:grid-cols-2 gap-3">
               <Input label="Amount (INR)" type="number" min="0.01" step="0.01" value={ptpAmount} onChange={(e) => setPtpAmount(e.target.value)} />
               <Input label="Promised Date" type="date" value={ptpDate} onChange={(e) => setPtpDate(e.target.value)} />

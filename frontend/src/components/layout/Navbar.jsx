@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Sun, Moon, Bell, Search, X, ChevronDown, ShieldCheck, Menu } from 'lucide-react';
+import { Sun, Moon, Bell, Search, X, ChevronDown, Menu } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import { useAuth } from '../../context/AuthContext';
 import { notificationsAPI } from '../../api';
@@ -20,13 +20,13 @@ const Navbar = ({ role, onMenuClick = () => {} }) => {
   useEffect(() => { if (searchOpen && searchRef.current) searchRef.current.focus(); }, [searchOpen]);
 
   return (
-    <header className="h-[72px] flex items-center justify-between px-4 sm:px-6 bg-white/90 dark:bg-banking-card/95 backdrop-blur-xl border-b border-gray-100 dark:border-banking-border flex-shrink-0 z-20">
+    <header className="h-[72px] flex items-center justify-between px-4 sm:px-6 bg-white dark:bg-banking-card border-b border-gray-100 dark:border-banking-border flex-shrink-0 z-20">
       <div className="flex items-center gap-3 min-w-0">
         <button type="button" aria-label="Open navigation menu" onClick={onMenuClick} className="icon-action lg:hidden -ml-1"><Menu className="w-5 h-5" /></button>
         {searchOpen ? (
           <div className="flex items-center gap-2 animate-slide-in"><div className="relative"><Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 dark:text-gray-400" /><input ref={searchRef} value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search workspace..." className="input-field w-32 xs:w-44 sm:w-72 py-2.5 pl-9" onKeyDown={(e) => { if (e.key === 'Escape') { setSearchOpen(false); setSearch(''); } }} /></div><button type="button" aria-label="Close search" onClick={() => { setSearchOpen(false); setSearch(''); }}><X className="w-4 h-4 text-gray-500 dark:text-gray-400" /></button></div>
         ) : (
-          <div className="min-w-0"><div className="flex items-center gap-2"><p className="text-sm sm:text-base font-bold text-gray-900 dark:text-white truncate">{roleLabel[role] || 'Dashboard'}</p><span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-semibold text-primary-700 dark:text-primary-300 bg-primary-50 dark:bg-primary-900/30 rounded-full px-2 py-1"><ShieldCheck className="w-3 h-3" /> Secure</span></div><p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5 hidden sm:block">{new Date().toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p></div>
+          <div className="min-w-0"><div className="flex items-center gap-2"><p className="text-sm sm:text-base font-bold text-gray-900 dark:text-white truncate">{roleLabel[role] || 'Dashboard'}</p></div><p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5 hidden sm:block">{new Date().toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p></div>
         )}
       </div>
       <div className="flex items-center gap-1.5 sm:gap-2">
