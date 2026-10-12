@@ -42,3 +42,21 @@ Check you really have the new manifests: `Select-String package.json -Pattern '"
 | `ERESOLVE` / peer-dependency errors | old `node_modules` or lockfile mixed with the new `package.json` | delete `node_modules`, copy both manifest files from the zip, `npm ci` |
 | `npm install` reports many vulnerabilities | different dependency tree than the one audited | run `npm audit --omit=dev` **inside** `backend/` (expect 0) and `frontend/` (expect 2 moderate: react-router SSR advisory, accepted). Dev-only: 3 high in the `nodemon` chain, accepted. **Do not run `npm audit fix --force`** — it proposes downgrading nodemon to a 2017 release. If a *critical* remains inside backend/frontend after a clean `npm ci`, send the output. |
 | Sign-in page shows API errors | backend not running | start it (frontend proxies `/api` to port 5000) |
+
+## 5. "Invalid email or password" when signing in
+The `TEST_CUSTOMER_*` / `TEST_EMPLOYEE_*` lines in `.env` are **notes only** — no code reads them and they do not create accounts. The login answers "Invalid email or password" in exactly three cases (it never says which, on purpose): **no such user in the database you are connected to**, **the user is deactivated**, or **the password does not match**. Repeated failed attempts do **not** lock an account (they only raise a fraud alert after 5 in 15 minutes).
+
+Find out which one (read-only; writes nothing, prints no passwords or hashes), from `backend/`:
+```powershell
+node scripts/check-login.js --list                                  # who exists in this database
+node scripts/check-login.js abhishek.customer1.2026@bank.local      # exists? active?
+$env:CHECK_PASSWORD = 'the-password-you-type'                       # optional: also test the password
+node scripts/check-login.js abhishek.customer1.2026@bank.local
+Remove-Item Env:CHECK_PASSWORD
+```
+| Result | Meaning | Fix |
+|---|---|---|
+| `NOT_FOUND`, or "This database has NO users" | wrong or fresh database, or the account was never created | compare the database name with the one you used before; create customers on the Register page; create employees as an admin (Users → Create); no admin yet → set `ADMIN_SEED_EMAIL` / `ADMIN_SEED_PASSWORD` (12+ chars) in `backend/.env` and run `npm run seed` (it creates **or resets** that admin) |
+| `INACTIVE` | user deactivated | an admin re-activates the user |
+| `WRONG_PASSWORD` | stored password differs | "Forgot password" (needs working SMTP) or recreate the user |
+| `OK` | credentials are fine | check the browser Network tab: request reaches port 5000? HTTP 429 (rate limit)? CORS? |

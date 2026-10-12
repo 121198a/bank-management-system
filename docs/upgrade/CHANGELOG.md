@@ -11,6 +11,7 @@
 - **Rate limiters no longer share one counter per IP** (first login after ~12 normal API calls returned 429); per-limiter buckets, expiry sweep, configurable limits
 - Frontend `npm ci` failure (Vite 8 peer conflict); ESLint scanning `dist/`; 9 lint errors; unused KYC loading state
 ### Added
+- `npm run check:login` (backend): read-only login diagnostic that says whether a user is missing, inactive or has a different password, without printing passwords or hashes; 4 tests; troubleshooting section in `APPLY_UPGRADE.md`
 - Offline banner (`role=status`) and plain-language messages for timeouts and unreachable servers; app shell and mobile sidebar use `100dvh` with a `100vh` fallback
 - Playwright suite (`frontend/e2e/`, `npm run test:e2e`): the kit's 20 viewports x 6 public pages (no horizontal overflow, exactly one visible `h1`), axe WCAG A/AA scans (public pages + 3 role dashboards against a mocked API, phone/desktop, light/dark), keyboard and title checks. **182 checks pass locally in Chromium 153**; `PW_CHROMIUM_PATH` lets it use a custom browser; non-blocking `frontend-browser` CI job until first green CI run
 - Encrypted backup/restore tooling (`npm run backup` / `npm run restore`): AES-256-GCM, verify-then-apply, refuses non-empty targets and requires `--confirm=<db>`; 12 tests; `BACKUP_RUNBOOK.md` with restore rehearsal and monitoring checklist

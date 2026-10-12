@@ -1,6 +1,6 @@
 # Final report — Bank Management System upgrade (master-kit Phases 0–13)
 
-Branch `upgrade/master-kit` · baseline tag `pre-upgrade-20261006` (= `origin/main` = `9240780`) · 19 commits · 145 files changed
+Branch `upgrade/master-kit` · baseline tag `pre-upgrade-20261006` (= `origin/main` = `9240780`) · 20 commits · 148 files changed
 
 ## Verdict
 **Not "production ready".** The kit allows that phrase only when the documented checks support it, and these do not yet: the database end-to-end suite has never run, the backup/restore CLI has never touched a real database, the KYC encryption migration has not been run, the browser checks cover Chromium and a subset of screens, secrets from the uploaded ZIP have not been rotated, and the legal pages are unreviewed drafts. What *has* been done is real and verified (section 9). Section 12 lists what only the owner can do.
@@ -19,7 +19,7 @@ Branch `upgrade/master-kit` · baseline tag `pre-upgrade-20261006` (= `origin/ma
 | 8 Performance | **Done and measured** — Lighthouse (mobile, simulated, sign-in page): performance 84 → 92–94, layout shift 0.181 → 0, transfer 303 → 205 KB; a chunking bug that loaded the charting library on every page was fixed — `PHASE8_PERFORMANCE.md`. Dashboards, real devices and load tests not measured |
 | 9 Reliability | **Done** — timeouts, plain-language network/timeout errors, error boundary, offline banner, shared rate limiting, backups |
 | 10 SEO/a11y/public readiness | **Mostly done** — Lighthouse accessibility 100 on sign-in; axe (WCAG A/AA + best-practice) clean on public pages and the 3 dashboards, light and dark; remaining: contact details, legal review, screen-reader pass, ~30 unscanned logged-in pages — `PHASE10_PUBLIC_READINESS.md` |
-| 11 Testing | **Mostly done** — 95 tests run by default (68 backend + 27 frontend); 5 Redis tests (verified, opt-in); **182 browser checks passing** (120 viewport + 26 public-page axe + 36 dashboard); **never run:** the 10 real-database e2e tests; no screen-reader, WebKit/Firefox or real-device testing |
+| 11 Testing | **Mostly done** — 99 tests run by default (72 backend + 27 frontend); 5 Redis tests (verified, opt-in); **182 browser checks passing** (120 viewport + 26 public-page axe + 36 dashboard); **never run:** the 10 real-database e2e tests; no screen-reader, WebKit/Firefox or real-device testing |
 | 12 Git | **Partial — push not done.** Logical commits, clean `git diff --check`, local checkpoint tag, `git fetch --all --prune` clean (`origin/main` unchanged). A non-forced push of the tag and branch was **attempted and rejected** (GitHub: no anonymous write access; this environment holds no credentials for your account). Push from your machine — commands in section 12; a verified `upgrade-master-kit.bundle` is provided as a backup route |
 | 13 Final report | This document |
 
@@ -54,7 +54,7 @@ Measured with Lighthouse (details and limits in `PHASE8_PERFORMANCE.md`): perfor
 ## 9. Test results (final, from clean installs)
 | Suite | Result |
 |---|---|
-| Backend `npm test` | **68 passed, 0 failed, 15 skipped** (10 e2e need MongoDB; 5 need Redis). With `TEST_REDIS_URL`: 73 passed — verified against a real Redis 7 |
+| Backend `npm test` | **72 passed, 0 failed, 15 skipped** (10 e2e need MongoDB; 5 need Redis). With `TEST_REDIS_URL`: 77 passed — verified against a real Redis 7 |
 | Frontend `npm test` | **27 passed** (includes guard tests for the brand name) |
 | Frontend lint / build | clean / builds |
 | `npm audit --omit=dev` | backend **0**; frontend **2 moderate** (react-router SSR advisory; app is client-only; upgrade is a breaking v7 move — accepted) |
@@ -149,6 +149,7 @@ The frontend uses no environment variables; nothing secret reaches the browser b
 - **Rate limiters no longer share one counter per IP** (first login after ~12 normal API calls returned 429); per-limiter buckets, expiry sweep, configurable limits
 - Frontend `npm ci` failure (Vite 8 peer conflict); ESLint scanning `dist/`; 9 lint errors; unused KYC loading state
 ### Added
+- `npm run check:login` (backend): read-only login diagnostic that says whether a user is missing, inactive or has a different password, without printing passwords or hashes; 4 tests; troubleshooting section in `APPLY_UPGRADE.md`
 - Offline banner (`role=status`) and plain-language messages for timeouts and unreachable servers; app shell and mobile sidebar use `100dvh` with a `100vh` fallback
 - Playwright suite (`frontend/e2e/`, `npm run test:e2e`): the kit's 20 viewports x 6 public pages (no horizontal overflow, exactly one visible `h1`), axe WCAG A/AA scans (public pages + 3 role dashboards against a mocked API, phone/desktop, light/dark), keyboard and title checks. **182 checks pass locally in Chromium 153**; `PW_CHROMIUM_PATH` lets it use a custom browser; non-blocking `frontend-browser` CI job until first green CI run
 - Encrypted backup/restore tooling (`npm run backup` / `npm run restore`): AES-256-GCM, verify-then-apply, refuses non-empty targets and requires `--confirm=<db>`; 12 tests; `BACKUP_RUNBOOK.md` with restore rehearsal and monitoring checklist

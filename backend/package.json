@@ -15,7 +15,8 @@
     "test:e2e": "node --test test/e2e/bank.e2e.test.js",
     "docs:openapi": "node scripts/generate-openapi.js",
     "backup": "node scripts/backup.js",
-    "restore": "node scripts/restore.js"
+    "restore": "node scripts/restore.js",
+    "check:login": "node scripts/check-login.js"
   },
   "keywords": [
     "banking",
