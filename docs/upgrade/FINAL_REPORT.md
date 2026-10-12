@@ -1,6 +1,6 @@
 # Final report — Bank Management System upgrade (master-kit Phases 0–13)
 
-Branch `upgrade/master-kit` · baseline tag `pre-upgrade-20261006` (= `origin/main` = `9240780`) · 18 commits · 144 files changed
+Branch `upgrade/master-kit` · baseline tag `pre-upgrade-20261006` (= `origin/main` = `9240780`) · 19 commits · 145 files changed
 
 ## Verdict
 **Not "production ready".** The kit allows that phrase only when the documented checks support it, and these do not yet: the database end-to-end suite has never run, the backup/restore CLI has never touched a real database, the KYC encryption migration has not been run, the browser checks cover Chromium and a subset of screens, secrets from the uploaded ZIP have not been rotated, and the legal pages are unreviewed drafts. What *has* been done is real and verified (section 9). Section 12 lists what only the owner can do.
