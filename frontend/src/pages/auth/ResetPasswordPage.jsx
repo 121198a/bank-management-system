@@ -6,8 +6,10 @@ import Button from '../../components/ui/Button';
 import { getErrorMessage } from '../../utils/formatters';
 import toast from 'react-hot-toast';
 import { BRAND } from '../../config/brand';
+import usePageMeta from '../../hooks/usePageMeta';
 
 const ResetPasswordPage = () => {
+  usePageMeta('Set a new password', `Choose a new password for your ${BRAND.name} account.`);
   const { token } = useParams();
   const navigate = useNavigate();
   const [form, setForm] = useState({ password: '', confirmPassword: '' });
@@ -73,12 +75,14 @@ const ResetPasswordPage = () => {
                   { key: 'confirmPassword', label: 'Confirm Password', showKey: 'confirm' }
                 ].map(({ key, label, showKey }) => (
                   <div key={key}>
-                    <label className="input-label">{label}</label>
+                    <label htmlFor={`reset-${key}`} className="input-label">{label}</label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                         <Lock className="w-4 h-4 text-gray-500 dark:text-gray-400" />
                       </div>
                       <input
+                        id={`reset-${key}`}
+                        name={key}
                         type={show[showKey] ? 'text' : 'password'}
                         className={'input-field pl-10 pr-10' + (errors[key] ? ' border-red-400' : '')}
                         placeholder="••••••••"

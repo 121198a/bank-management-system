@@ -245,9 +245,9 @@ const AdminUsers = () => {
             value={createForm.email} onChange={(e) => setCreateForm(f => ({ ...f, email: e.target.value }))}
             error={createErrors.email} />
           <div>
-            <label className="input-label">Temporary Password</label>
+            <label htmlFor="create-user-temp-password" className="input-label">Temporary Password</label>
             <div className="flex gap-2">
-              <input className={'input-field flex-1 font-mono' + (createErrors.password ? ' border-red-400' : '')}
+              <input id="create-user-temp-password" className={'input-field flex-1 font-mono' + (createErrors.password ? ' border-red-400' : '')}
                 value={createForm.password}
                 onChange={(e) => setCreateForm(f => ({ ...f, password: e.target.value }))} />
               <Button type="button" variant="secondary" icon={Copy} onClick={copyPassword}>Copy</Button>

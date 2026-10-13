@@ -7,8 +7,10 @@ import Button from '../../components/ui/Button';
 import { getErrorMessage } from '../../utils/formatters';
 import toast from 'react-hot-toast';
 import { BRAND } from '../../config/brand';
+import usePageMeta from '../../hooks/usePageMeta';
 
 const LoginPage = () => {
+  usePageMeta('Sign in', `Sign in to your ${BRAND.name} account.`);
   const navigate = useNavigate();
   const location = useLocation();
   const { login } = useAuth();
@@ -84,13 +86,13 @@ const LoginPage = () => {
 
           <div className="card p-6 sm:p-8 shadow-xl shadow-slate-200/50 dark:shadow-black/20">
             <form onSubmit={handleSubmit} className="space-y-5" noValidate>
-              <Input label="Email address" type="email" icon={Mail} placeholder="you@example.com" value={form.email}
+              <Input name="email" label="Email address" type="email" icon={Mail} placeholder="you@example.com" value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })} error={errors.email} autoComplete="email" />
               <div>
-                <div className="flex items-center justify-between mb-1.5"><label className="input-label !mb-0">Password</label><Link to="/forgot-password" className="text-xs font-semibold text-primary-700 dark:text-primary-400 hover:text-primary-700">Forgot password?</Link></div>
+                <div className="flex items-center justify-between mb-1.5"><label htmlFor="login-password" className="input-label !mb-0">Password</label><Link to="/forgot-password" className="text-xs font-semibold text-primary-700 dark:text-primary-400 hover:text-primary-700">Forgot password?</Link></div>
                 <div className="relative">
                   <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 dark:text-gray-400" />
-                  <input type={showPassword ? 'text' : 'password'} className={`input-field pl-10 pr-11 ${errors.password ? 'border-red-400 focus:ring-red-400/20' : ''}`} placeholder="Enter your password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} autoComplete="current-password" />
+                  <input id="login-password" name="password" type={showPassword ? 'text' : 'password'} className={`input-field pl-10 pr-11 ${errors.password ? 'border-red-400 focus:ring-red-400/20' : ''}`} placeholder="Enter your password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} autoComplete="current-password" />
                   <button type="button" aria-label={showPassword ? 'Hide password' : 'Show password'} onClick={() => setShowPassword((s) => !s)} className="absolute right-1 top-1/2 -translate-y-1/2 p-3 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">{showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}</button>
                 </div>
                 {errors.password && <p className="mt-1.5 text-xs text-red-600 dark:text-red-400">{errors.password}</p>}

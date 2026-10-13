@@ -43,3 +43,44 @@ test('document title is set on public pages', async ({ page }) => {
   await page.goto('/this-page-does-not-exist');
   await expect(page).toHaveTitle(/not found/i);
 });
+
+test.describe('forms and page identity (public pages)', () => {
+  for (const pg of ['/login', '/register', '/forgot-password']) {
+    test(`${pg}: every form control has a real <label> (not just a placeholder) and a name`, async ({ page }) => {
+      await page.goto(pg);
+      await expect(page.locator('h1:visible')).toHaveCount(1);
+      const problems = await page.evaluate(() => [...document.querySelectorAll('input:not([type=hidden]),select,textarea')].flatMap((el) => {
+        const out = [];
+        const labelled = (el.labels && el.labels.length > 0) || el.getAttribute('aria-label') || el.getAttribute('aria-labelledby');
+        if (!labelled) out.push(`no label: <${el.tagName.toLowerCase()} type=${el.type} placeholder="${el.placeholder}">`);
+        if (!el.name) out.push(`no name attribute: ${el.type} "${el.placeholder}"`);
+        return out;
+      }));
+      expect(problems, problems.join('\n')).toEqual([]);
+    });
+  }
+
+  test('each routed public page has its own title and description', async ({ page }) => {
+    const seen = new Map();
+    for (const pg of ['/login', '/register', '/forgot-password', '/privacy', '/terms', '/does-not-exist']) {
+      await page.goto(pg);
+      await expect(page.locator('h1:visible')).toHaveCount(1);
+      const title = await page.title();
+      const description = await page.locator('meta[name="description"]').getAttribute('content');
+      expect(title.length, `${pg} title`).toBeGreaterThan(8);
+      expect(description && description.length, `${pg} description`).toBeGreaterThan(10);
+      expect(seen.has(title), `${pg} reuses the title of ${seen.get(title)}`).toBe(false);
+      seen.set(title, pg);
+    }
+  });
+});
+
+test('raw HTML (no JavaScript) still exposes a main landmark, an h1 and noindex', async ({ browser, baseURL }) => {
+  const ctx = await browser.newContext({ javaScriptEnabled: false });
+  const page = await ctx.newPage();
+  await page.goto(`${baseURL}/login`);
+  await expect(page.locator('main')).toHaveCount(1);
+  await expect(page.locator('h1')).toHaveCount(1);
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/);
+  await ctx.close();
+});

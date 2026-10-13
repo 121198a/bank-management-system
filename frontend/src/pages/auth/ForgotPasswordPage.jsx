@@ -7,8 +7,10 @@ import Button from '../../components/ui/Button';
 import { getErrorMessage } from '../../utils/formatters';
 import toast from 'react-hot-toast';
 import { BRAND } from '../../config/brand';
+import usePageMeta from '../../hooks/usePageMeta';
 
 const ForgotPasswordPage = () => {
+  usePageMeta('Reset your password', `Request a link to reset your ${BRAND.name} password.`);
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
@@ -60,7 +62,7 @@ const ForgotPasswordPage = () => {
                 </p>
               </div>
               <form onSubmit={handleSubmit} className="space-y-5">
-                <Input label="Email Address" type="email" icon={Mail} placeholder="you@example.com"
+                <Input name="email" label="Email Address" type="email" icon={Mail} placeholder="you@example.com"
                   value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
                 <Button type="submit" loading={loading} className="w-full">Send Reset Link</Button>
               </form>

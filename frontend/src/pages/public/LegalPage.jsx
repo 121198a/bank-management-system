@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { titleFor } from '../../config/brand';
+import usePageMeta from '../../hooks/usePageMeta';
 
 const DRAFT_NOTICE =
   'Draft template written from what this application actually stores. Replace every [bracketed] item and have a qualified lawyer review it for your jurisdiction before launch.';
@@ -36,7 +36,7 @@ const PAGES = {
 
 const LegalPage = ({ kind }) => {
   const page = PAGES[kind];
-  useEffect(() => { document.title = titleFor(page.title); }, [page.title]);
+  usePageMeta(page.title, kind === 'privacy' ? 'How this service handles personal data (draft).' : 'Terms for using this service (draft).');
   return (
     <main className="min-h-screen bg-gray-50 dark:bg-banking-dark px-4 py-12">
       <article className="mx-auto max-w-2xl">
