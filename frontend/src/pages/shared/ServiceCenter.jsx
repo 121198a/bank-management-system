@@ -8,35 +8,35 @@ import {
 import { useAuth } from '../../context/AuthContext';
 
 const customerServices = [
-  { title: 'Accounts', description: 'View balances, account status and banking products.', to: '/dashboard/accounts', icon: CreditCard, tone: 'from-blue-500 to-cyan-500' },
-  { title: 'Money Transfer', description: 'Move funds securely between supported accounts.', to: '/dashboard/transfer', icon: ArrowLeftRight, tone: 'from-emerald-500 to-teal-500' },
-  { title: 'Deposits & Withdrawals', description: 'Manage cash movement with guided forms.', to: '/dashboard/deposit', icon: WalletCards, tone: 'from-violet-500 to-indigo-500' },
-  { title: 'Transactions', description: 'Review your transaction history and activity.', to: '/dashboard/transactions', icon: History, tone: 'from-orange-500 to-amber-500' },
-  { title: 'Loans', description: 'Review loan products and application status.', to: '/dashboard/loans', icon: Banknote, tone: 'from-fuchsia-500 to-pink-500' },
-  { title: 'Insurance', description: 'Manage insurance policies and related services.', to: '/dashboard/insurance', icon: Umbrella, tone: 'from-sky-500 to-blue-600' },
-  { title: 'KYC Verification', description: 'Complete identity verification and track status.', to: '/dashboard/kyc', icon: FileCheck2, tone: 'from-lime-500 to-green-600' },
-  { title: 'Security & Profile', description: 'Manage your personal details and account activity.', to: '/dashboard/profile', icon: LockKeyhole, tone: 'from-slate-600 to-slate-900' },
-  { title: 'Notifications', description: 'Review important banking alerts and messages.', to: '/dashboard/notifications', icon: Bell, tone: 'from-rose-500 to-red-500' }
+  { title: 'Accounts', description: 'View balances, account status and banking products.', to: '/dashboard/accounts', icon: CreditCard },
+  { title: 'Money Transfer', description: 'Move funds securely between supported accounts.', to: '/dashboard/transfer', icon: ArrowLeftRight },
+  { title: 'Deposits & Withdrawals', description: 'Manage cash movement with guided forms.', to: '/dashboard/deposit', icon: WalletCards },
+  { title: 'Transactions', description: 'Review your transaction history and activity.', to: '/dashboard/transactions', icon: History },
+  { title: 'Loans', description: 'Review loan products and application status.', to: '/dashboard/loans', icon: Banknote },
+  { title: 'Insurance', description: 'Manage insurance policies and related services.', to: '/dashboard/insurance', icon: Umbrella },
+  { title: 'KYC Verification', description: 'Complete identity verification and track status.', to: '/dashboard/kyc', icon: FileCheck2 },
+  { title: 'Security & Profile', description: 'Manage your personal details and account activity.', to: '/dashboard/profile', icon: LockKeyhole },
+  { title: 'Notifications', description: 'Review important banking alerts and messages.', to: '/dashboard/notifications', icon: Bell }
 ];
 
 const operationsServices = [
-  { title: 'Account Operations', description: 'Review customer account requests and lifecycle activity.', suffix: 'accounts', icon: CreditCard, tone: 'from-blue-500 to-cyan-500' },
-  { title: 'Transactions', description: 'Monitor and process operational transaction activity.', suffix: 'transactions', icon: ReceiptText, tone: 'from-emerald-500 to-teal-500' },
-  { title: 'Loan Operations', description: 'Review loan applications and workflow status.', suffix: 'loans', icon: Banknote, tone: 'from-violet-500 to-indigo-500' },
-  { title: 'KYC Operations', description: 'Review identity verification requests and compliance status.', suffix: 'kyc', icon: ShieldCheck, tone: 'from-amber-500 to-orange-500' },
-  { title: 'Insurance', description: 'Manage policy and claim operations where authorized.', suffix: 'insurance', icon: Umbrella, tone: 'from-sky-500 to-blue-600' },
-  { title: 'Collections', description: 'Track collection cases and recovery workflows.', suffix: 'collections', icon: PhoneCall, tone: 'from-orange-500 to-red-500' },
-  { title: 'Sales', description: 'Manage leads and conversion activity within your scope.', suffix: 'sales', icon: TrendingUp, tone: 'from-teal-500 to-emerald-600' },
-  { title: 'Security', description: 'Review security alerts and operational incidents.', suffix: 'security', icon: LockKeyhole, tone: 'from-slate-700 to-slate-950' },
-  { title: 'Audit Logs', description: 'Trace security-sensitive and operational actions.', suffix: 'audit', icon: History, tone: 'from-fuchsia-500 to-purple-600' }
+  { title: 'Account Operations', description: 'Review customer account requests and lifecycle activity.', suffix: 'accounts', icon: CreditCard },
+  { title: 'Transactions', description: 'Monitor and process operational transaction activity.', suffix: 'transactions', icon: ReceiptText },
+  { title: 'Loan Operations', description: 'Review loan applications and workflow status.', suffix: 'loans', icon: Banknote },
+  { title: 'KYC Operations', description: 'Review identity verification requests and compliance status.', suffix: 'kyc', icon: ShieldCheck },
+  { title: 'Insurance', description: 'Manage policy and claim operations where authorized.', suffix: 'insurance', icon: Umbrella },
+  { title: 'Collections', description: 'Track collection cases and recovery workflows.', suffix: 'collections', icon: PhoneCall },
+  { title: 'Sales', description: 'Manage leads and conversion activity within your scope.', suffix: 'sales', icon: TrendingUp },
+  { title: 'Security', description: 'Review security alerts and operational incidents.', suffix: 'security', icon: LockKeyhole },
+  { title: 'Audit Logs', description: 'Trace security-sensitive and operational actions.', suffix: 'audit', icon: History }
 ];
 
 const ServiceCard = ({ service, base }) => {
   const Icon = service.icon;
   const to = service.to || `${base}/${service.suffix}`;
   return (
-    <Link to={to} className="group premium-card surface-glow p-5 hover:-translate-y-1 focus-ring">
-      <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${service.tone} text-white flex items-center justify-center shadow-lg mb-5 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3`}>
+    <Link to={to} className="group premium-card p-5 hover:-translate-y-1 focus-ring">
+      <div className={`w-12 h-12 rounded-2xl bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400 flex items-center justify-center mb-5`}>
         <Icon className="w-5 h-5" />
       </div>
       <div className="flex items-start justify-between gap-4">
@@ -59,10 +59,10 @@ const ServiceCenter = () => {
 
   return (
     <div className="space-y-6">
-      <section className="premium-card surface-glow p-6 sm:p-8 bg-white dark:bg-slate-900 text-gray-900 dark:text-white border border-gray-200 dark:border-slate-800 shadow-sm dark:shadow-black/30">
+      <section className="premium-card p-6 sm:p-8 bg-white dark:bg-slate-900 text-gray-900 dark:text-white border border-gray-200 dark:border-slate-800 shadow-sm dark:shadow-black/30">
         <div className="relative flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full bg-gray-100 dark:bg-white/10 border border-gray-200 dark:border-white/10 px-3 py-1.5 text-xs text-gray-600 dark:text-slate-300">
+            <div className="hero-chip">
               <LifeBuoy className="w-3.5 h-3.5 text-primary-700 dark:text-primary-300" /> Help and services
             </div>
             <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mt-4">Service Center</h1>

@@ -91,7 +91,7 @@ const LoginPage = () => {
               <div>
                 <div className="flex items-center justify-between mb-1.5"><label htmlFor="login-password" className="input-label !mb-0">Password</label><Link to="/forgot-password" className="text-xs font-semibold text-primary-700 dark:text-primary-400 hover:text-primary-700">Forgot password?</Link></div>
                 <div className="relative">
-                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 dark:text-gray-400" />
+                  <Lock className="field-icon" />
                   <input id="login-password" name="password" type={showPassword ? 'text' : 'password'} className={`input-field pl-10 pr-11 ${errors.password ? 'border-red-400 focus:ring-red-400/20' : ''}`} placeholder="Enter your password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} autoComplete="current-password" />
                   <button type="button" aria-label={showPassword ? 'Hide password' : 'Show password'} onClick={() => setShowPassword((s) => !s)} className="absolute right-1 top-1/2 -translate-y-1/2 p-3 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">{showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}</button>
                 </div>
