@@ -1,6 +1,6 @@
 # Final report — Bank Management System upgrade (master-kit Phases 0–13)
 
-Branch `upgrade/master-kit` · baseline tag `pre-upgrade-20261006` (= `origin/main` = `9240780`) · 20 commits · 148 files changed
+Branch `upgrade/master-kit` · baseline tag `pre-upgrade-20261006` (= `origin/main` = `9240780`) · 23 commits · 158 files changed
 
 ## Verdict
 **Not "production ready".** The kit allows that phrase only when the documented checks support it, and these do not yet: the database end-to-end suite has never run, the backup/restore CLI has never touched a real database, the KYC encryption migration has not been run, the browser checks cover Chromium and a subset of screens, secrets from the uploaded ZIP have not been rotated, and the legal pages are unreviewed drafts. What *has* been done is real and verified (section 9). Section 12 lists what only the owner can do.
@@ -19,7 +19,7 @@ Branch `upgrade/master-kit` · baseline tag `pre-upgrade-20261006` (= `origin/ma
 | 8 Performance | **Done and measured** — Lighthouse (mobile, simulated, sign-in page): performance 84 → 92–94, layout shift 0.181 → 0, transfer 303 → 205 KB; a chunking bug that loaded the charting library on every page was fixed — `PHASE8_PERFORMANCE.md`. Dashboards, real devices and load tests not measured |
 | 9 Reliability | **Done** — timeouts, plain-language network/timeout errors, error boundary, offline banner, shared rate limiting, backups |
 | 10 SEO/a11y/public readiness | **Mostly done** — Lighthouse accessibility 100 on sign-in; axe (WCAG A/AA + best-practice) clean on public pages and the 3 dashboards, light and dark; remaining: contact details, legal review, screen-reader pass, ~30 unscanned logged-in pages — `PHASE10_PUBLIC_READINESS.md` |
-| 11 Testing | **Mostly done** — 99 tests run by default (72 backend + 27 frontend); 5 Redis tests (verified, opt-in); **182 browser checks passing** (120 viewport + 26 public-page axe + 36 dashboard); **never run:** the 10 real-database e2e tests; no screen-reader, WebKit/Firefox or real-device testing |
+| 11 Testing | **Mostly done** — 116 tests run by default (74 backend + 42 frontend); 5 Redis tests (verified, opt-in); **187 browser checks passing** (120 viewport + 31 public-page + 36 dashboard); **never run:** the 10 real-database e2e tests; no screen-reader, WebKit/Firefox or real-device testing |
 | 12 Git | **Partial — push not done.** Logical commits, clean `git diff --check`, local checkpoint tag, `git fetch --all --prune` clean (`origin/main` unchanged). A non-forced push of the tag and branch was **attempted and rejected** (GitHub: no anonymous write access; this environment holds no credentials for your account). Push from your machine — commands in section 12; a verified `upgrade-master-kit.bundle` is provided as a backup route |
 | 13 Final report | This document |
 
@@ -54,11 +54,11 @@ Measured with Lighthouse (details and limits in `PHASE8_PERFORMANCE.md`): perfor
 ## 9. Test results (final, from clean installs)
 | Suite | Result |
 |---|---|
-| Backend `npm test` | **72 passed, 0 failed, 15 skipped** (10 e2e need MongoDB; 5 need Redis). With `TEST_REDIS_URL`: 77 passed — verified against a real Redis 7 |
-| Frontend `npm test` | **27 passed** (includes guard tests for the brand name) |
+| Backend `npm test` | **74 passed, 0 failed, 15 skipped** (10 e2e need MongoDB; 5 need Redis). With `TEST_REDIS_URL`: 77 passed — verified against a real Redis 7 |
+| Frontend `npm test` | **42 passed** (brand guards, label association, page meta, Vercel config) |
 | Frontend lint / build | clean / builds |
 | `npm audit --omit=dev` | backend **0**; frontend **2 moderate** (react-router SSR advisory; app is client-only; upgrade is a breaking v7 move — accepted) |
-| **Browser suite (Playwright, Chromium 153 headless)** | **182 passed, 0 failed** on the final build: 120 viewport/overflow · 26 axe on public pages · 36 on mocked dashboards (axe includes best-practice rules). Run locally with a Chromium binary (`PW_CHROMIUM_PATH`); CI job `frontend-browser` stays non-blocking until it passes once on GitHub's runner |
+| **Browser suite (Playwright, Chromium 153 headless)** | **187 passed, 0 failed** on the final build: 120 viewport/overflow · 31 public-page checks (axe incl. best-practice, labels, titles, no-JS) · 36 on mocked dashboards (axe includes best-practice rules). Run locally with a Chromium binary (`PW_CHROMIUM_PATH`); CI job `frontend-browser` stays non-blocking until it passes once on GitHub's runner |
 | Dev-dependency audit | 3 high in the `nodemon` chain; only fix is a 2017 downgrade; not shipped (`--omit=dev`) — accepted |
 | OpenAPI | valid 3.0.3, 121 operations, drift-tested |
 | Lighthouse (sign-in, mobile, simulated) | performance 92–94 · accessibility 100 · best practices 96 · SEO 63 (deliberate `noindex`) — `PHASE8_PERFORMANCE.md` |
@@ -99,7 +99,7 @@ backend/
   src/{config,controllers,middleware,models,routes,services,utils,validators}
   test/  test/e2e/  test-support/
 deployment/                     docker-compose.yml, nginx.conf, *.Dockerfile
-docs/upgrade/                   audit, phase 2/6/8/10 reports, API_ENDPOINTS.md, openapi.json, runbook, ADRs, changelog
+docs/upgrade/                   audit, phase 2/6/8/10 reports, DEPLOY_VERCEL.md, PREDEPLOY_AUDIT.md, API_ENDPOINTS.md, openapi.json, runbook, ADRs, changelog
 frontend/
   e2e/                          Playwright: viewports, accessibility, mocked dashboards
   public/                       favicon.svg, robots.txt
@@ -143,12 +143,15 @@ The frontend uses no environment variables; nothing secret reaches the browser b
 - Backend dependency advisories cleared (nodemailer 10, mongoose 8.24.5, morgan 1.12.1, express 4.22.3)
 - Compose: `TRUST_PROXY=true`, backend not published to host, healthchecks, `NODE_ENV=production`
 ### Fixed
+- **Pre-deploy audit:** form labels were never linked to controls app-wide (shared `Input`/`Select`) and auth inputs had no `name`; identical page titles; Service Center rainbow gradients; shine-sweep and sidebar glass; `TRUST_PROXY=true` forgeable behind multiple proxies (now a hop count)
 - Found by the browser run: sign-in/register had no visible `h1` on phones (form title promoted, hero text demoted); dark-mode contrast for `text-gray-500`, `dark:text-gray-500` and `text-red-500` text app-wide (95 class strings); `<main>` scroll region now keyboard-reachable with a visible focus ring
 - Money-movement rate limit is now per authenticated user (was effectively per IP); per-IP limiter kept as a coarse backstop
 - Malformed money amounts (`10.`, `.5`, `+5`, `007`) now return a clear **400** instead of a 500 across all modules
 - **Rate limiters no longer share one counter per IP** (first login after ~12 normal API calls returned 429); per-limiter buckets, expiry sweep, configurable limits
 - Frontend `npm ci` failure (Vite 8 peer conflict); ESLint scanning `dist/`; 9 lint errors; unused KYC loading state
 ### Added
+- Vercel deployment: `frontend/vercel.json` (SPA fallback, caching, security headers), `npm run vercel:api-origin -- <backend url>` to write the same-origin `/api` proxy, `engines` for Node, `docs/upgrade/DEPLOY_VERCEL.md`; CSP verified with the shipped headers
+- `usePageMeta` hook (per-page title and description), `<noscript>` fallback with a real `<main>` and `<h1>`, `.hero-chip` / `.field-icon` component classes
 - `npm run check:login` (backend): read-only login diagnostic that says whether a user is missing, inactive or has a different password, without printing passwords or hashes; 4 tests; troubleshooting section in `APPLY_UPGRADE.md`
 - Offline banner (`role=status`) and plain-language messages for timeouts and unreachable servers; app shell and mobile sidebar use `100dvh` with a `100vh` fallback
 - Playwright suite (`frontend/e2e/`, `npm run test:e2e`): the kit's 20 viewports x 6 public pages (no horizontal overflow, exactly one visible `h1`), axe WCAG A/AA scans (public pages + 3 role dashboards against a mocked API, phone/desktop, light/dark), keyboard and title checks. **182 checks pass locally in Chromium 153**; `PW_CHROMIUM_PATH` lets it use a custom browser; non-blocking `frontend-browser` CI job until first green CI run

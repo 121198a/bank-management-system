@@ -8,7 +8,7 @@
 | `NODE_ENV` | No | Server | No | `production` in deployment |
 | `PORT` | No | Server | No | default 5000 |
 | `CLIENT_URL` | No | Server | No | comma-separated CORS allow-list |
-| `TRUST_PROXY` | **Yes behind a proxy** | Server | No | `true` behind nginx/LB so rate limits see real client IPs |
+| `TRUST_PROXY` | **Yes behind a proxy** | Server | No | Number of proxy hops in front of the app: `1` behind nginx, `2` behind e.g. Vercel + a hosting router. `true` trusts every hop (spoofable `X-Forwarded-For` when >1 proxy). `false`/unset = trust nobody. Invalid values stop the server at startup |
 | `REQUIRE_REPLICA_SET` | No | Server | No | default true |
 | `JWT_ACCESS_EXPIRES` / `JWT_REFRESH_EXPIRES` / `JWT_REFRESH_EXPIRES_MS` | No | Server | No | token lifetimes |
 | `SMTP_HOST/PORT/SECURE/USER/FROM` | For email | Server | No | mail transport |

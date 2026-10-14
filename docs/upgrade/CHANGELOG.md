@@ -5,12 +5,15 @@
 - Backend dependency advisories cleared (nodemailer 10, mongoose 8.24.5, morgan 1.12.1, express 4.22.3)
 - Compose: `TRUST_PROXY=true`, backend not published to host, healthchecks, `NODE_ENV=production`
 ### Fixed
+- **Pre-deploy audit:** form labels were never linked to controls app-wide (shared `Input`/`Select`) and auth inputs had no `name`; identical page titles; Service Center rainbow gradients; shine-sweep and sidebar glass; `TRUST_PROXY=true` forgeable behind multiple proxies (now a hop count)
 - Found by the browser run: sign-in/register had no visible `h1` on phones (form title promoted, hero text demoted); dark-mode contrast for `text-gray-500`, `dark:text-gray-500` and `text-red-500` text app-wide (95 class strings); `<main>` scroll region now keyboard-reachable with a visible focus ring
 - Money-movement rate limit is now per authenticated user (was effectively per IP); per-IP limiter kept as a coarse backstop
 - Malformed money amounts (`10.`, `.5`, `+5`, `007`) now return a clear **400** instead of a 500 across all modules
 - **Rate limiters no longer share one counter per IP** (first login after ~12 normal API calls returned 429); per-limiter buckets, expiry sweep, configurable limits
 - Frontend `npm ci` failure (Vite 8 peer conflict); ESLint scanning `dist/`; 9 lint errors; unused KYC loading state
 ### Added
+- Vercel deployment: `frontend/vercel.json` (SPA fallback, caching, security headers), `npm run vercel:api-origin -- <backend url>` to write the same-origin `/api` proxy, `engines` for Node, `docs/upgrade/DEPLOY_VERCEL.md`; CSP verified with the shipped headers
+- `usePageMeta` hook (per-page title and description), `<noscript>` fallback with a real `<main>` and `<h1>`, `.hero-chip` / `.field-icon` component classes
 - `npm run check:login` (backend): read-only login diagnostic that says whether a user is missing, inactive or has a different password, without printing passwords or hashes; 4 tests; troubleshooting section in `APPLY_UPGRADE.md`
 - Offline banner (`role=status`) and plain-language messages for timeouts and unreachable servers; app shell and mobile sidebar use `100dvh` with a `100vh` fallback
 - Playwright suite (`frontend/e2e/`, `npm run test:e2e`): the kit's 20 viewports x 6 public pages (no horizontal overflow, exactly one visible `h1`), axe WCAG A/AA scans (public pages + 3 role dashboards against a mocked API, phone/desktop, light/dark), keyboard and title checks. **182 checks pass locally in Chromium 153**; `PW_CHROMIUM_PATH` lets it use a custom browser; non-blocking `frontend-browser` CI job until first green CI run

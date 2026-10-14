@@ -25,6 +25,16 @@ if (accessSecret.length < 32 || refreshSecret.length < 32) {
 
 const mongoUri = required('MONGO_URI');
 
+// TRUST_PROXY: unset/false = trust nobody; "true" = trust every hop (client can forge X-Forwarded-For
+// when more than one proxy sits in front); a number N = trust exactly N proxy hops (recommended).
+const parseTrustProxy = (raw) => {
+  if (raw === undefined || raw === '' || raw === 'false') return false;
+  if (raw === 'true') return true;
+  const n = Number(raw);
+  if (Number.isInteger(n) && n >= 1 && n <= 10) return n;
+  throw new Error('TRUST_PROXY must be true, false, or a hop count between 1 and 10');
+};
+
 const positiveInt = (key, fallback) => {
   const raw = process.env[key];
   if (raw === undefined || raw === '') return fallback;
@@ -40,7 +50,7 @@ module.exports = {
   clientOrigins,
   mongoUri,
   requireReplicaSet: process.env.REQUIRE_REPLICA_SET !== 'false',
-  trustProxy: process.env.TRUST_PROXY === 'true',
+  trustProxy: parseTrustProxy(process.env.TRUST_PROXY),
   redisUrl: process.env.REDIS_URL || '',
   rateLimit: {
     globalMax: positiveInt('RATE_LIMIT_GLOBAL_MAX', 120),
