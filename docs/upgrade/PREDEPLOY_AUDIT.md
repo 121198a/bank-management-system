@@ -42,9 +42,9 @@ Visual regression (24 screenshots = 6 screens x 2 sizes x 2 themes, clock frozen
 | Check | Result |
 |---|---|
 | Frontend lint / build | clean / succeeds |
-| Frontend unit tests | **42 passed** (new: label association, page meta hook, Vercel config) |
-| Backend tests | **74 passed, 0 failed, 15 skipped** (10 need MongoDB, 5 need Redis; new: login diagnostic, trust-proxy parsing) |
-| Browser suite (headless Chromium) | **187 passed**: 120 viewport/overflow, 31 public-page axe (incl. best-practice rules) + labels/titles/no-JS, 36 dashboard axe |
+| Frontend unit tests | **53 passed** (new: label association, page meta hook, Vercel config, legal documents) |
+| Backend tests | **76 passed, 0 failed, 15 skipped** (10 need MongoDB, 5 need Redis; new: login diagnostic, trust-proxy parsing, cookie-policy drift guard) |
+| Browser suite (headless Chromium) | **235 passed**: 160 viewport/overflow (20 viewports × 8 public pages incl. the legal hub and the longest legal page), 39 public-page axe (incl. best-practice rules) + labels/titles/no-JS, 36 dashboard axe (incl. the new footer) |
 | CSP check with `vercel.json` headers | **0 violations** across 22 page/theme combinations incl. deep-link refresh, 404, 3 dashboards; 4 web-font faces loaded |
 | `npm audit --omit=dev` | backend 0; frontend 2 moderate (react-router SSR advisory, app is client-only) |
 Real bugs found and fixed this round: unlabeled form controls app-wide (no autofill names either), identical titles on auth pages, Service Center rainbow tiles, repeated decorative effects, and `TRUST_PROXY=true` being forgeable behind several proxies (now a hop count; compose uses 1).

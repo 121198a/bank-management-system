@@ -3,7 +3,8 @@ import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Navbar from './Navbar';
 import OfflineBanner from '../ui/OfflineBanner';
-import { titleFor } from '../../config/brand';
+import { titleFor, BRAND } from '../../config/brand';
+import LegalLinks from '../ui/LegalLinks';
 
 
 const DashboardLayout = ({ role }) => {
@@ -41,6 +42,9 @@ const DashboardLayout = ({ role }) => {
         <main id="main-content" tabIndex={0} className="flex-1 overflow-y-auto p-3 xs:p-4 sm:p-6 lg:p-7 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-600" ref={mainRef}>
           <div className="max-w-[1480px] mx-auto page-shell animate-page-enter">
             <Outlet />
+            <footer className="mt-10 border-t border-gray-200 dark:border-slate-800 pt-4 text-xs text-gray-600 dark:text-gray-400">
+              &copy; {new Date().getFullYear()} {BRAND.name} · <LegalLinks />
+            </footer>
           </div>
         </main>
       </div>

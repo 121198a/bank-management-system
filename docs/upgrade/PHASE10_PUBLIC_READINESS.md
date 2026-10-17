@@ -37,7 +37,7 @@ Already fine: `prefers-reduced-motion` is honoured (2 blocks in `index.css`), `l
 | Favicon | SVG only; no PNG/apple-touch-icon fallback |
 | robots.txt | `Disallow: /` + `noindex` meta (private banking app — deliberate) |
 | Sitemap, canonical URLs | **Not applicable** by the same decision. If a public marketing site is ever added, revisit |
-| Privacy / terms | **Draft templates**, need legal review |
+| Legal documents | **Seven draft documents + a hub at `/legal`** (privacy, terms, cookies, acceptable use, service disclaimer, support, delete-account), linked from the sign-in page and every signed-in page footer. All carry a visible draft notice and `[bracketed]` placeholders for facts only the owner can supply (operator, contacts, retention, complaints, deposit protection). **Not added on purpose:** Community Guidelines (no user-generated content exists). The cookie page is checked against the backend source by a test. Needs a lawyer; nothing here is legal advice |
 | Real contact information | **Missing** — only bracketed placeholders (needs owner: D4 in `PHASE2_IDENTITY.md`) |
 | Cookie consent | Only a strictly-necessary sign-in cookie and a theme preference in `localStorage`; no analytics or ad cookies. Many jurisdictions don't require a banner for strictly-necessary storage — **owner/counsel to confirm** (not legal advice) |
 | Analytics | None. Product decision; if added, it changes the privacy text and the consent question |

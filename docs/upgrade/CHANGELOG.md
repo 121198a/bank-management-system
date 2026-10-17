@@ -12,6 +12,7 @@
 - **Rate limiters no longer share one counter per IP** (first login after ~12 normal API calls returned 429); per-limiter buckets, expiry sweep, configurable limits
 - Frontend `npm ci` failure (Vite 8 peer conflict); ESLint scanning `dist/`; 9 lint errors; unused KYC loading state
 ### Added
+- Legal documents: hub at `/legal` and seven draft pages (privacy, terms, cookies, acceptable use, service disclaimer, support, delete-account) from a single content file; `LegalLinks` on the sign-in page and a footer on all signed-in pages; backend test keeps the cookie policy in sync with the real cookie settings; no Community Guidelines page because the app has no community features
 - Vercel deployment: `frontend/vercel.json` (SPA fallback, caching, security headers), `npm run vercel:api-origin -- <backend url>` to write the same-origin `/api` proxy, `engines` for Node, `docs/upgrade/DEPLOY_VERCEL.md`; CSP verified with the shipped headers
 - `usePageMeta` hook (per-page title and description), `<noscript>` fallback with a real `<main>` and `<h1>`, `.hero-chip` / `.field-icon` component classes
 - `npm run check:login` (backend): read-only login diagnostic that says whether a user is missing, inactive or has a different password, without printing passwords or hashes; 4 tests; troubleshooting section in `APPLY_UPGRADE.md`

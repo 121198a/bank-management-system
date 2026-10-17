@@ -12,5 +12,7 @@ export const PUBLIC_PAGES = [
   { path: '/forgot-password', name: 'forgot-password' },
   { path: '/privacy', name: 'privacy' },
   { path: '/terms', name: 'terms' },
+  { path: '/legal', name: 'legal-hub' },
+  { path: '/legal/delete-account', name: 'delete-account' },
   { path: '/this-page-does-not-exist', name: '404' }
 ];

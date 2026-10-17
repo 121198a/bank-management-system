@@ -4,6 +4,21 @@ A full-stack banking-management application built with React, Vite, Node.js, Exp
 
 > **Important:** This project implements engineering controls for a banking-style application. It is **not** a legal, regulatory, AML/KYC, PCI, privacy, or banking-compliance certification. Real-world deployment requires organization-specific security review, legal/regulatory review, operational controls, monitoring, incident response, and approval.
 
+## Documentation
+
+All upgrade, audit and operations documents are in [`docs/upgrade/`](docs/upgrade/):
+
+| Document | What it covers |
+|---|---|
+| [`APPLY_UPGRADE.md`](docs/upgrade/APPLY_UPGRADE.md) | Installing correctly on Windows, troubleshooting (including "Invalid email or password") |
+| [`DEPLOY_VERCEL.md`](docs/upgrade/DEPLOY_VERCEL.md) | Frontend on Vercel, backend on a Node host, GitHub push |
+| [`ENVIRONMENT.md`](docs/upgrade/ENVIRONMENT.md) | Every environment variable (names only) |
+| [`API_ENDPOINTS.md`](docs/upgrade/API_ENDPOINTS.md), [`openapi.json`](docs/upgrade/openapi.json) | All 121 routes with auth and roles, generated from the code |
+| [`BACKUP_RUNBOOK.md`](docs/upgrade/BACKUP_RUNBOOK.md) | Encrypted backup/restore and monitoring checks |
+| [`FINAL_REPORT.md`](docs/upgrade/FINAL_REPORT.md), [`PREDEPLOY_AUDIT.md`](docs/upgrade/PREDEPLOY_AUDIT.md), `PHASE*.md` | What was audited, changed, verified, and what is still open |
+
+Legal pages (`/legal`) are **draft templates** with `[bracketed]` placeholders; they need the owner's details and a lawyer's review.
+
 ## Architecture
 
 ```text
@@ -17,6 +32,51 @@ Mongoose / MongoDB
    │ Decimal128 money + MongoDB transactions
    ▼
 Financial records / audit / KYC / notifications
+```
+
+## Project Structure
+
+```text
+bank-management-system/
+├── .github/
+│   └── workflows/ci.yml             # GitHub Actions CI workflow
+├── backend/
+│   ├── scripts/                     # Operational CLIs (backup, restore, openapi, kyc, login check)
+│   ├── src/
+│   │   ├── config/                  # Environment, Redis, and brand configurations
+│   │   ├── controllers/             # Express handlers (auth, accounts, KYC, transactions, etc.)
+│   │   ├── middleware/              # Auth, RBAC, rate-limiting, error handling
+│   │   ├── models/                  # Mongoose data models & schemas
+│   │   ├── routes/                  # Express route declarations
+│   │   ├── services/                # Business logic, email, PDF statements, org scoping
+│   │   ├── utils/                   # Money normalization, crypto, seeds, migrations
+│   │   ├── validators/              # Input validation chains
+│   │   ├── app.js                   # Express app configuration & middleware pipeline
+│   │   └── server.js                # Server entry point
+│   ├── test/                        # Backend unit, integration, and drift tests
+│   └── test-support/                # Test fixtures and shared helpers
+├── deployment/                      # Docker Compose, Dockerfiles, and Nginx reverse proxy configs
+├── docs/
+│   └── upgrade/                     # Architecture Decision Records, audits, runbooks, and API specs
+└── frontend/
+    ├── e2e/                         # Playwright browser, viewport, and accessibility tests
+    ├── public/                      # Static assets and robots.txt
+    ├── scripts/                     # Deployment helpers (Vercel API origin)
+    ├── src/
+    │   ├── api/                     # Axios client and API services
+    │   ├── components/              # Layout, UI components, charts, error boundary
+    │   ├── config/                  # Frontend brand and app configuration
+    │   ├── context/                 # Auth and Theme context providers
+    │   ├── hooks/                   # Custom hooks (page metadata, online status)
+    │   ├── pages/                   # Admin, customer, employee, auth, and legal pages
+    │   ├── routes/                  # Protected routes and role guards
+    │   ├── utils/                   # Formatting and utility functions
+    │   ├── App.jsx                  # Main application component and route definitions
+    │   ├── index.css                # Tailwind CSS and design system styles
+    │   └── main.jsx                 # Vite application entry point
+    ├── playwright.config.js         # Playwright test runner configuration
+    ├── vercel.json                  # Vercel deployment and routing rules
+    └── vitest.config.js             # Vitest unit test configuration
 ```
 
 ## Enterprise organization layer (Phases 1-9)
@@ -128,7 +188,7 @@ Backend authorization is authoritative. Frontend route guards are only a UX laye
 
 ### Prerequisites
 
-- Node.js 20+
+- Node.js 20.19+ or 22.12+ (Vite 8 requirement)
 - MongoDB 7+ or MongoDB Atlas
 - MongoDB must support replica-set transactions for financial operations. MongoDB Atlas is the simplest option for development; a local deployment should be configured as a single-node replica set if transactions are required.
 
@@ -164,7 +224,7 @@ Never commit `.env`.
 
 ```powershell
 cd backend
-npm install
+npm ci
 npm test
 npm run indexes
 npm run seed
@@ -177,12 +237,13 @@ The seed command creates/resets only the administrator configured through enviro
 
 ### 3. Frontend
 
-The supplied frontend lockfile currently pins Vite 8 while the older checked-in `@vitejs/plugin-react` release declares an older Vite peer range. The root `.npmrc` enables npm's legacy peer resolution so the existing lockfile can still be installed. Before a production CI baseline is frozen, regenerate the frontend lockfile with the Vite-8-compatible `@vitejs/plugin-react` 6.x release.
+The lockfile pins Vite 8 with `@vitejs/plugin-react` 6.x, so installation needs **no** `legacy-peer-deps` workaround. Always install inside `frontend/` (never at the repository root). If you have an older `node_modules`, delete it first.
 
 ```powershell
 cd frontend
-npm install
+npm ci
 npm run lint
+npm test
 npm run build
 npm run dev
 ```
@@ -220,20 +281,14 @@ The same key must never be reused for a different request body.
 
 ## Testing
 
-Backend unit tests:
-
-```powershell
-cd backend
-npm test
-```
-
-Frontend static checks/build:
-
-```powershell
-cd frontend
-npm run lint
-npm run build
-```
+| Suite | Command | Needs | Notes |
+|---|---|---|---|
+| Backend unit + HTTP integration | `cd backend; npm test` | nothing | 76 pass; 15 are skipped unless the database/Redis variables below are set |
+| Redis rate-limit tests | `TEST_REDIS_URL=redis://127.0.0.1:6379 npm test` | a Redis server | runs 5 extra tests |
+| Real-database end-to-end (register, login, RBAC, idempotent money movement, transfers, sessions) | `E2E_MONGO_URI="mongodb://127.0.0.1:27017/?replicaSet=rs0" npm run test:e2e` | a MongoDB **replica set** | uses and drops a throw-away database; never point it at real data; written but not yet run by the author - see `FINAL_REPORT.md` |
+| Frontend unit/component | `cd frontend; npm test` | nothing | 53 pass |
+| Frontend lint / build | `npm run lint`, `npm run build` | nothing | |
+| Browser (viewports, accessibility, mocked dashboards) | `cd frontend; npm run test:e2e` | a Chromium (`npx playwright install chromium`, or set `PW_CHROMIUM_PATH`) | 235 checks; CI job `frontend-browser` is non-blocking until it has passed once on GitHub |
 
 For end-to-end financial testing, run against a dedicated test MongoDB replica set and exercise authentication, RBAC, IDOR protection, account lifecycle, idempotency, concurrent transfers, insufficient funds, KYC workflow, and audit logging.
 
@@ -251,11 +306,12 @@ Mongo instance before relying on manager-level team scoping in production.
 - [ ] Exact CORS origins configured.
 - [ ] MongoDB replica set and backups configured.
 - [ ] Monitoring/alerting configured.
-- [ ] Shared rate-limit strategy configured for multiple instances.
-- [ ] Secure KYC document storage implemented.
+- [ ] Shared rate-limit store configured (`REDIS_URL`) if more than one instance runs; `TRUST_PROXY` set to the real number of proxy hops.
+- [ ] KYC document numbers encrypted at rest (`KYC_ENCRYPTION_KEY`, then `npm run kyc:encrypt`, tested on a copy first); secure storage for any uploaded KYC documents implemented.
 - [ ] Security assessment completed.
 - [ ] Legal/regulatory/AML/KYC/privacy review completed.
-- [ ] Disaster recovery and restore procedures tested.
+- [ ] Disaster recovery and restore procedures tested (encrypted backups: see `docs/upgrade/BACKUP_RUNBOOK.md`; key stored separately).
+- [ ] Legal pages completed and reviewed by a lawyer; contact details and operator statement filled in.
 - [ ] Incident-response process approved.
 
 ## Known limitations

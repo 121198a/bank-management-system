@@ -8,6 +8,7 @@ import { getErrorMessage } from '../../utils/formatters';
 import toast from 'react-hot-toast';
 import { BRAND } from '../../config/brand';
 import usePageMeta from '../../hooks/usePageMeta';
+import LegalLinks from '../../components/ui/LegalLinks';
 
 const LoginPage = () => {
   usePageMeta('Sign in', `Sign in to your ${BRAND.name} account.`);
@@ -103,7 +104,7 @@ const LoginPage = () => {
               <p className="text-sm text-gray-500 dark:text-gray-400">New to {BRAND.name}? <Link to="/register" className="text-primary-700 dark:text-primary-400 hover:text-primary-700 font-bold">Create an account</Link></p>
             </div>
           </div>
-          <p className="text-center text-xs text-gray-500 dark:text-gray-400 mt-5">Your session is protected by secure authentication controls. <Link to="/privacy" className="underline">Privacy</Link> · <Link to="/terms" className="underline">Terms</Link></p>
+          <p className="text-center text-xs text-gray-500 dark:text-gray-400 mt-5">Your session is protected by secure authentication controls. <LegalLinks /></p>
         </div>
       </main>
     </div>

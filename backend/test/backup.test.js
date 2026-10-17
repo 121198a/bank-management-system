@@ -49,7 +49,9 @@ test('the file on disk is encrypted: no plaintext PII and no gzip/JSON signature
   const raw = fs.readFileSync(f);
   assert.ok(!raw.includes(SECRET_MARKER) && !raw.includes('a@example.com') && !raw.includes('passwordHash'));
   assert.equal(raw.subarray(0, 5).toString(), 'BKPv1');
-  assert.equal(fs.statSync(f).mode & 0o077, 0, 'backup must not be group/world readable');
+  if (process.platform !== 'win32') {
+    assert.equal(fs.statSync(f).mode & 0o077, 0, 'backup must not be group/world readable');
+  }
 });
 
 test('manifest holds counts + checksum only, never document contents', async () => {
